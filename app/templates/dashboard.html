@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Panel de Control</h1>
+
+<div class="cards">
+
+    <div class="card">
+        <h3>Simulaciones</h3>
+        <p>Ejecuta escenarios de ataque</p>
+    </div>
+
+    <div class="card">
+        <h3>Tu Riesgo</h3>
+        <p>Analizado por IA</p>
+    </div>
+
+    <div class="card">
+        <h3>Resultados</h3>
+        <p>Historial de desempeño</p>
+    </div>
+
+</div>
+
+<a href="/simulation">
+    <button>Iniciar Simulación</button>
+</a>
+
+<h3>Riesgo actual: {{ risk }}</h3>
+<h4>Simulaciones completadas: {{ total }}</h4>
+
+{% endblock %}

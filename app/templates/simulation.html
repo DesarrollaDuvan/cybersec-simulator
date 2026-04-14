@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Simulación: Phishing</h2>
+
+<div class="email-box">
+    <h3>Correo recibido</h3>
+    <p><strong>De:</strong> soporte@empresa.com</p>
+    <p>Actualiza tu contraseña urgentemente</p>
+</div>
+
+<form method="POST" action="/simulation/decision">
+    <button name="action" value="open_email">Abrir enlace</button>
+    <button name="action" value="ignore">Ignorar</button>
+</form>
+
+{% endblock %}
