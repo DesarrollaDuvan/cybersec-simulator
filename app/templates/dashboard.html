@@ -2,32 +2,40 @@
 
 {% block content %}
 
-<h1>Panel de Control</h1>
+<section class="welcome">
+    <h1>Bienvenido</h1>
+    <p>Tu progreso:</p>
+    <div class="progress-bar">
+        <div class="progress" style="width: 60%;"></div>
+    </div>
+</section>
 
-<div class="cards">
+<section class="grid-4">
 
     <div class="card">
-        <h3>Simulaciones</h3>
-        <p>Ejecuta escenarios de ataque</p>
+        <h3>Phishing</h3>
+        <p>Ataques por correo</p>
+        <a href="/cursos"><button>Ver</button></a>
     </div>
 
     <div class="card">
-        <h3>Tu Riesgo</h3>
-        <p>Analizado por IA</p>
+        <h3>Contraseñas</h3>
+        <p>Seguridad básica</p>
+        <button>Ver</button>
     </div>
 
     <div class="card">
-        <h3>Resultados</h3>
-        <p>Historial de desempeño</p>
+        <h3>Ingeniería Social</h3>
+        <p>Manipulación</p>
+        <button>Ver</button>
     </div>
 
-</div>
+    <div class="card">
+        <h3>Redes</h3>
+        <p>Protección</p>
+        <button>Ver</button>
+    </div>
 
-<a href="/simulation">
-    <button>Iniciar Simulación</button>
-</a>
-
-<h3>Riesgo actual: {{ risk }}</h3>
-<h4>Simulaciones completadas: {{ total }}</h4>
+</section>
 
 {% endblock %}

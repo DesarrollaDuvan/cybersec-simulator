@@ -2,20 +2,24 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>CyberSec Simulator</title>
+    <title>CyberTutor IA</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
 
-<nav>
-    <h2>🛡️ CyberSec AI</h2>
-    <a href="/">Dashboard</a>
-    <a href="/simulation">Simulación</a>
-</nav>
+<header class="navbar">
+    <h2>CyberTutor IA</h2>
+    <nav>
+        <a href="/">Inicio</a>
+        <a href="/simulation">Simulación</a>
+        <a href="/quiz">Quiz</a>
+        <a href="/chat">Chat IA</a>
+    </nav>
+</header>
 
-<div class="container">
+<main class="container">
     {% block content %}{% endblock %}
-</div>
+</main>
 
 </body>
 </html>
