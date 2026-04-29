@@ -1,0 +1,240 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="curso-page">
+
+  <!-- HERO -->
+  <section class="curso-hero" style="--accent-glow: #ffa04022;">
+    <div class="curso-eyebrow">
+      <span class="eyebrow-dot" style="background:var(--warning); box-shadow: 0 0 8px var(--warning);"></span>
+      Módulo 03 — Psicología del Ataque
+    </div>
+    <h1>Ingeniería <span class="accent" style="color:var(--warning);">Social</span></h1>
+    <p class="desc">Los atacantes no necesitan hackear sistemas — te hackean a ti. Entiende cómo explotan la psicología humana para obtener lo que quieren.</p>
+    <div class="curso-meta">
+      <div class="meta-item"><span class="meta-num">5</span><span class="meta-label">Secciones</span></div>
+      <div class="meta-div"></div>
+      <div class="meta-item"><span class="meta-num">~10 min</span><span class="meta-label">Lectura</span></div>
+      <div class="meta-div"></div>
+      <div class="meta-item"><span class="meta-num">Intermedio</span><span class="meta-label">Nivel</span></div>
+    </div>
+  </section>
+
+  <!-- TOC -->
+  <nav class="curso-toc">
+    <a href="#is-1" class="toc-link">01 Definición</a>
+    <a href="#is-2" class="toc-link">02 Técnicas</a>
+    <a href="#is-3" class="toc-link">03 Disparadores</a>
+    <a href="#is-4" class="toc-link">04 Escenarios</a>
+    <a href="#is-5" class="toc-link">05 Defensa</a>
+  </nav>
+
+  <!-- SECCIÓN 1 -->
+  <div class="curso-section" id="is-1">
+    <div class="sec-num">01</div>
+    <div class="section-body">
+      <span class="tag tag-warning">Concepto Base</span>
+      <h2>¿Qué es la Ingeniería Social?</h2>
+      <p class="section-intro">La ingeniería social es la manipulación psicológica de personas para que realicen acciones o divulguen información confidencial. Es el ataque más peligroso porque no explota tecnología — explota la naturaleza humana.</p>
+
+      <div class="threat-grid">
+        <div class="threat-card">
+          <div class="tc-icon tc-warning">🧠</div>
+          <h3>El blanco eres tú</h3>
+          <p>No importa cuán seguro sea el sistema. Si el atacante puede convencerte a ti, tiene acceso. Los humanos somos el eslabón más débil de la cadena de seguridad.</p>
+        </div>
+        <div class="threat-card">
+          <div class="tc-icon tc-danger">🎭</div>
+          <h3>La confianza como arma</h3>
+          <p>Los atacantes construyen confianza pacientemente, a veces durante semanas, antes de hacer su movimiento. Se hacen pasar por colegas, técnicos, jefes o entidades oficiales.</p>
+        </div>
+        <div class="threat-card">
+          <div class="tc-icon tc-info">📈</div>
+          <h3>En aumento</h3>
+          <p>El 98% de los ciberataques incluyen algún elemento de ingeniería social. No es una amenaza del pasado — es la técnica más usada hoy en día.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECCIÓN 2 -->
+  <div class="curso-section alt" id="is-2">
+    <div class="sec-num">02</div>
+    <div class="section-body">
+      <span class="tag tag-danger">Técnicas</span>
+      <h2>Principales Técnicas de Ataque</h2>
+      <p class="section-intro">Cada técnica explota un aspecto diferente de la psicología humana. Conocerlas es el primer paso para defenderte.</p>
+
+      <div class="threat-grid cols-2">
+        <div class="threat-card">
+          <div class="tc-icon tc-danger">🪤</div>
+          <h3>Pretexting</h3>
+          <p>El atacante crea una historia falsa (pretexto) para ganarse tu confianza. Por ejemplo, "Soy del departamento de IT y necesito tu contraseña para una actualización urgente".</p>
+          <div class="tc-footer"><span class="tc-footer-label">Señal</span><span class="tc-footer-val">Te piden datos sin proceso formal</span></div>
+        </div>
+        <div class="threat-card">
+          <div class="tc-icon tc-warning">🎁</div>
+          <h3>Baiting (cebo)</h3>
+          <p>Usan algo tentador para atraerte. Un USB abandonado en la empresa, un correo con "descarga gratis de software premium", o una oferta de trabajo irreal.</p>
+          <div class="tc-footer"><span class="tc-footer-label">Señal</span><span class="tc-footer-val">Ofertas demasiado buenas para ser ciertas</span></div>
+        </div>
+        <div class="threat-card">
+          <div class="tc-icon tc-info">🚪</div>
+          <h3>Tailgating</h3>
+          <p>Acceso físico no autorizado. Alguien sigue a un empleado autorizado al entrar a una zona segura, aprovechando la cortesía de "sostener la puerta".</p>
+          <div class="tc-footer"><span class="tc-footer-label">Señal</span><span class="tc-footer-val">Personas sin credenciales visibles</span></div>
+        </div>
+        <div class="threat-card">
+          <div class="tc-icon tc-yellow">💼</div>
+          <h3>Quid Pro Quo</h3>
+          <p>El atacante ofrece algo a cambio de información. "Te ayudo a solucionar ese problema técnico, solo necesito tus credenciales de acceso temporalmente".</p>
+          <div class="tc-footer"><span class="tc-footer-label">Señal</span><span class="tc-footer-val">Ayuda no solicitada a cambio de datos</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECCIÓN 3 -->
+  <div class="curso-section" id="is-3">
+    <div class="sec-num">03</div>
+    <div class="section-body">
+      <span class="tag tag-warning">Psicología</span>
+      <h2>Disparadores Psicológicos que Explotan</h2>
+      <p class="section-intro">Los atacantes estudian comportamiento humano. Estos son los 6 principios de influencia que usan para manipularte.</p>
+
+      <div class="threat-grid cols-2">
+        <div class="threat-card">
+          <div class="tc-icon tc-danger">⏰</div>
+          <h3>Urgencia</h3>
+          <p>"Tu cuenta expira en 2 horas". La prisa desactiva el pensamiento crítico. Cuando sientes que debes actuar ya, es más fácil cometer errores.</p>
+        </div>
+        <div class="threat-card">
+          <div class="tc-icon tc-warning">🏅</div>
+          <h3>Autoridad</h3>
+          <p>"Soy el CEO" o "Llamo del Ministerio de Hacienda". El respeto a figuras de autoridad nos hace obedecer sin cuestionar demasiado.</p>
+        </div>
+        <div class="threat-card">
+          <div class="tc-icon tc-info">💝</div>
+          <h3>Reciprocidad</h3>
+          <p>Te hacen un favor pequeño para que sientas que "debes" devolvérselo. Esta deuda social nos hace más propensos a cumplir solicitudes.</p>
+        </div>
+        <div class="threat-card">
+          <div class="tc-icon tc-yellow">👥</div>
+          <h3>Prueba Social</h3>
+          <p>"Todos en tu empresa ya lo hicieron". Tendemos a seguir lo que hace el grupo. Si creemos que es la norma, bajamos la guardia.</p>
+        </div>
+        <div class="threat-card">
+          <div class="tc-icon tc-safe">🤝</div>
+          <h3>Simpatía</h3>
+          <p>Es más difícil decir no a alguien que nos cae bien. Los atacantes invierten tiempo en ser agradables antes de hacer su solicitud.</p>
+        </div>
+        <div class="threat-card">
+          <div class="tc-icon tc-warning">💎</div>
+          <h3>Escasez</h3>
+          <p>"Solo quedan 2 plazas" o "Esta oferta expira hoy". El miedo a perder una oportunidad nos nubla el juicio y nos apresura.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECCIÓN 4 -->
+  <div class="curso-section alt" id="is-4">
+    <div class="sec-num">04</div>
+    <div class="section-body">
+      <span class="tag tag-danger">Casos Reales</span>
+      <h2>Escenarios de Ataque Comunes</h2>
+      <p class="section-intro">Así es como estos ataques ocurren en la vida real, en empresas y hogares colombianos.</p>
+
+      <div class="comp-table" style="--cols: 3;">
+        <div class="ct-header" style="grid-template-columns: 1.5fr 2fr 2fr;">
+          <div class="ct-cell">Escenario</div>
+          <div class="ct-cell">Cómo ocurre</div>
+          <div class="ct-cell">Cómo defenderte</div>
+        </div>
+        <div class="ct-row" style="grid-template-columns: 1.5fr 2fr 2fr;">
+          <div class="ct-cell ct-label">Soporte técnico falso</div>
+          <div class="ct-cell">Llaman diciendo que tu PC tiene un virus y piden acceso remoto para "solucionarlo"</div>
+          <div class="ct-cell ct-safe">Cuelga. Llama tú al soporte oficial. Ningún técnico legítimo te llamará sin que lo solicites.</div>
+        </div>
+        <div class="ct-row" style="grid-template-columns: 1.5fr 2fr 2fr;">
+          <div class="ct-cell ct-label">CEO Fraud</div>
+          <div class="ct-cell">Correo "del jefe" pidiendo una transferencia urgente y confidencial fuera del proceso normal</div>
+          <div class="ct-cell ct-safe">Verifica por teléfono directamente. Ninguna transferencia urgente debe saltarse los procesos de aprobación.</div>
+        </div>
+        <div class="ct-row" style="grid-template-columns: 1.5fr 2fr 2fr;">
+          <div class="ct-cell ct-label">USB malicioso</div>
+          <div class="ct-cell">Encuentras un USB "perdido" con una etiqueta llamativa como "Nóminas 2024"</div>
+          <div class="ct-cell ct-safe">No lo conectes nunca. Entrégalo al departamento de TI sin haberlo usado.</div>
+        </div>
+        <div class="ct-row" style="grid-template-columns: 1.5fr 2fr 2fr;">
+          <div class="ct-cell ct-label">Oferta de trabajo falsa</div>
+          <div class="ct-cell">LinkedIn: "Te seleccionamos para un cargo premium, necesitamos tus datos bancarios para el anticipo"</div>
+          <div class="ct-cell ct-safe">Ninguna empresa legítima pide datos bancarios antes de una entrevista o contrato firmado.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECCIÓN 5 -->
+  <div class="curso-section" id="is-5">
+    <div class="sec-num">05</div>
+    <div class="section-body">
+      <span class="tag tag-safe">Defensa</span>
+      <h2>Cómo Defenderte</h2>
+      <p class="section-intro">La mejor defensa contra la ingeniería social es el pensamiento crítico y la verificación. Estas prácticas te protegen.</p>
+
+      <div class="list-split">
+        <div class="list-block">
+          <div class="list-title warning">Señales de alerta universal</div>
+          <ul class="item-list">
+            <li>Alguien crea urgencia para que actúes sin pensar</li>
+            <li>Te piden saltarte procedimientos normales "esta vez"</li>
+            <li>Solicitan confidencialidad inusual sobre la interacción</li>
+            <li>La solicitud llega fuera de los canales habituales</li>
+            <li>Te ofrecen algo que no solicitaste a cambio de datos</li>
+          </ul>
+        </div>
+        <div class="list-block">
+          <div class="list-title safe">Hábitos de protección</div>
+          <ul class="item-list safe">
+            <li>Verifica siempre la identidad por un canal independiente</li>
+            <li>Nunca entregues datos sensibles bajo presión de tiempo</li>
+            <li>Cuestiona solicitudes que se salgan del proceso normal</li>
+            <li>Capacita a tu equipo — el eslabón más débil importa</li>
+            <li>Confía en tu instinto: si algo se siente raro, investiga</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="warning-box">
+        <span class="wb-icon">⚠</span>
+        <div><strong>Recuerda:</strong> Está bien decir "No" y verificar. Ninguna organización legítima se ofenderá porque quieras confirmar una solicitud inusual por los canales oficiales. El que se incomoda con tu verificación, probablemente es el atacante.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="curso-cta">
+    <h2>¿Sabrías reconocer un ataque?</h2>
+    <p>Practica con el simulador y el quiz para entrenar tu instinto de defensa.</p>
+    <div class="cta-row">
+      <a href="/quiz" class="btn-primary">Ir al Quiz →</a>
+      <a href="/simulation" class="btn-secondary">Simulación</a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const tocLinks = document.querySelectorAll('.toc-link');
+const sections = document.querySelectorAll('[id^="is-"]');
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting)
+      tocLinks.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + e.target.id));
+  });
+}, { threshold: 0.3 });
+sections.forEach(s => obs.observe(s));
+</script>
+
+{% endblock %}

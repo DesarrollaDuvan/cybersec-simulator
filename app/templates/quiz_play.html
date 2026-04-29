@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="quiz-container">
+  <h2 id="questionText"></h2>
+
+  <div id="options"></div>
+
+  <p id="progress"></p>
+</div>
+
+<script>
+let current = 0;
+
+async function loadQuestion() {
+  const res = await fetch(`/quiz/question/${current}`);
+  const data = await res.json();
+
+  document.getElementById('questionText').innerText = data.question;
+  document.getElementById('progress').innerText =
+    `Pregunta ${data.index + 1} de ${data.total}`;
+
+  const optionsDiv = document.getElementById('options');
+  optionsDiv.innerHTML = '';
+
+  for (let key in data.options) {
+    const btn = document.createElement('button');
+    btn.innerText = `${key}. ${data.options[key]}`;
+    btn.onclick = () => sendAnswer(data.id, key);
+    optionsDiv.appendChild(btn);
+  }
+}
+
+async function sendAnswer(questionId, answer) {
+  const res = await fetch('/quiz/answer', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({
+      question_id: questionId,
+      answer: answer
+    })
+  });
+
+  const data = await res.json();
+
+  alert(data.is_correct ? "Correcto ✅" : "Incorrecto ❌");
+
+  current++;
+
+  if (current < 10) {
+    loadQuestion();
+  } else {
+    window.location.href = '/quiz/results';
+  }
+}
+
+loadQuestion();
+</script>
+
+{% endblock %}

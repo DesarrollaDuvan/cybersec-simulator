@@ -1,0 +1,1391 @@
+{% extends "base.html" %}
+{% block content %}
+
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<div class="curso-page">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-grid-bg"></div>
+    <div class="hero-content">
+      <div class="hero-eyebrow">
+        <span class="eyebrow-dot"></span>
+        Módulo 04 — Infraestructura
+      </div>
+      <h1 class="hero-title">
+        Riesgos en<br>
+        <span class="title-accent">Redes &</span><br>
+        Infraestructura
+      </h1>
+      <p class="hero-desc">
+        Aprende a identificar las vulnerabilidades más críticas en redes domésticas y empresariales, 
+        y cómo proteger tu infraestructura contra ataques reales.
+      </p>
+      <div class="hero-stats">
+        <div class="stat"><span class="stat-num">6</span><span class="stat-label">Secciones</span></div>
+        <div class="stat-div"></div>
+        <div class="stat"><span class="stat-num">~12</span><span class="stat-label">Minutos</span></div>
+        <div class="stat-div"></div>
+        <div class="stat"><span class="stat-num">Nivel</span><span class="stat-label">Básico–Medio</span></div>
+      </div>
+      <a href="#section-1" class="btn-hero">Comenzar módulo ↓</a>
+    </div>
+    <div class="hero-visual">
+      <div class="network-diagram">
+        <div class="nd-node nd-router" title="Router">
+          <span class="nd-icon">⬡</span>
+          <span class="nd-label">Router</span>
+        </div>
+        <div class="nd-line nd-line-1"></div>
+        <div class="nd-node nd-pc" title="PC">
+          <span class="nd-icon">▣</span>
+          <span class="nd-label">PC</span>
+        </div>
+        <div class="nd-line nd-line-2"></div>
+        <div class="nd-node nd-mobile" title="Móvil">
+          <span class="nd-icon">▭</span>
+          <span class="nd-label">Móvil</span>
+        </div>
+        <div class="nd-line nd-line-3"></div>
+        <div class="nd-node nd-attacker nd-pulse" title="Atacante">
+          <span class="nd-icon">✕</span>
+          <span class="nd-label">Atacante</span>
+        </div>
+        <div class="nd-line nd-line-4 nd-danger-line"></div>
+        <div class="nd-node nd-server" title="Servidor">
+          <span class="nd-icon">▤</span>
+          <span class="nd-label">Servidor</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ÍNDICE -->
+  <nav class="toc-bar" id="tocBar">
+    <a href="#section-1" class="toc-item active">01 WiFi</a>
+    <a href="#section-2" class="toc-item">02 Man-in-the-Middle</a>
+    <a href="#section-3" class="toc-item">03 DNS Spoofing</a>
+    <a href="#section-4" class="toc-item">04 DoS / DDoS</a>
+    <a href="#section-5" class="toc-item">05 Puertos Abiertos</a>
+    <a href="#section-6" class="toc-item">06 Buenas Prácticas</a>
+  </nav>
+
+  <!-- ============================================================
+       SECCIÓN 1 — Vulnerabilidades WiFi
+  ============================================================ -->
+  <section class="edu-section" id="section-1">
+    <div class="section-number">01</div>
+    <div class="section-body">
+      <div class="section-header">
+        <span class="tag tag-red">Riesgo Alto</span>
+        <h2>Vulnerabilidades en Redes WiFi</h2>
+        <p class="section-intro">Tu red inalámbrica puede ser la puerta de entrada más fácil para un atacante. Conocer los tipos de ataques es el primer paso para defenderte.</p>
+      </div>
+
+      <div class="cards-row">
+        <div class="threat-card">
+          <div class="tc-icon tc-red">⚡</div>
+          <h3>WEP — Protocolo Obsoleto</h3>
+          <p>El cifrado WEP puede ser crackeado en minutos con herramientas gratuitas. Si tu router lo usa, cualquier vecino puede acceder a tu red.</p>
+          <div class="tc-action">
+            <span class="tc-label">Solución</span>
+            <span class="tc-value">Usar WPA3 o mínimo WPA2</span>
+          </div>
+        </div>
+        <div class="threat-card">
+          <div class="tc-icon tc-orange">📡</div>
+          <h3>Redes WiFi Gemelas (Evil Twin)</h3>
+          <p>Un atacante crea una red con el mismo nombre que la tuya. Tu dispositivo se conecta automáticamente y todo tu tráfico pasa por el atacante.</p>
+          <div class="tc-action">
+            <span class="tc-label">Solución</span>
+            <span class="tc-value">Verificar MAC del router, usar VPN</span>
+          </div>
+        </div>
+        <div class="threat-card">
+          <div class="tc-icon tc-yellow">🔓</div>
+          <h3>Contraseñas por Defecto</h3>
+          <p>La mayoría de routers vienen con credenciales como "admin/admin". Estas están publicadas en internet y son lo primero que intentan los atacantes.</p>
+          <div class="tc-action">
+            <span class="tc-label">Solución</span>
+            <span class="tc-value">Cambiar usuario y contraseña al instalar</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <div class="ib-icon">💡</div>
+        <div>
+          <strong>¿Sabías que?</strong> El 72% de los hogares todavía usa la contraseña WiFi que venía impresa en la caja del router. Esta contraseña es pública y fácil de adivinar por algoritmos.
+        </div>
+      </div>
+
+      <div class="attack-timeline">
+        <p class="timeline-title">¿Cómo ocurre un ataque a red WiFi?</p>
+        <div class="timeline-steps">
+          <div class="ts-step">
+            <div class="ts-num">1</div>
+            <div class="ts-text">El atacante escanea redes WiFi cercanas con herramientas como Aircrack-ng</div>
+          </div>
+          <div class="ts-arrow">→</div>
+          <div class="ts-step">
+            <div class="ts-num">2</div>
+            <div class="ts-text">Identifica una red con cifrado débil (WEP) o contraseña por defecto</div>
+          </div>
+          <div class="ts-arrow">→</div>
+          <div class="ts-step">
+            <div class="ts-num">3</div>
+            <div class="ts-text">Rompe el cifrado o usa la contraseña por defecto para acceder</div>
+          </div>
+          <div class="ts-arrow">→</div>
+          <div class="ts-step ts-danger">
+            <div class="ts-num">4</div>
+            <div class="ts-text">Monitorea todo el tráfico de la red: contraseñas, mensajes, datos bancarios</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SECCIÓN 2 — Man-in-the-Middle
+  ============================================================ -->
+  <section class="edu-section edu-section-alt" id="section-2">
+    <div class="section-number">02</div>
+    <div class="section-body">
+      <div class="section-header">
+        <span class="tag tag-red">Riesgo Crítico</span>
+        <h2>Ataque Man-in-the-Middle (MitM)</h2>
+        <p class="section-intro">El atacante se coloca entre tú y el servidor, interceptando y modificando la comunicación sin que ninguno de los dos lo sepa.</p>
+      </div>
+
+      <div class="mitm-diagram">
+        <div class="mitm-node mitm-victim">
+          <div class="mitm-icon">👤</div>
+          <div class="mitm-label">Tú</div>
+          <div class="mitm-sub">Víctima</div>
+        </div>
+        <div class="mitm-channel">
+          <div class="mitm-arrow">→</div>
+          <div class="mitm-intercept">
+            <div class="mitm-attacker-box">
+              <span>🕵</span>
+              <span class="mitm-attacker-label">Atacante</span>
+              <span class="mitm-reads">Lee y modifica</span>
+            </div>
+          </div>
+          <div class="mitm-arrow">→</div>
+        </div>
+        <div class="mitm-node mitm-server">
+          <div class="mitm-icon">🌐</div>
+          <div class="mitm-label">Servidor</div>
+          <div class="mitm-sub">Banco / App</div>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="col-block">
+          <h4 class="col-title col-danger">¿Qué puede robar?</h4>
+          <ul class="col-list">
+            <li>Credenciales de inicio de sesión</li>
+            <li>Datos de tarjetas de crédito</li>
+            <li>Tokens de sesión (cookies)</li>
+            <li>Mensajes privados no cifrados</li>
+            <li>Información bancaria</li>
+          </ul>
+        </div>
+        <div class="col-block">
+          <h4 class="col-title col-safe">¿Cómo protegerse?</h4>
+          <ul class="col-list col-safe-list">
+            <li>Usar solo sitios con HTTPS</li>
+            <li>Activar VPN en redes públicas</li>
+            <li>Verificar certificados SSL sospechosos</li>
+            <li>Evitar transacciones en WiFi público</li>
+            <li>Usar autenticación de dos factores</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="warning-box">
+        <span class="wb-icon">⚠</span>
+        <div>
+          <strong>Señal de alerta:</strong> Si tu navegador muestra un aviso de "Certificado no válido" o "Conexión no segura", es posible que estés siendo víctima de un ataque MitM. No ignores estas advertencias.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SECCIÓN 3 — DNS Spoofing
+  ============================================================ -->
+  <section class="edu-section" id="section-3">
+    <div class="section-number">03</div>
+    <div class="section-body">
+      <div class="section-header">
+        <span class="tag tag-orange">Riesgo Alto</span>
+        <h2>DNS Spoofing y Envenenamiento de Caché</h2>
+        <p class="section-intro">El DNS es como la "guía telefónica" de internet. Si un atacante la falsifica, puede redirigirte a sitios falsos aunque escribas la dirección correcta.</p>
+      </div>
+
+      <div class="dns-flow">
+        <div class="dns-step dns-normal">
+          <div class="dns-title">🟢 Navegación Normal</div>
+          <div class="dns-path">
+            <span class="dns-node">Tú escribe:<br><code>banco.com</code></span>
+            <span class="dns-arr">→</span>
+            <span class="dns-node">DNS Server:<br><code>192.168.1.1</code></span>
+            <span class="dns-arr">→</span>
+            <span class="dns-node safe-node">Sitio Real:<br><code>banco.com ✓</code></span>
+          </div>
+        </div>
+        <div class="dns-step dns-attack">
+          <div class="dns-title">🔴 Con DNS Spoofing</div>
+          <div class="dns-path">
+            <span class="dns-node">Tú escribe:<br><code>banco.com</code></span>
+            <span class="dns-arr dns-arr-danger">→</span>
+            <span class="dns-node danger-node">DNS Falso:<br><code>ENVENENADO</code></span>
+            <span class="dns-arr dns-arr-danger">→</span>
+            <span class="dns-node danger-node">Sitio Falso:<br><code>phishing.ru ✗</code></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="cards-row cards-row-2">
+        <div class="threat-card">
+          <div class="tc-icon tc-red">🎯</div>
+          <h3>¿Cuándo ocurre?</h3>
+          <ul class="tc-list">
+            <li>En redes WiFi públicas o comprometidas</li>
+            <li>Cuando el router está configurado con DNS del atacante</li>
+            <li>Si el servidor DNS del proveedor es vulnerado</li>
+            <li>Mediante malware que modifica el archivo hosts</li>
+          </ul>
+        </div>
+        <div class="threat-card">
+          <div class="tc-icon tc-green">🛡</div>
+          <h3>Cómo defenderse</h3>
+          <ul class="tc-list tc-list-safe">
+            <li>Usar DNS seguros: Cloudflare (1.1.1.1) o Google (8.8.8.8)</li>
+            <li>Activar DNS over HTTPS (DoH) en el navegador</li>
+            <li>Verificar que la URL tenga HTTPS y candado verde</li>
+            <li>Usar extensiones como HTTPS Everywhere</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SECCIÓN 4 — DoS / DDoS
+  ============================================================ -->
+  <section class="edu-section edu-section-alt" id="section-4">
+    <div class="section-number">04</div>
+    <div class="section-body">
+      <div class="section-header">
+        <span class="tag tag-orange">Riesgo Empresarial</span>
+        <h2>Ataques de Denegación de Servicio (DoS / DDoS)</h2>
+        <p class="section-intro">El objetivo no es robar datos sino inutilizar un sistema, inundándolo con tráfico hasta que colapsa y deja de responder a usuarios legítimos.</p>
+      </div>
+
+      <div class="dos-visual">
+        <div class="dos-sources">
+          <div class="dos-bot">Bot 1</div>
+          <div class="dos-bot">Bot 2</div>
+          <div class="dos-bot">Bot 3</div>
+          <div class="dos-bot">Bot 4</div>
+          <div class="dos-bot dos-bot-more">+miles</div>
+        </div>
+        <div class="dos-arrows">
+          <div class="dos-arrow-line"></div>
+          <div class="dos-arrow-line"></div>
+          <div class="dos-arrow-line"></div>
+          <div class="dos-flood-label">Avalancha de solicitudes →</div>
+        </div>
+        <div class="dos-target">
+          <div class="dos-target-icon">💥</div>
+          <div class="dos-target-label">Servidor</div>
+          <div class="dos-target-status">SOBRECARGADO</div>
+        </div>
+      </div>
+
+      <div class="compare-table">
+        <div class="ct-header">
+          <div class="ct-cell">Característica</div>
+          <div class="ct-cell">DoS</div>
+          <div class="ct-cell">DDoS</div>
+        </div>
+        <div class="ct-row">
+          <div class="ct-cell ct-label">Origen</div>
+          <div class="ct-cell">1 máquina</div>
+          <div class="ct-cell">Miles de máquinas (botnet)</div>
+        </div>
+        <div class="ct-row">
+          <div class="ct-cell ct-label">Dificultad de bloquear</div>
+          <div class="ct-cell ct-low">Baja</div>
+          <div class="ct-cell ct-high">Muy alta</div>
+        </div>
+        <div class="ct-row">
+          <div class="ct-cell ct-label">Impacto típico</div>
+          <div class="ct-cell">Lentitud o caída</div>
+          <div class="ct-cell">Caída total del servicio</div>
+        </div>
+        <div class="ct-row">
+          <div class="ct-cell ct-label">Objetivo común</div>
+          <div class="ct-cell">Usuarios individuales</div>
+          <div class="ct-cell">Empresas, bancos, gobiernos</div>
+        </div>
+      </div>
+
+      <div class="info-box ib-orange">
+        <div class="ib-icon">📊</div>
+        <div>
+          <strong>Dato real:</strong> El mayor ataque DDoS registrado fue de 3.47 Tbps contra Microsoft Azure en 2021, originado desde más de 10.000 dispositivos en 10 países simultáneamente.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SECCIÓN 5 — Puertos Abiertos
+  ============================================================ -->
+  <section class="edu-section" id="section-5">
+    <div class="section-number">05</div>
+    <div class="section-body">
+      <div class="section-header">
+        <span class="tag tag-yellow">Riesgo Medio-Alto</span>
+        <h2>Puertos Abiertos y Exposición de Servicios</h2>
+        <p class="section-intro">Cada puerto abierto en tu red es una puerta potencial. Los atacantes escanean puertos sistemáticamente buscando servicios vulnerables o mal configurados.</p>
+      </div>
+
+      <div class="ports-grid">
+        <div class="port-card port-danger">
+          <div class="port-num">21</div>
+          <div class="port-name">FTP</div>
+          <div class="port-risk risk-high">Crítico</div>
+          <p>Transfiere archivos en texto plano. Fácilmente interceptable.</p>
+        </div>
+        <div class="port-card port-warning">
+          <div class="port-num">23</div>
+          <div class="port-name">Telnet</div>
+          <div class="port-risk risk-high">Crítico</div>
+          <p>Acceso remoto sin cifrado. Completamente obsoleto.</p>
+        </div>
+        <div class="port-card port-warning">
+          <div class="port-num">3389</div>
+          <div class="port-name">RDP</div>
+          <div class="port-risk risk-med">Alto</div>
+          <p>Escritorio remoto de Windows. Muy atacado con fuerza bruta.</p>
+        </div>
+        <div class="port-card port-info">
+          <div class="port-num">22</div>
+          <div class="port-name">SSH</div>
+          <div class="port-risk risk-med">Medio</div>
+          <p>Seguro si está bien configurado. Cambiar el puerto por defecto.</p>
+        </div>
+        <div class="port-card port-safe">
+          <div class="port-num">443</div>
+          <div class="port-name">HTTPS</div>
+          <div class="port-risk risk-low">Bajo</div>
+          <p>Tráfico web cifrado. Necesario y generalmente seguro.</p>
+        </div>
+        <div class="port-card port-safe">
+          <div class="port-num">80</div>
+          <div class="port-name">HTTP</div>
+          <div class="port-risk risk-med">Medio</div>
+          <p>Tráfico web sin cifrar. Usar solo si se redirige a HTTPS.</p>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="col-block">
+          <h4 class="col-title col-danger">Señales de riesgo</h4>
+          <ul class="col-list">
+            <li>Servicios que no necesitas activos</li>
+            <li>Puertos expuestos directamente a internet</li>
+            <li>Firewall desactivado o sin reglas</li>
+            <li>Software desactualizado escuchando en puertos</li>
+          </ul>
+        </div>
+        <div class="col-block">
+          <h4 class="col-title col-safe">Buenas prácticas</h4>
+          <ul class="col-list col-safe-list">
+            <li>Cerrar todos los puertos que no se usen</li>
+            <li>Usar firewall con reglas de whitelist</li>
+            <li>Cambiar puertos por defecto en servicios críticos</li>
+            <li>Escanear tu red con nmap periódicamente</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SECCIÓN 6 — Buenas Prácticas
+  ============================================================ -->
+  <section class="edu-section edu-section-final" id="section-6">
+    <div class="section-number">06</div>
+    <div class="section-body">
+      <div class="section-header">
+        <span class="tag tag-green">Protección</span>
+        <h2>Checklist de Seguridad en Redes</h2>
+        <p class="section-intro">Aplica estas medidas para reducir drásticamente el riesgo en tu red doméstica o empresarial. Marca cada ítem que ya tienes implementado.</p>
+      </div>
+
+      <div class="checklist">
+        {% set items = [
+          ("Router y WiFi", [
+            ("Cambié la contraseña por defecto del router", "alta"),
+            ("Uso cifrado WPA3 o WPA2 en mi WiFi", "alta"),
+            ("El nombre de mi red (SSID) no revela datos personales", "media"),
+            ("Desactivé WPS (Wi-Fi Protected Setup)", "media"),
+            ("Tengo red de invitados separada para visitas", "baja"),
+          ]),
+          ("Red y Dispositivos", [
+            ("Tengo un firewall activo en mi router y PC", "alta"),
+            ("Todos los dispositivos tienen sus SO actualizados", "alta"),
+            ("Uso DNS seguros (1.1.1.1 o 8.8.8.8)", "media"),
+            ("Cierro servicios y puertos que no necesito", "alta"),
+            ("Uso VPN cuando me conecto en redes públicas", "media"),
+          ]),
+          ("Monitoreo", [
+            ("Reviso periódicamente los dispositivos conectados a mi red", "media"),
+            ("Tengo activadas las alertas de acceso en mi router", "baja"),
+            ("Hago backups regulares de datos críticos", "alta"),
+          ]),
+        ] %}
+
+        {% for group_name, group_items in items %}
+        <div class="cl-group">
+          <div class="cl-group-title">{{ group_name }}</div>
+          {% for text, priority in group_items %}
+          <label class="cl-item">
+            <input type="checkbox" class="cl-check" onchange="updateProgress()">
+            <span class="cl-custom-check"></span>
+            <span class="cl-text">{{ text }}</span>
+            <span class="cl-priority priority-{{ priority }}">{{ priority }}</span>
+          </label>
+          {% endfor %}
+        </div>
+        {% endfor %}
+      </div>
+
+      <div class="progress-section">
+        <div class="progress-label">
+          <span>Tu nivel de seguridad</span>
+          <span id="progressPct">0%</span>
+        </div>
+        <div class="progress-bar-outer">
+          <div class="progress-bar-inner" id="progressBar"></div>
+        </div>
+        <p class="progress-msg" id="progressMsg">Comienza marcando los ítems que ya tienes implementados.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- CTA final -->
+  <section class="cta-section">
+    <h2>¿Listo para poner a prueba lo que aprendiste?</h2>
+    <p>Toma el quiz de ciberseguridad y descubre tu nivel real de conocimiento.</p>
+    <div class="cta-buttons">
+      <a href="/quiz"><button class="btn-cta-primary">Ir al Quiz →</button></a>
+      <a href="/simulation"><button class="btn-cta-secondary">Simulación de ataques</button></a>
+    </div>
+  </section>
+
+</div><!-- /curso-page -->
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap');
+
+:root {
+  --bg:       #06060f;
+  --bg2:      #0a0a16;
+  --bg3:      #0e0e20;
+  --border:   #16163a;
+  --accent:   #4f6ef7;
+  --accent2:  #00d4ff;
+  --danger:   #ff4560;
+  --warning:  #ffa040;
+  --safe:     #00e096;
+  --text:     #d8d8f0;
+  --muted:    #5a5a80;
+  --mono:     'Space Mono', monospace;
+  --sans:     'Syne', sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+.curso-page {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  min-height: 100vh;
+}
+
+/* ---- HERO ---- */
+.hero {
+  position: relative;
+  min-height: 90vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 2rem;
+  padding: 5rem 5%;
+  overflow: hidden;
+  border-bottom: 1px solid var(--border);
+}
+
+.hero-grid-bg {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 48px 48px;
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  top: -20%;
+  right: -10%;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, #4f6ef722 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.hero-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 1.5rem;
+}
+
+.eyebrow-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--accent2);
+  box-shadow: 0 0 8px var(--accent2);
+  animation: blink 2s ease-in-out infinite;
+}
+
+@keyframes blink {
+  0%,100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.hero-title {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 800;
+  line-height: 1.05;
+  color: #fff;
+  margin-bottom: 1.5rem;
+}
+
+.title-accent {
+  color: var(--accent2);
+  position: relative;
+}
+
+.hero-desc {
+  font-size: 1rem;
+  color: var(--muted);
+  line-height: 1.75;
+  max-width: 440px;
+  margin-bottom: 2rem;
+}
+
+.hero-stats {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.stat { display: flex; flex-direction: column; gap: 2px; }
+.stat-num { font-family: var(--mono); font-size: 1.4rem; font-weight: 700; color: #fff; }
+.stat-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+.stat-div { width: 1px; height: 36px; background: var(--border); }
+
+.btn-hero {
+  display: inline-block;
+  padding: 14px 32px;
+  background: var(--accent);
+  color: #fff;
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: 0.95rem;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.btn-hero:hover { background: #3a5ae8; transform: translateY(-2px); }
+
+/* Network diagram */
+.hero-visual {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.network-diagram {
+  position: relative;
+  width: 300px;
+  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nd-node {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  z-index: 2;
+}
+
+.nd-icon {
+  width: 52px; height: 52px;
+  border-radius: 12px;
+  border: 1.5px solid var(--border);
+  background: var(--bg3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  transition: border-color 0.3s;
+}
+
+.nd-label { font-size: 10px; color: var(--muted); font-family: var(--mono); }
+
+.nd-router { top: 50%; left: 50%; transform: translate(-50%,-50%); }
+.nd-router .nd-icon { border-color: var(--accent2); background: #001a2e; box-shadow: 0 0 16px #00d4ff22; }
+
+.nd-pc { top: 10%; left: 50%; transform: translateX(-50%); }
+.nd-mobile { top: 50%; right: 5%; transform: translateY(-50%); }
+.nd-server { bottom: 10%; left: 50%; transform: translateX(-50%); }
+
+.nd-attacker { top: 50%; left: 5%; transform: translateY(-50%); }
+.nd-attacker .nd-icon { border-color: var(--danger); background: #1a0010; }
+.nd-attacker .nd-label { color: var(--danger); }
+
+.nd-pulse .nd-icon { animation: nd-pulse 2s ease-in-out infinite; }
+@keyframes nd-pulse {
+  0%,100% { box-shadow: 0 0 0 0 #ff456033; }
+  50% { box-shadow: 0 0 0 12px #ff456000; }
+}
+
+.nd-line {
+  position: absolute;
+  background: var(--border);
+  z-index: 1;
+}
+
+.nd-line-1 { width: 2px; height: 70px; top: 14%; left: 50%; transform: translateX(-50%); }
+.nd-line-2 { width: 80px; height: 2px; top: 50%; right: 10%; transform: translateY(-50%); }
+.nd-line-3 { width: 2px; height: 70px; bottom: 14%; left: 50%; transform: translateX(-50%); }
+.nd-line-4 { width: 80px; height: 2px; top: 50%; left: 10%; transform: translateY(-50%); }
+.nd-danger-line { background: var(--danger); animation: dash 1.5s linear infinite; }
+
+@keyframes dash {
+  0% { opacity: 1; }
+  50% { opacity: 0.3; }
+  100% { opacity: 1; }
+}
+
+/* ---- TOC BAR ---- */
+.toc-bar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  gap: 0;
+  background: #08081488;
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding: 0 5%;
+}
+
+.toc-item {
+  padding: 14px 20px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+  text-decoration: none;
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.toc-item:hover, .toc-item.active {
+  color: var(--accent2);
+  border-bottom-color: var(--accent2);
+}
+
+/* ---- SECTIONS ---- */
+.edu-section {
+  padding: 5rem 5%;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  display: grid;
+  grid-template-columns: 60px 1fr;
+  gap: 2rem;
+}
+
+.edu-section-alt { background: var(--bg2); }
+.edu-section-final { background: var(--bg3); }
+
+.section-number {
+  font-family: var(--mono);
+  font-size: 3.5rem;
+  font-weight: 700;
+  color: var(--border);
+  line-height: 1;
+  padding-top: 6px;
+}
+
+.section-header { margin-bottom: 2.5rem; }
+
+.tag {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+
+.tag-red    { background: #ff456015; color: var(--danger); border: 1px solid #ff456033; }
+.tag-orange { background: #ffa04015; color: var(--warning); border: 1px solid #ffa04033; }
+.tag-yellow { background: #ffcc4415; color: #ffcc44; border: 1px solid #ffcc4433; }
+.tag-green  { background: #00e09615; color: var(--safe); border: 1px solid #00e09633; }
+
+.section-header h2 {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 0.75rem;
+}
+
+.section-intro {
+  color: var(--muted);
+  font-size: 1rem;
+  line-height: 1.7;
+  max-width: 680px;
+}
+
+/* ---- THREAT CARDS ---- */
+.cards-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 2rem;
+}
+
+.cards-row-2 { grid-template-columns: repeat(2, 1fr); }
+
+.threat-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: border-color 0.2s, transform 0.2s;
+}
+
+.threat-card:hover { border-color: #2a2a50; transform: translateY(-2px); }
+
+.tc-icon {
+  width: 42px; height: 42px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  margin-bottom: 1rem;
+}
+
+.tc-red    { background: #ff456018; }
+.tc-orange { background: #ffa04018; }
+.tc-yellow { background: #ffcc4418; }
+.tc-green  { background: #00e09618; }
+
+.threat-card h3 { font-size: 0.95rem; font-weight: 700; color: #fff; margin-bottom: 0.5rem; }
+.threat-card p  { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 1rem; }
+
+.tc-action {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 8px 12px;
+  background: var(--bg2);
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+.tc-label { color: var(--safe); font-weight: 700; text-transform: uppercase; font-size: 10px; letter-spacing: 1px; flex-shrink: 0; }
+.tc-value { color: #aaa; }
+
+.tc-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.tc-list li { font-size: 13px; color: var(--muted); padding-left: 14px; position: relative; }
+.tc-list li::before { content: '—'; position: absolute; left: 0; color: var(--danger); }
+.tc-list-safe li::before { color: var(--safe); }
+
+/* ---- INFO BOX ---- */
+.info-box {
+  display: flex;
+  gap: 14px;
+  padding: 1.25rem 1.5rem;
+  background: #0f1a30;
+  border: 1px solid #1a3060;
+  border-radius: 10px;
+  font-size: 14px;
+  color: #aac;
+  line-height: 1.65;
+  margin-top: 1.5rem;
+}
+
+.ib-orange { background: #1a0f00; border-color: #3a2000; color: #ccaa88; }
+.ib-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+.info-box strong { color: #ddd; }
+
+/* ---- ATTACK TIMELINE ---- */
+.attack-timeline { margin-top: 2rem; }
+.timeline-title { font-family: var(--mono); font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 1rem; }
+
+.timeline-steps {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
+
+.ts-step {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem;
+  min-width: 160px;
+  flex-shrink: 0;
+}
+
+.ts-danger { border-color: #ff456033; background: #1a0808; }
+
+.ts-num {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent2);
+}
+
+.ts-danger .ts-num { background: #ff456022; color: var(--danger); }
+.ts-text { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+.ts-arrow {
+  font-size: 1.2rem;
+  color: var(--border);
+  padding: 0 8px;
+  flex-shrink: 0;
+}
+
+/* ---- MitM DIAGRAM ---- */
+.mitm-diagram {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  margin-bottom: 2rem;
+  padding: 2rem;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow-x: auto;
+}
+
+.mitm-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  min-width: 100px;
+}
+
+.mitm-icon { font-size: 2.5rem; }
+.mitm-label { font-size: 14px; font-weight: 700; color: #fff; }
+.mitm-sub { font-size: 11px; color: var(--muted); }
+
+.mitm-channel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 200px;
+}
+
+.mitm-arrow { font-size: 1.5rem; color: var(--danger); }
+
+.mitm-attacker-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  background: #1a0010;
+  border: 1px solid var(--danger);
+  border-radius: 10px;
+  padding: 10px 20px;
+  animation: nd-pulse 2s ease-in-out infinite;
+}
+
+.mitm-attacker-label { font-size: 13px; font-weight: 700; color: var(--danger); }
+.mitm-reads { font-size: 11px; color: #ff8888; }
+
+/* ---- TWO COL ---- */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 1.5rem;
+}
+
+.col-block {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.25rem;
+}
+
+.col-title {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 0.75rem;
+}
+
+.col-danger { color: var(--danger); }
+.col-safe   { color: var(--safe); }
+
+.col-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.col-list li { font-size: 13px; color: var(--muted); padding-left: 16px; position: relative; line-height: 1.4; }
+.col-list li::before { content: '×'; position: absolute; left: 0; color: var(--danger); font-weight: 700; }
+.col-safe-list li::before { content: '✓'; color: var(--safe); }
+
+/* ---- WARNING BOX ---- */
+.warning-box {
+  display: flex;
+  gap: 14px;
+  padding: 1.25rem 1.5rem;
+  background: #1a0a00;
+  border: 1px solid #ff446033;
+  border-radius: 10px;
+  font-size: 14px;
+  color: #ccaa88;
+  margin-top: 1.5rem;
+  line-height: 1.65;
+}
+
+.wb-icon { font-size: 22px; flex-shrink: 0; color: var(--warning); margin-top: 1px; }
+.warning-box strong { color: #ffcc88; }
+
+/* ---- DNS FLOW ---- */
+.dns-flow {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 2rem;
+}
+
+.dns-step {
+  padding: 1.25rem 1.5rem;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+}
+
+.dns-normal { background: #001a0a; border-color: #00e09633; }
+.dns-attack { background: #1a0008; border-color: #ff456033; }
+
+.dns-title { font-size: 13px; font-weight: 700; margin-bottom: 1rem; color: #ccc; }
+
+.dns-path {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.dns-node {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 12px;
+  color: #aaa;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.dns-node code { font-family: var(--mono); color: var(--accent2); }
+.safe-node { border-color: #00e09633; }
+.safe-node code { color: var(--safe); }
+.danger-node { border-color: #ff456033; }
+.danger-node code { color: var(--danger); }
+
+.dns-arr { font-size: 1.2rem; color: var(--safe); }
+.dns-arr-danger { color: var(--danger); }
+
+/* ---- DoS VISUAL ---- */
+.dos-visual {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  padding: 2rem;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.dos-sources { display: flex; flex-direction: column; gap: 8px; }
+
+.dos-bot {
+  background: #1a0808;
+  border: 1px solid #ff456044;
+  border-radius: 6px;
+  padding: 6px 16px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: #ff8888;
+  text-align: center;
+}
+
+.dos-bot-more { border-style: dashed; color: var(--muted); }
+
+.dos-arrows {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.dos-arrow-line {
+  width: 80px; height: 2px;
+  background: linear-gradient(90deg, var(--danger), transparent);
+  animation: dos-flow 0.8s linear infinite;
+}
+
+@keyframes dos-flow {
+  0% { opacity: 1; }
+  50% { opacity: 0.3; }
+  100% { opacity: 1; }
+}
+
+.dos-flood-label { font-size: 11px; color: var(--danger); font-family: var(--mono); margin-top: 4px; }
+
+.dos-target {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.dos-target-icon { font-size: 2.5rem; animation: nd-pulse 1s ease-in-out infinite; }
+.dos-target-label { font-weight: 700; color: #fff; font-size: 14px; }
+.dos-target-status { font-family: var(--mono); font-size: 11px; color: var(--danger); letter-spacing: 1px; }
+
+/* ---- COMPARE TABLE ---- */
+.compare-table {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+
+.ct-header {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  background: var(--bg3);
+  border-bottom: 1px solid var(--border);
+}
+
+.ct-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  border-bottom: 1px solid var(--border);
+}
+
+.ct-row:last-child { border-bottom: none; }
+
+.ct-cell {
+  padding: 12px 16px;
+  font-size: 13px;
+  color: var(--muted);
+  border-right: 1px solid var(--border);
+}
+
+.ct-cell:last-child { border-right: none; }
+.ct-header .ct-cell { font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #888; }
+.ct-label { color: #ccc; font-weight: 600; }
+.ct-low { color: var(--safe); }
+.ct-high { color: var(--danger); }
+
+/* ---- PORTS GRID ---- */
+.ports-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 2rem;
+}
+
+.port-card {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.25rem;
+  transition: transform 0.2s;
+}
+
+.port-card:hover { transform: translateY(-2px); }
+.port-danger { border-color: #ff456033; }
+.port-warning { border-color: #ffa04033; }
+.port-info    { border-color: #4f6ef733; }
+.port-safe    { border-color: #00e09633; }
+
+.port-num { font-family: var(--mono); font-size: 1.5rem; font-weight: 700; color: #fff; }
+.port-name { font-size: 12px; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+
+.port-risk {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.risk-high { background: #ff456018; color: var(--danger); }
+.risk-med  { background: #ffa04018; color: var(--warning); }
+.risk-low  { background: #00e09618; color: var(--safe); }
+
+.port-card p { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+/* ---- CHECKLIST ---- */
+.checklist { display: flex; flex-direction: column; gap: 2rem; margin-bottom: 2rem; }
+
+.cl-group-title {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 0.75rem;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+}
+
+.cl-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s;
+  border: 1px solid transparent;
+}
+
+.cl-item:hover { background: var(--bg3); border-color: var(--border); }
+.cl-check { display: none; }
+
+.cl-custom-check {
+  width: 20px; height: 20px;
+  border: 1.5px solid var(--border);
+  border-radius: 5px;
+  flex-shrink: 0;
+  transition: background 0.15s, border-color 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cl-check:checked ~ .cl-custom-check {
+  background: var(--safe);
+  border-color: var(--safe);
+}
+
+.cl-check:checked ~ .cl-custom-check::after {
+  content: '✓';
+  color: #000;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.cl-text { font-size: 14px; color: var(--text); flex: 1; line-height: 1.4; }
+.cl-check:checked ~ .cl-custom-check ~ .cl-text { color: var(--muted); text-decoration: line-through; }
+
+.cl-priority {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.priority-alta  { background: #ff456018; color: var(--danger); }
+.priority-media { background: #ffa04018; color: var(--warning); }
+.priority-baja  { background: #4f6ef718; color: var(--accent); }
+
+/* ---- PROGRESS ---- */
+.progress-section { margin-top: 1rem; }
+
+.progress-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+#progressPct { font-family: var(--mono); color: var(--safe); font-weight: 700; }
+
+.progress-bar-outer {
+  height: 8px;
+  background: var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.progress-bar-inner {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--safe));
+  border-radius: 4px;
+  width: 0%;
+  transition: width 0.4s ease;
+}
+
+.progress-msg { font-size: 13px; color: var(--muted); }
+
+/* ---- CTA ---- */
+.cta-section {
+  text-align: center;
+  padding: 5rem 5%;
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+}
+
+.cta-section h2 { font-size: 2rem; font-weight: 800; color: #fff; margin-bottom: 0.75rem; }
+.cta-section p  { color: var(--muted); margin-bottom: 2rem; }
+
+.cta-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+.btn-cta-primary {
+  padding: 14px 32px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: var(--sans);
+  transition: background 0.2s;
+}
+
+.btn-cta-primary:hover { background: #3a5ae8; }
+
+.btn-cta-secondary {
+  padding: 14px 32px;
+  background: transparent;
+  color: var(--text);
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: var(--sans);
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.btn-cta-secondary:hover { border-color: var(--accent2); color: var(--accent2); }
+
+@media (max-width: 768px) {
+  .hero { grid-template-columns: 1fr; padding: 3rem 5%; }
+  .hero-visual { display: none; }
+  .edu-section { grid-template-columns: 1fr; padding: 3rem 5%; }
+  .section-number { display: none; }
+  .cards-row, .cards-row-2, .two-col, .ports-grid { grid-template-columns: 1fr; }
+  .compare-table, .timeline-steps { overflow-x: auto; }
+}
+</style>
+
+<script>
+// Actualizar barra de progreso del checklist
+function updateProgress() {
+  const checks = document.querySelectorAll('.cl-check');
+  const total = checks.length;
+  const done = document.querySelectorAll('.cl-check:checked').length;
+  const pct = Math.round((done / total) * 100);
+
+  document.getElementById('progressBar').style.width = pct + '%';
+  document.getElementById('progressPct').textContent = pct + '%';
+
+  const msg = document.getElementById('progressMsg');
+  if (pct === 0) msg.textContent = 'Comienza marcando los ítems que ya tienes implementados.';
+  else if (pct < 40) msg.textContent = 'Buen comienzo. Prioriza los ítems marcados como "alta".';
+  else if (pct < 70) msg.textContent = 'Vas por buen camino. Sigue implementando las medidas restantes.';
+  else if (pct < 100) msg.textContent = '¡Casi listo! Tu red está bien protegida.';
+  else msg.textContent = '🛡 Excelente. Tu infraestructura tiene una protección sólida.';
+}
+
+// Resaltar ítem activo en la barra de navegación
+const sections = document.querySelectorAll('.edu-section');
+const tocItems = document.querySelectorAll('.toc-item');
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const id = entry.target.id;
+      tocItems.forEach(item => {
+        item.classList.toggle('active', item.getAttribute('href') === '#' + id);
+      });
+    }
+  });
+}, { threshold: 0.3 });
+
+sections.forEach(s => observer.observe(s));
+</script>
+
+{% endblock %}

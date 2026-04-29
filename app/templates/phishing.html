@@ -1,0 +1,234 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="curso-page">
+
+  <!-- HERO -->
+  <section class="curso-hero" style="--accent-glow: #ff456022;">
+    <div class="curso-eyebrow">
+      <span class="eyebrow-dot" style="background:var(--danger); box-shadow: 0 0 8px var(--danger);"></span>
+      Módulo 01 — Amenazas
+    </div>
+    <h1>Cómo reconocer el <span class="accent" style="color:var(--danger);">Phishing</span></h1>
+    <p class="desc">El phishing es el ataque más común en internet. Aprende a identificar correos, mensajes y sitios falsos antes de que sea demasiado tarde.</p>
+    <div class="curso-meta">
+      <div class="meta-item"><span class="meta-num">5</span><span class="meta-label">Secciones</span></div>
+      <div class="meta-div"></div>
+      <div class="meta-item"><span class="meta-num">~8 min</span><span class="meta-label">Lectura</span></div>
+      <div class="meta-div"></div>
+      <div class="meta-item"><span class="meta-num">Básico</span><span class="meta-label">Nivel</span></div>
+    </div>
+  </section>
+
+  <!-- TOC -->
+  <nav class="curso-toc">
+    <a href="#ph-1" class="toc-link">01 ¿Qué es?</a>
+    <a href="#ph-2" class="toc-link">02 Tipos</a>
+    <a href="#ph-3" class="toc-link">03 Señales de alerta</a>
+    <a href="#ph-4" class="toc-link">04 Ejemplos reales</a>
+    <a href="#ph-5" class="toc-link">05 Qué hacer</a>
+  </nav>
+
+  <!-- SECCIÓN 1 -->
+  <div class="curso-section" id="ph-1">
+    <div class="sec-num">01</div>
+    <div class="section-body">
+      <span class="tag tag-danger">Riesgo Crítico</span>
+      <h2>¿Qué es el Phishing?</h2>
+      <p class="section-intro">El phishing es un ataque de ingeniería social en el que el atacante se hace pasar por una entidad de confianza para robar información confidencial como contraseñas, datos bancarios o números de tarjeta.</p>
+
+      <div class="threat-grid">
+        <div class="threat-card">
+          <div class="tc-icon tc-danger">🎣</div>
+          <h3>El objetivo</h3>
+          <p>Engañarte para que entregues datos voluntariamente, hagas clic en un enlace malicioso o descargues un archivo infectado.</p>
+        </div>
+        <div class="threat-card">
+          <div class="tc-icon tc-warning">🧠</div>
+          <h3>El método</h3>
+          <p>Explotan emociones: urgencia, miedo, curiosidad o codicia. "Tu cuenta será suspendida", "Ganaste un premio", "Hay actividad sospechosa".</p>
+        </div>
+        <div class="threat-card">
+          <div class="tc-icon tc-info">📊</div>
+          <h3>La escala</h3>
+          <p>Más de 3.400 millones de correos de phishing se envían cada día. Es el vector de ataque #1 en el mundo empresarial.</p>
+        </div>
+      </div>
+
+      <div class="info-box blue">
+        <span class="ib-icon">💡</span>
+        <div><strong>Dato importante:</strong> El 36% de todas las filtraciones de datos en 2023 comenzaron con un ataque de phishing exitoso. Un solo clic puede comprometer a toda una empresa.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECCIÓN 2 -->
+  <div class="curso-section alt" id="ph-2">
+    <div class="sec-num">02</div>
+    <div class="section-body">
+      <span class="tag tag-warning">Variantes</span>
+      <h2>Tipos de Phishing</h2>
+      <p class="section-intro">El phishing no llega solo por correo. Los atacantes usan múltiples canales adaptando el engaño al medio.</p>
+
+      <div class="threat-grid cols-2">
+        <div class="threat-card">
+          <div class="tc-icon tc-danger">📧</div>
+          <h3>Email Phishing</h3>
+          <p>El más común. Correos masivos que imitan bancos, servicios de pago, plataformas de streaming o empresas conocidas.</p>
+          <div class="tc-footer"><span class="tc-footer-label">Canal</span><span class="tc-footer-val">Correo electrónico</span></div>
+        </div>
+        <div class="threat-card">
+          <div class="tc-icon tc-warning">📱</div>
+          <h3>Smishing</h3>
+          <p>Phishing por SMS. "Tu paquete está retenido", "Tu banco detectó actividad". Incluyen enlaces acortados que ocultan la URL real.</p>
+          <div class="tc-footer"><span class="tc-footer-label">Canal</span><span class="tc-footer-val">Mensaje de texto</span></div>
+        </div>
+        <div class="threat-card">
+          <div class="tc-icon tc-info">📞</div>
+          <h3>Vishing</h3>
+          <p>Phishing por voz. Alguien llama haciéndose pasar por soporte técnico, banco o gobierno pidiendo datos urgentemente.</p>
+          <div class="tc-footer"><span class="tc-footer-label">Canal</span><span class="tc-footer-val">Llamada telefónica</span></div>
+        </div>
+        <div class="threat-card">
+          <div class="tc-icon tc-yellow">🎯</div>
+          <h3>Spear Phishing</h3>
+          <p>Ataques dirigidos a una persona específica. Usan información personal real (nombre, cargo, empresa) para parecer más creíbles.</p>
+          <div class="tc-footer"><span class="tc-footer-label">Canal</span><span class="tc-footer-val">Correo personalizado</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECCIÓN 3 -->
+  <div class="curso-section" id="ph-3">
+    <div class="sec-num">03</div>
+    <div class="section-body">
+      <span class="tag tag-warning">Identificación</span>
+      <h2>Señales de Alerta</h2>
+      <p class="section-intro">Aprende a detectar las señales que delatan un intento de phishing antes de hacer clic en cualquier cosa.</p>
+
+      <div class="list-split">
+        <div class="list-block">
+          <div class="list-title danger">🚨 Señales de phishing</div>
+          <ul class="item-list">
+            <li>Urgencia extrema: "actúa en las próximas 24 horas"</li>
+            <li>Remitente con dominio extraño (banco-col.net, paypa1.com)</li>
+            <li>Saludos genéricos: "Estimado cliente" en lugar de tu nombre</li>
+            <li>Errores de ortografía o gramática inusual</li>
+            <li>Solicitudes de contraseñas o datos bancarios por correo</li>
+            <li>Enlace que al pasar el mouse muestra una URL diferente</li>
+            <li>Archivos adjuntos inesperados (.exe, .zip, .docx con macros)</li>
+          </ul>
+        </div>
+        <div class="list-block">
+          <div class="list-title safe">✓ Señales de correo legítimo</div>
+          <ul class="item-list safe">
+            <li>Te dirige a la app oficial, no a un enlace en el correo</li>
+            <li>Usa tu nombre completo registrado en la plataforma</li>
+            <li>El dominio coincide exactamente con el sitio oficial</li>
+            <li>No solicita datos sensibles por correo</li>
+            <li>Puedes verificar el mensaje en tu cuenta directamente</li>
+            <li>Tiene firma digital y datos de contacto reales</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="warning-box">
+        <span class="wb-icon">⚠</span>
+        <div><strong>Regla de oro:</strong> Si un correo o mensaje te pide hacer algo urgente con tus datos o dinero, detente. Verifica directamente en la app oficial o llama al número que aparece en el sitio web oficial — nunca en el mensaje.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECCIÓN 4 -->
+  <div class="curso-section alt" id="ph-4">
+    <div class="sec-num">04</div>
+    <div class="section-body">
+      <span class="tag tag-danger">Ejemplos</span>
+      <h2>Correos de Phishing Reales</h2>
+      <p class="section-intro">Así lucen los ataques más comunes. Analiza cada elemento con cuidado.</p>
+
+      <!-- Email mockup -->
+      <div style="background:var(--bg); border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; margin-bottom:1.5rem;">
+        <div style="background:var(--bg3); padding:10px 16px; display:flex; align-items:center; gap:8px; border-bottom:1px solid var(--border);">
+          <span style="width:11px;height:11px;border-radius:50%;background:#ff5f57;display:inline-block;"></span>
+          <span style="width:11px;height:11px;border-radius:50%;background:#febc2e;display:inline-block;"></span>
+          <span style="width:11px;height:11px;border-radius:50%;background:#28c840;display:inline-block;"></span>
+          <span style="font-family:var(--mono);font-size:11px;color:var(--muted);margin-left:8px;">Bandeja de entrada</span>
+        </div>
+        <div style="padding:1.5rem 2rem;">
+          <div style="font-size:13px;margin-bottom:6px;"><span style="color:var(--muted);display:inline-block;width:60px;font-family:var(--mono);font-size:11px;">De:</span> <span style="color:#ff8899;">soporte@banco-seguro-colombia.net</span> <span style="font-family:var(--mono);font-size:10px;background:rgba(255,69,96,0.1);color:var(--danger);padding:2px 8px;border-radius:4px;margin-left:6px;">⚠ DOMINIO SOSPECHOSO</span></div>
+          <div style="font-size:13px;margin-bottom:1rem;"><span style="color:var(--muted);display:inline-block;width:60px;font-family:var(--mono);font-size:11px;">Asunto:</span> <span style="color:var(--text);">⚠ URGENTE: Su cuenta ha sido bloqueada — Verifique en 24h</span></div>
+          <hr style="border:none;border-top:1px solid var(--border);margin-bottom:1rem;">
+          <p style="color:var(--text);font-size:14px;line-height:1.75;margin-bottom:1rem;">Estimado <strong>cliente</strong>, <span style="background:rgba(255,204,68,0.1);color:var(--yellow);font-size:11px;padding:2px 6px;border-radius:4px;">← Sin tu nombre</span><br>Hemos detectado <strong>actividad inusual</strong> en su cuenta. Para evitar el <strong>bloqueo permanente</strong> <span style="background:rgba(255,69,96,0.1);color:var(--danger);font-size:11px;padding:2px 6px;border-radius:4px;">← Urgencia artificial</span> debe verificar su identidad en las próximas <strong>24 horas</strong>.</p>
+          <a href="#" onclick="return false;" style="display:inline-block;padding:10px 20px;background:rgba(255,69,96,0.15);color:var(--danger);border:1px solid rgba(255,69,96,0.3);border-radius:8px;font-size:13px;text-decoration:none;">Verificar mi cuenta ahora →</a>
+          <span style="font-family:var(--mono);font-size:10px;color:var(--muted);display:block;margin-top:8px;">URL real: http://verificar-banco.ru/phish <span style="color:var(--danger);">← DOMINIO FALSO</span></span>
+        </div>
+      </div>
+
+      <div class="info-box danger">
+        <span class="ib-icon">🔴</span>
+        <div><strong>Este correo es un phishing.</strong> El dominio del remitente termina en .net (los bancos colombianos usan .com.co), no usa tu nombre real, crea urgencia artificial y el enlace lleva a un dominio .ru completamente ajeno al banco.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECCIÓN 5 -->
+  <div class="curso-section" id="ph-5">
+    <div class="sec-num">05</div>
+    <div class="section-body">
+      <span class="tag tag-safe">Protección</span>
+      <h2>¿Qué hacer si recibes un intento de phishing?</h2>
+      <p class="section-intro">Saber reaccionar correctamente puede marcar la diferencia entre estar seguro o ser víctima.</p>
+
+      <div class="threat-grid">
+        <div class="threat-card">
+          <div class="tc-icon tc-safe">✋</div>
+          <h3>No hagas clic</h3>
+          <p>No abras los enlaces ni descargues archivos adjuntos. Si ya abriste el enlace, cierra la página inmediatamente y no ingreses ningún dato.</p>
+        </div>
+        <div class="threat-card">
+          <div class="tc-icon tc-info">🔍</div>
+          <h3>Verifica por tu cuenta</h3>
+          <p>Accede directamente al sitio oficial escribiendo la URL tú mismo, o llama al número oficial de la empresa. Nunca uses los datos del correo sospechoso.</p>
+        </div>
+        <div class="threat-card">
+          <div class="tc-icon tc-warning">⚑</div>
+          <h3>Reporta el intento</h3>
+          <p>Marca el correo como phishing en tu cliente de correo. Si llegó haciéndose pasar por un banco o empresa, notifica a esa entidad directamente.</p>
+        </div>
+      </div>
+
+      <div class="info-box success">
+        <span class="ib-icon">🛡</span>
+        <div><strong>Si ya caíste en el ataque:</strong> Cambia la contraseña afectada de inmediato desde un dispositivo seguro, activa el 2FA, notifica a tu banco si compartiste datos financieros, y escanea tu dispositivo con un antivirus actualizado.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="curso-cta">
+    <h2>Pon a prueba lo que aprendiste</h2>
+    <p>Vive una simulación de phishing real y entrena tu instinto de detección.</p>
+    <div class="cta-row">
+      <a href="/simulation" class="btn-primary">Ir a la Simulación →</a>
+      <a href="/quiz" class="btn-secondary">Tomar el Quiz</a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const tocLinks = document.querySelectorAll('.toc-link');
+const sections = document.querySelectorAll('[id^="ph-"]');
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      tocLinks.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + e.target.id));
+    }
+  });
+}, { threshold: 0.3 });
+sections.forEach(s => obs.observe(s));
+</script>
+
+{% endblock %}

@@ -2,13 +2,110 @@
 
 {% block content %}
 
-<h2>Resultado</h2>
+<div class="result-container">
 
-<p>{{ message }}</p>
-<p>Nivel de riesgo: {{ risk }}</p>
+  <div class="result-header">
+    <div class="risk-badge risk-{{ risk_level }}">
+      {% if risk_level == 'alto' %} ⚠ Riesgo Alto
+      {% elif risk_level == 'medio' %} ~ Riesgo Medio
+      {% else %} ✓ Decisión Correcta
+      {% endif %}
+    </div>
+    <h2>Análisis de tu decisión</h2>
+  </div>
 
-<a href="/">
-    <button>Volver</button>
-</a>
+  <!-- Análisis generado por Claude -->
+  <div class="analysis-card">
+    <div class="analysis-label">
+      <span class="ai-dot"></span> Análisis de CyberTutor IA
+    </div>
+    <p class="analysis-text">{{ ai_analysis }}</p>
+  </div>
+
+  <!-- Desglose de la decisión -->
+  <div class="breakdown-grid">
+    <div class="breakdown-item">
+      <span class="breakdown-key">Tu acción</span>
+      <span class="breakdown-val">{{ user_action }}</span>
+    </div>
+    <div class="breakdown-item">
+      <span class="breakdown-key">Acción recomendada</span>
+      <span class="breakdown-val correct">{{ correct_action }}</span>
+    </div>
+    <div class="breakdown-item">
+      <span class="breakdown-key">Nivel de riesgo</span>
+      <span class="breakdown-val risk-text-{{ risk_level }}">{{ risk_level | capitalize }}</span>
+    </div>
+    <div class="breakdown-item">
+      <span class="breakdown-key">Puntos obtenidos</span>
+      <span class="breakdown-val">{{ points }} / 100</span>
+    </div>
+  </div>
+
+  <!-- Señales de phishing explicadas -->
+  <div class="signals-section">
+    <p class="signals-title">Señales de alerta en el escenario:</p>
+    <ul class="signals-list">
+      {% for signal in red_flags %}
+      <li class="signal-item">
+        <span class="signal-icon">⚑</span>
+        <span>{{ signal }}</span>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <!-- Consejo final de la IA -->
+  <div class="tip-card">
+    <p class="tip-label">Consejo para el futuro</p>
+    <p class="tip-text">{{ ai_tip }}</p>
+  </div>
+
+  <div class="result-actions">
+    <a href="/simulation"><button class="btn-next">Siguiente escenario →</button></a>
+    <a href="/"><button class="btn-home">Volver al inicio</button></a>
+  </div>
+
+</div>
+
+<style>
+  .result-container { max-width: 720px; margin: 2rem auto; padding: 0 1rem; }
+  .result-header { margin-bottom: 2rem; }
+  .risk-badge { display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 5px 14px; border-radius: 20px; margin-bottom: 0.75rem; }
+  .risk-alto { background: #2a0a0a; color: #ff6666; border: 1px solid #ff444455; }
+  .risk-medio { background: #2a1a00; color: #ffcc44; border: 1px solid #ffaa0055; }
+  .risk-bajo { background: #002a1a; color: #00ffaa; border: 1px solid #00cc8855; }
+  .result-header h2 { font-size: 1.8rem; color: #fff; margin: 0; }
+
+  .analysis-card { background: #0f0f1a; border: 1px solid #2a2a4a; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; }
+  .analysis-label { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #555; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1rem; }
+  .ai-dot { width: 8px; height: 8px; border-radius: 50%; background: #00d4ff; box-shadow: 0 0 6px #00d4ff88; }
+  .analysis-text { color: #ccc; line-height: 1.75; font-size: 0.95rem; margin: 0; }
+
+  .breakdown-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1.5rem; }
+  .breakdown-item { background: #0f0f1a; border: 1px solid #2a2a4a; border-radius: 10px; padding: 1rem; }
+  .breakdown-key { display: block; font-size: 11px; color: #555; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+  .breakdown-val { font-size: 1rem; color: #ddd; font-weight: 600; }
+  .breakdown-val.correct { color: #00ffaa; }
+  .risk-text-alto { color: #ff6666; }
+  .risk-text-medio { color: #ffcc44; }
+  .risk-text-bajo { color: #00ffaa; }
+
+  .signals-section { margin-bottom: 1.5rem; }
+  .signals-title { color: #666; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.75rem; }
+  .signals-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
+  .signal-item { display: flex; align-items: flex-start; gap: 10px; font-size: 0.9rem; color: #aaa; }
+  .signal-icon { color: #ff6666; font-size: 14px; flex-shrink: 0; }
+
+  .tip-card { background: #0a1a0f; border: 1px solid #00cc8833; border-radius: 10px; padding: 1.25rem; margin-bottom: 2rem; }
+  .tip-label { font-size: 11px; color: #00cc88; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+  .tip-text { color: #aaa; font-size: 0.9rem; line-height: 1.7; margin: 0; }
+
+  .result-actions { display: flex; gap: 12px; }
+  .btn-next, .btn-home { padding: 12px 24px; border-radius: 8px; border: 1.5px solid; cursor: pointer; font-size: 0.9rem; font-weight: 600; transition: opacity 0.2s; }
+  .btn-next { border-color: #00d4ff; color: #00d4ff; background: transparent; }
+  .btn-home { border-color: #333; color: #888; background: transparent; }
+  .btn-next:hover, .btn-home:hover { opacity: 0.75; }
+</style>
 
 {% endblock %}

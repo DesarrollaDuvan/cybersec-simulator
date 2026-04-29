@@ -2,17 +2,103 @@
 
 {% block content %}
 
-<h2>Simulación: Phishing</h2>
+<div class="sim-container">
 
-<div class="email-box">
-    <h3>Correo recibido</h3>
-    <p><strong>De:</strong> soporte@empresa.com</p>
-    <p>Actualiza tu contraseña urgentemente</p>
+  <div class="sim-header">
+    <span class="sim-badge">Módulo 1 — Phishing</span>
+    <h2>Simulación de Ataque</h2>
+    <p class="sim-subtitle">Analiza el correo y toma una decisión. La IA evaluará tu respuesta.</p>
+  </div>
+
+  <!-- Escenario dinámico enviado desde Flask -->
+  <div class="email-panel">
+    <div class="email-toolbar">
+      <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+      <span class="email-label">Bandeja de entrada</span>
+    </div>
+    <div class="email-body">
+      <div class="email-field"><span class="field-key">De:</span> <span class="field-val">{{ scenario.sender }}</span></div>
+      <div class="email-field"><span class="field-key">Asunto:</span> <span class="field-val">{{ scenario.subject }}</span></div>
+      <hr class="email-divider">
+      <p class="email-content">{{ scenario.body }}</p>
+      {% if scenario.link %}
+      <a class="email-link" href="#">{{ scenario.link }}</a>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Decisión del usuario -->
+  <div class="decision-panel">
+    <p class="decision-label">¿Qué harías con este correo?</p>
+    <form method="POST" action="/simulation/decision">
+      <input type="hidden" name="scenario_id" value="{{ scenario.id }}">
+      <div class="decision-buttons">
+        <button class="btn-decision btn-danger" name="action" value="click_link">
+          <span class="btn-icon">⚠</span> Abrir el enlace
+        </button>
+        <button class="btn-decision btn-warning" name="action" value="reply">
+          <span class="btn-icon">↩</span> Responder el correo
+        </button>
+        <button class="btn-decision btn-safe" name="action" value="ignore">
+          <span class="btn-icon">✓</span> Ignorar / Eliminar
+        </button>
+        <button class="btn-decision btn-report" name="action" value="report">
+          <span class="btn-icon">⚑</span> Reportar como phishing
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Indicadores del escenario -->
+  <div class="clues-panel">
+    <p class="clues-title">Pistas en este correo:</p>
+    <ul class="clues-list">
+      {% for clue in scenario.clues %}
+      <li class="clue-item">{{ clue }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+
 </div>
 
-<form method="POST" action="/simulation/decision">
-    <button name="action" value="open_email">Abrir enlace</button>
-    <button name="action" value="ignore">Ignorar</button>
-</form>
+<style>
+  .sim-container { max-width: 720px; margin: 2rem auto; padding: 0 1rem; }
+  .sim-header { margin-bottom: 2rem; }
+  .sim-badge { background: #1a1a2e; color: #00d4ff; font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; padding: 4px 12px; border-radius: 20px; }
+  .sim-header h2 { font-size: 2rem; margin: 0.75rem 0 0.25rem; color: #fff; }
+  .sim-subtitle { color: #888; font-size: 0.95rem; }
+
+  .email-panel { background: #0f0f1a; border: 1px solid #2a2a4a; border-radius: 12px; overflow: hidden; margin-bottom: 1.5rem; }
+  .email-toolbar { background: #1a1a2e; padding: 10px 16px; display: flex; align-items: center; gap: 6px; }
+  .dot { width: 11px; height: 11px; border-radius: 50%; }
+  .dot.red { background: #ff5f57; }
+  .dot.yellow { background: #ffbd2e; }
+  .dot.green { background: #28c840; }
+  .email-label { margin-left: 8px; font-size: 12px; color: #555; }
+  .email-body { padding: 1.5rem; }
+  .email-field { font-size: 13px; margin-bottom: 6px; }
+  .field-key { color: #555; width: 60px; display: inline-block; }
+  .field-val { color: #ccc; }
+  .email-divider { border: none; border-top: 1px solid #2a2a4a; margin: 1rem 0; }
+  .email-content { color: #ddd; line-height: 1.7; font-size: 0.95rem; }
+  .email-link { display: inline-block; margin-top: 1rem; color: #00d4ff; font-size: 0.9rem; border-bottom: 1px solid #00d4ff44; text-decoration: none; }
+
+  .decision-panel { margin-bottom: 1.5rem; }
+  .decision-label { color: #aaa; font-size: 0.9rem; margin-bottom: 1rem; }
+  .decision-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .btn-decision { padding: 14px 16px; border-radius: 10px; border: 1.5px solid; cursor: pointer; font-size: 0.9rem; font-weight: 600; display: flex; align-items: center; gap: 8px; transition: transform 0.1s, opacity 0.2s; background: transparent; }
+  .btn-decision:hover { opacity: 0.85; transform: scale(0.98); }
+  .btn-icon { font-size: 16px; }
+  .btn-danger { border-color: #ff4444; color: #ff6666; }
+  .btn-warning { border-color: #ffaa00; color: #ffcc44; }
+  .btn-safe { border-color: #00cc88; color: #00ffaa; }
+  .btn-report { border-color: #6688ff; color: #88aaff; }
+
+  .clues-panel { background: #0f0f1a; border: 1px solid #2a2a4a; border-radius: 10px; padding: 1.25rem; }
+  .clues-title { color: #666; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.75rem; }
+  .clues-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 6px; }
+  .clue-item { font-size: 13px; color: #888; padding-left: 16px; position: relative; }
+  .clue-item::before { content: "—"; position: absolute; left: 0; color: #444; }
+</style>
 
 {% endblock %}
