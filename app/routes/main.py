@@ -23,13 +23,3 @@ def ingenieria():
 @main.route('/redes')
 def redes():
     return render_template('redes.html')
-
-@main.route('/quiz')
-@login_required
-def quiz():
-    return render_template('quiz.html', stage='start')
-
-@main.route('/quiz/play')
-@login_required
-def play_quiz():
-    return render_template('quiz_play.html') 

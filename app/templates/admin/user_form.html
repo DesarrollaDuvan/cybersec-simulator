@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="adm-page" style="max-width:560px;">
+
+  <div class="adm-header">
+    <div>
+      <div class="adm-eyebrow"><a href="{{ url_for('admin.users') }}" class="adm-back">← Usuarios</a></div>
+      <h1 class="adm-title">{{ 'Editar usuario' if action == 'edit' else 'Nuevo usuario' }}</h1>
+    </div>
+  </div>
+
+  <div class="adm-card">
+    <form method="POST" class="adm-form">
+
+      <div class="form-group">
+        <label class="form-label">Correo electrónico *</label>
+        <input type="email" name="email" class="form-input" required
+               value="{{ user.email if user else '' }}" placeholder="usuario@email.com">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Nombre completo</label>
+        <input type="text" name="name" class="form-input"
+               value="{{ user.name if user else '' }}" placeholder="Nombre opcional">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">
+          {{ 'Nueva contraseña' if action == 'edit' else 'Contraseña *' }}
+          {% if action == 'edit' %}<span class="form-hint">(dejar vacío para no cambiar)</span>{% endif %}
+        </label>
+        <input type="password" name="password" class="form-input" {{ 'required' if action == 'create' else '' }}
+               placeholder="{{ 'Nueva contraseña' if action == 'edit' else 'Mínimo 6 caracteres' }}">
+      </div>
+
+      {% if action == 'edit' and user %}
+      <div class="form-group">
+        <label class="form-check-label">
+          <input type="checkbox" name="is_active" class="form-check" {{ 'checked' if user.is_active else '' }}>
+          <span class="form-check-box"></span>
+          Usuario activo
+        </label>
+      </div>
+      {% endif %}
+
+      <div class="form-actions">
+        <a href="{{ url_for('admin.users') }}" class="btn-cancel">Cancelar</a>
+        <button type="submit" class="btn-submit">
+          {{ 'Guardar cambios' if action == 'edit' else 'Crear usuario' }}
+        </button>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+<style>
+:root {
+  --bg:#06060f; --bg2:#0a0a16; --bg3:#0e0e20; --border:#16163a; --border2:#20204a;
+  --accent:#4f6ef7; --accent2:#00d4ff; --danger:#ff4560;
+  --text:#d8d8f0; --muted:#5a5a80;
+  --mono:'Space Mono',monospace; --sans:'Syne',sans-serif;
+}
+.adm-page { padding:2rem 5%; margin:0 auto; position:relative; z-index:1; }
+.adm-header { margin-bottom:1.5rem; }
+.adm-eyebrow { font-family:var(--mono); font-size:11px; color:var(--muted); margin-bottom:8px; }
+.adm-back { color:var(--accent2); text-decoration:none; }
+.adm-title { font-size:1.6rem; font-weight:800; color:#fff; }
+.adm-card { background:var(--bg2); border:1px solid var(--border); border-radius:14px; padding:2rem; }
+
+.adm-form { display:flex; flex-direction:column; gap:1.25rem; }
+.form-group { display:flex; flex-direction:column; gap:6px; }
+.form-label { font-size:12px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:1px; font-family:var(--mono); }
+.form-hint { font-weight:400; color:var(--border2); text-transform:none; letter-spacing:0; }
+.form-input { background:var(--bg3); border:1px solid var(--border2); border-radius:8px; padding:11px 14px; color:var(--text); font-size:14px; font-family:var(--sans); outline:none; transition:border-color 0.2s; }
+.form-input:focus { border-color:var(--accent2); }
+
+.form-check-label { display:flex; align-items:center; gap:10px; cursor:pointer; font-size:14px; color:var(--text); }
+.form-check { display:none; }
+.form-check-box { width:20px; height:20px; border:1.5px solid var(--border2); border-radius:5px; display:flex; align-items:center; justify-content:center; transition:background 0.15s; flex-shrink:0; }
+.form-check:checked ~ .form-check-box { background:var(--accent2); border-color:var(--accent2); }
+.form-check:checked ~ .form-check-box::after { content:'✓'; font-size:12px; font-weight:700; color:#000; }
+
+.form-actions { display:flex; gap:10px; justify-content:flex-end; padding-top:0.5rem; border-top:1px solid var(--border); }
+.btn-cancel { padding:10px 22px; background:transparent; border:1.5px solid var(--border2); border-radius:8px; color:var(--muted); font-size:13px; cursor:pointer; text-decoration:none; font-family:var(--sans); }
+.btn-submit { padding:10px 22px; background:var(--accent); border:none; border-radius:8px; color:#fff; font-size:13px; font-weight:700; cursor:pointer; font-family:var(--sans); }
+.btn-submit:hover { background:#3a5ae8; }
+</style>
+
+{% endblock %}

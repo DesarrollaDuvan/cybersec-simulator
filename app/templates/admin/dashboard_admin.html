@@ -1,0 +1,317 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="adm-page">
+
+  <!-- Header del admin -->
+  <div class="adm-header">
+    <div>
+      <div class="adm-eyebrow">Panel de Administración</div>
+      <h1 class="adm-title">Dashboard</h1>
+    </div>
+    <div class="adm-header-actions">
+      <a href="{{ url_for('admin.users') }}" class="btn-adm-primary">Gestionar usuarios →</a>
+    </div>
+  </div>
+
+  <!-- KPI Cards -->
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-icon kpi-blue">👥</div>
+      <div class="kpi-content">
+        <div class="kpi-num">{{ stats.total_users }}</div>
+        <div class="kpi-label">Usuarios totales</div>
+        <div class="kpi-sub">+{{ stats.new_users_week }} esta semana</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon kpi-green">✓</div>
+      <div class="kpi-content">
+        <div class="kpi-num">{{ stats.active_users }}</div>
+        <div class="kpi-label">Usuarios activos</div>
+        <div class="kpi-sub">{{ stats.total_users - stats.active_users }} desactivados</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon kpi-purple">📊</div>
+      <div class="kpi-content">
+        <div class="kpi-num">{{ stats.avg_score }}%</div>
+        <div class="kpi-label">Promedio Quiz</div>
+        <div class="kpi-sub">{{ stats.total_quiz }} quizzes completados</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon kpi-orange">🎯</div>
+      <div class="kpi-content">
+        <div class="kpi-num">{{ stats.sim_rate }}%</div>
+        <div class="kpi-label">Simulaciones correctas</div>
+        <div class="kpi-sub">{{ stats.total_simulations }} simulaciones totales</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fila central -->
+  <div class="adm-row">
+
+    <!-- Distribución de niveles -->
+    <div class="adm-card adm-card-sm">
+      <div class="adm-card-header">
+        <span class="adm-card-title">Distribución de Niveles</span>
+        <span class="adm-card-sub">Quiz completados</span>
+      </div>
+      <div class="level-bars">
+        {% set total_q = stats.score_dist.experto + stats.score_dist.avanzado + stats.score_dist.intermedio + stats.score_dist.principiante %}
+        {% set levels = [
+          ('Experto', stats.score_dist.experto, 'green', '90-100%'),
+          ('Avanzado', stats.score_dist.avanzado, 'blue', '70-89%'),
+          ('Intermedio', stats.score_dist.intermedio, 'yellow', '50-69%'),
+          ('Principiante', stats.score_dist.principiante, 'red', '0-49%'),
+        ] %}
+        {% for name, count, color, range in levels %}
+        <div class="lb-row">
+          <div class="lb-label">
+            <span class="lb-dot lb-{{ color }}"></span>
+            <span>{{ name }}</span>
+            <span class="lb-range">{{ range }}</span>
+          </div>
+          <div class="lb-bar-outer">
+            <div class="lb-bar-inner lb-bar-{{ color }}"
+                 style="width: {{ ((count / total_q * 100) if total_q else 0) | round | int }}%">
+            </div>
+          </div>
+          <span class="lb-count">{{ count }}</span>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Cursos más visitados -->
+    <div class="adm-card adm-card-sm">
+      <div class="adm-card-header">
+        <span class="adm-card-title">Cursos más visitados</span>
+        <span class="adm-card-sub">Total de visitas</span>
+      </div>
+      {% set course_labels = {
+        'redes': ('Redes e Infraestructura', '🌐'),
+        'phishing': ('Phishing', '🎣'),
+        'ingenieria': ('Ingeniería Social', '🎭'),
+        'contrasena': ('Contraseñas', '🔑'),
+      } %}
+      <div class="course-list">
+        {% for course_id, visits in stats.course_visits %}
+        {% set info = course_labels.get(course_id, (course_id, '📚')) %}
+        <div class="cl-row">
+          <span class="cl-icon">{{ info[1] }}</span>
+          <div class="cl-info">
+            <span class="cl-name">{{ info[0] }}</span>
+            <div class="cl-bar-outer">
+              <div class="cl-bar-inner" style="width:{{ [visits * 10, 100] | min }}%"></div>
+            </div>
+          </div>
+          <span class="cl-visits">{{ visits }}</span>
+        </div>
+        {% else %}
+        <p class="adm-empty">Sin visitas registradas aún.</p>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Actividad reciente -->
+    <div class="adm-card adm-card-sm">
+      <div class="adm-card-header">
+        <span class="adm-card-title">Esta semana</span>
+        <span class="adm-card-sub">Últimos 7 días</span>
+      </div>
+      <div class="week-stats">
+        <div class="ws-item">
+          <div class="ws-num ws-blue">{{ stats.new_users_week }}</div>
+          <div class="ws-label">Nuevos usuarios</div>
+        </div>
+        <div class="ws-item">
+          <div class="ws-num ws-purple">{{ stats.quiz_week }}</div>
+          <div class="ws-label">Quizzes completados</div>
+        </div>
+        <div class="ws-item">
+          <div class="ws-num ws-orange">{{ stats.sim_week }}</div>
+          <div class="ws-label">Simulaciones</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Top performers -->
+  <div class="adm-card" style="margin-bottom:2rem;">
+    <div class="adm-card-header">
+      <span class="adm-card-title">🏆 Top Usuarios</span>
+      <a href="{{ url_for('admin.users') }}" class="adm-link">Ver todos →</a>
+    </div>
+    <div class="adm-table-wrap">
+      <table class="adm-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Usuario</th>
+            <th>Mejor Score</th>
+            <th>Quizzes</th>
+            <th>Progreso</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for user, best_score, quiz_count in stats.top_users %}
+          <tr>
+            <td class="td-rank">{{ loop.index }}</td>
+            <td>
+              <div class="td-user">
+                <div class="user-avatar">{{ user.email[0].upper() }}</div>
+                <div>
+                  <div class="td-email">{{ user.email }}</div>
+                  {% if user.name %}<div class="td-name">{{ user.name }}</div>{% endif %}
+                </div>
+              </div>
+            </td>
+            <td>
+              <span class="score-pill {% if best_score >= 90 %}pill-green{% elif best_score >= 70 %}pill-blue{% elif best_score >= 50 %}pill-yellow{% else %}pill-red{% endif %}">
+                {{ best_score }}%
+              </span>
+            </td>
+            <td class="td-muted">{{ quiz_count }}</td>
+            <td>
+              <div class="mini-progress">
+                <div class="mini-bar" style="width:{{ user.overall_progress }}%"></div>
+              </div>
+              <span class="mini-pct">{{ user.overall_progress }}%</span>
+            </td>
+            <td>
+              <a href="{{ url_for('admin.user_progress', user_id=user.id) }}" class="btn-detail">Ver detalle</a>
+            </td>
+          </tr>
+          {% else %}
+          <tr><td colspan="6" class="adm-empty">Aún no hay actividad de quiz registrada.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<style>
+:root {
+  --bg:    #06060f; --bg2: #0a0a16; --bg3: #0e0e20;
+  --border:#16163a; --border2:#20204a;
+  --accent:#4f6ef7; --accent2:#00d4ff;
+  --danger:#ff4560; --warning:#ffa040; --safe:#00e096; --yellow:#ffcc44;
+  --text:  #d8d8f0; --muted:#5a5a80;
+  --mono: 'Space Mono', monospace; --sans: 'Syne', sans-serif;
+}
+
+.adm-page { padding: 2rem 5%; max-width: 1200px; margin: 0 auto; position:relative; z-index:1; }
+
+/* Header */
+.adm-header { display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:2rem; flex-wrap:wrap; gap:1rem; }
+.adm-eyebrow { font-family:var(--mono); font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:2px; margin-bottom:6px; }
+.adm-title { font-size:2rem; font-weight:800; color:#fff; }
+.btn-adm-primary { padding:10px 22px; background:var(--accent); color:#fff; border:none; border-radius:8px; font-size:13px; font-weight:700; cursor:pointer; text-decoration:none; font-family:var(--sans); transition:background 0.2s; }
+.btn-adm-primary:hover { background:#3a5ae8; }
+
+/* KPI Grid */
+.kpi-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:1.5rem; }
+@media(max-width:900px){ .kpi-grid { grid-template-columns:repeat(2,1fr); } }
+@media(max-width:500px){ .kpi-grid { grid-template-columns:1fr; } }
+
+.kpi-card { background:var(--bg2); border:1px solid var(--border); border-radius:14px; padding:1.25rem; display:flex; align-items:center; gap:1rem; transition:border-color 0.2s, transform 0.2s; }
+.kpi-card:hover { border-color:var(--border2); transform:translateY(-2px); }
+
+.kpi-icon { width:46px; height:46px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; }
+.kpi-blue   { background:rgba(79,110,247,0.15); }
+.kpi-green  { background:rgba(0,224,150,0.15); }
+.kpi-purple { background:rgba(130,80,250,0.15); }
+.kpi-orange { background:rgba(255,160,64,0.15); }
+
+.kpi-num   { font-family:var(--mono); font-size:1.6rem; font-weight:700; color:#fff; line-height:1; }
+.kpi-label { font-size:12px; color:var(--muted); margin-top:4px; }
+.kpi-sub   { font-size:11px; color:var(--muted); opacity:0.6; margin-top:2px; }
+
+/* Row de cards medianas */
+.adm-row { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:1.5rem; }
+@media(max-width:900px){ .adm-row { grid-template-columns:1fr; } }
+
+/* Cards genéricas */
+.adm-card { background:var(--bg2); border:1px solid var(--border); border-radius:14px; padding:1.5rem; }
+.adm-card-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:1.25rem; }
+.adm-card-title { font-size:14px; font-weight:700; color:#fff; }
+.adm-card-sub   { font-family:var(--mono); font-size:10px; color:var(--muted); margin-top:3px; }
+.adm-link { font-size:12px; color:var(--accent2); text-decoration:none; }
+.adm-link:hover { text-decoration:underline; }
+.adm-empty { font-size:13px; color:var(--muted); text-align:center; padding:1rem; }
+
+/* Level bars */
+.level-bars { display:flex; flex-direction:column; gap:14px; }
+.lb-row { display:grid; grid-template-columns:120px 1fr 36px; align-items:center; gap:10px; }
+.lb-label { display:flex; align-items:center; gap:6px; font-size:12px; color:var(--text); }
+.lb-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+.lb-range { font-family:var(--mono); font-size:10px; color:var(--muted); margin-left:auto; }
+.lb-dot.lb-green  { background:var(--safe); }
+.lb-dot.lb-blue   { background:var(--accent2); }
+.lb-dot.lb-yellow { background:var(--yellow); }
+.lb-dot.lb-red    { background:var(--danger); }
+
+.lb-bar-outer { height:6px; background:var(--border); border-radius:3px; overflow:hidden; }
+.lb-bar-inner { height:100%; border-radius:3px; transition:width 0.6s ease; }
+.lb-bar-green  { background:var(--safe); }
+.lb-bar-blue   { background:var(--accent2); }
+.lb-bar-yellow { background:var(--yellow); }
+.lb-bar-red    { background:var(--danger); }
+.lb-count { font-family:var(--mono); font-size:11px; color:var(--muted); text-align:right; }
+
+/* Cursos */
+.course-list { display:flex; flex-direction:column; gap:12px; }
+.cl-row { display:flex; align-items:center; gap:10px; }
+.cl-icon { font-size:20px; width:30px; flex-shrink:0; }
+.cl-info { flex:1; }
+.cl-name { font-size:12px; color:var(--text); display:block; margin-bottom:4px; }
+.cl-bar-outer { height:4px; background:var(--border); border-radius:2px; overflow:hidden; }
+.cl-bar-inner { height:100%; background:var(--accent); border-radius:2px; }
+.cl-visits { font-family:var(--mono); font-size:11px; color:var(--muted); flex-shrink:0; }
+
+/* Week stats */
+.week-stats { display:flex; flex-direction:column; gap:16px; }
+.ws-item { display:flex; align-items:center; gap:14px; }
+.ws-num { font-family:var(--mono); font-size:1.5rem; font-weight:700; width:56px; text-align:center; }
+.ws-blue   { color:var(--accent2); }
+.ws-purple { color:#a855f7; }
+.ws-orange { color:var(--warning); }
+.ws-label { font-size:13px; color:var(--muted); }
+
+/* Tabla de usuarios */
+.adm-table-wrap { overflow-x:auto; }
+.adm-table { width:100%; border-collapse:collapse; font-size:13px; }
+.adm-table th { text-align:left; padding:10px 14px; font-family:var(--mono); font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; border-bottom:1px solid var(--border); }
+.adm-table td { padding:12px 14px; border-bottom:1px solid var(--border); vertical-align:middle; }
+.adm-table tr:last-child td { border-bottom:none; }
+.adm-table tr:hover td { background:var(--bg3); }
+
+.td-rank { font-family:var(--mono); font-size:12px; color:var(--muted); }
+.td-user { display:flex; align-items:center; gap:10px; }
+.user-avatar { width:32px; height:32px; border-radius:8px; background:var(--bg3); border:1px solid var(--border2); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:13px; color:var(--accent2); flex-shrink:0; }
+.td-email { color:var(--text); font-size:13px; }
+.td-name  { color:var(--muted); font-size:11px; margin-top:1px; }
+.td-muted { color:var(--muted); font-family:var(--mono); }
+
+.score-pill { font-family:var(--mono); font-size:12px; font-weight:700; padding:3px 10px; border-radius:20px; }
+.pill-green  { background:rgba(0,224,150,0.1);  color:var(--safe);    border:1px solid rgba(0,224,150,0.25); }
+.pill-blue   { background:rgba(0,212,255,0.1);  color:var(--accent2); border:1px solid rgba(0,212,255,0.25); }
+.pill-yellow { background:rgba(255,204,68,0.1); color:var(--yellow);  border:1px solid rgba(255,204,68,0.25); }
+.pill-red    { background:rgba(255,69,96,0.1);  color:var(--danger);  border:1px solid rgba(255,69,96,0.25); }
+
+.mini-progress { height:4px; background:var(--border); border-radius:2px; overflow:hidden; width:80px; display:inline-block; vertical-align:middle; margin-right:6px; }
+.mini-bar { height:100%; background:linear-gradient(90deg, var(--accent), var(--accent2)); border-radius:2px; }
+.mini-pct { font-family:var(--mono); font-size:11px; color:var(--muted); vertical-align:middle; }
+
+.btn-detail { font-size:11px; color:var(--accent2); text-decoration:none; padding:4px 10px; border:1px solid rgba(0,212,255,0.2); border-radius:6px; transition:background 0.2s; }
+.btn-detail:hover { background:rgba(0,212,255,0.08); }
+</style>
+
+{% endblock %}

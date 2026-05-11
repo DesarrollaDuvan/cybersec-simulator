@@ -8,6 +8,11 @@ from anthropic import Anthropic
 simulation = Blueprint("simulation", __name__)
 client = Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
 
+
+from app.models.progress import QuizResult, SimulationResult
+from app import db
+from flask_login import current_user
+
 # ---------------------------------------------------------------------------
 # ESCENARIOS DE PHISHING (puedes mover esto a una BD o JSON externo)
 # ---------------------------------------------------------------------------
@@ -205,3 +210,21 @@ def simulation_decision():
         risk_level=risk_level,
         red_flags=scenario["clues"],
     )
+    
+@simulation.route("/save_quiz", methods=["POST"])
+@login_required
+def save_quiz():
+    score = request.form.get("score", type=int)
+    correct_count = request.form.get("correct", type=int)
+    total = request.form.get("total", type=int)
+
+    result = QuizResult(
+        user_id=current_user.id,
+        score=score,
+        correct=correct_count,
+        total=total
+    )
+    db.session.add(result)
+    db.session.commit()
+
+    return "Resultado guardado correctamente"

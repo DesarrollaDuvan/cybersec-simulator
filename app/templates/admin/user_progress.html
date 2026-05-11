@@ -1,0 +1,286 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="adm-page">
+
+  <div class="adm-header">
+    <div>
+      <div class="adm-eyebrow">
+        <a href="{{ url_for('admin.users') }}" class="adm-back">← Usuarios</a>
+      </div>
+      <h1 class="adm-title">
+        <div class="user-avatar-lg">{{ user.email[0].upper() }}</div>
+        {{ user.name or user.email }}
+      </h1>
+      <div class="user-meta">
+        <span>{{ user.email }}</span>
+        <span class="dot">·</span>
+        <span>Registrado {{ user.created_at.strftime('%d/%m/%Y') }}</span>
+        <span class="dot">·</span>
+        <span class="{% if user.is_active %}text-safe{% else %}text-danger{% endif %}">
+          {{ 'Activo' if user.is_active else 'Inactivo' }}
+        </span>
+      </div>
+    </div>
+    <a href="{{ url_for('admin.edit_user', user_id=user.id) }}" class="btn-adm-secondary">Editar usuario</a>
+  </div>
+
+  <!-- Resumen KPI -->
+  <div class="prog-kpi-grid">
+    <div class="prog-kpi">
+      <div class="pk-num pk-blue">{{ user.quiz_count }}</div>
+      <div class="pk-label">Quizzes</div>
+    </div>
+    <div class="prog-kpi">
+      <div class="pk-num pk-purple">{{ user.avg_quiz_score }}%</div>
+      <div class="pk-label">Score promedio</div>
+    </div>
+    <div class="prog-kpi">
+      <div class="pk-num pk-green">{{ user.best_quiz_score }}%</div>
+      <div class="pk-label">Mejor score</div>
+    </div>
+    <div class="prog-kpi">
+      <div class="pk-num pk-orange">{{ user.simulation_count }}</div>
+      <div class="pk-label">Simulaciones</div>
+    </div>
+    <div class="prog-kpi">
+      <div class="pk-num pk-green">{{ user.simulation_correct }}</div>
+      <div class="pk-label">Simulaciones correctas</div>
+    </div>
+    <div class="prog-kpi">
+      <div class="pk-num pk-blue">{{ user.courses_visited }}</div>
+      <div class="pk-label">Cursos visitados</div>
+    </div>
+  </div>
+
+  <!-- Progreso general -->
+  <div class="adm-card" style="margin-bottom:1.5rem;">
+    <div class="adm-card-header">
+      <span class="adm-card-title">Progreso General</span>
+      <span class="prog-pct">{{ user.overall_progress }}%</span>
+    </div>
+    <div class="prog-bar-outer">
+      <div class="prog-bar-inner" style="width:{{ user.overall_progress }}%"></div>
+    </div>
+    <div class="prog-legend">
+      <span>Quiz 40%</span>
+      <span>Simulaciones 30%</span>
+      <span>Cursos 30%</span>
+    </div>
+  </div>
+
+  <div class="adm-row-2">
+
+    <!-- Historial de Quiz -->
+    <div class="adm-card">
+      <div class="adm-card-header">
+        <span class="adm-card-title">📊 Historial de Quiz</span>
+        <span class="adm-card-sub">{{ quiz_results | length }} intentos</span>
+      </div>
+
+      {% if quiz_results %}
+      <!-- Mini gráfica de barras -->
+      <div class="mini-chart">
+        {% for r in quiz_results[-10:] | reverse %}
+        <div class="mc-bar-wrap" title="{{ r.score }}% — {{ r.created_at.strftime('%d/%m') }}">
+          <div class="mc-bar {% if r.score >= 90 %}mc-green{% elif r.score >= 70 %}mc-blue{% elif r.score >= 50 %}mc-yellow{% else %}mc-red{% endif %}"
+               style="height: {{ r.score }}%">
+          </div>
+          <div class="mc-label">{{ r.created_at.strftime('%d/%m') }}</div>
+        </div>
+        {% endfor %}
+      </div>
+
+      <div class="adm-table-wrap" style="margin-top:1.25rem;">
+        <table class="adm-table">
+          <thead><tr><th>Fecha</th><th>Score</th><th>Correctas</th><th>Nivel</th></tr></thead>
+          <tbody>
+            {% for r in quiz_results %}
+            <tr>
+              <td class="td-muted td-mono">{{ r.created_at.strftime('%d/%m/%Y %H:%M') }}</td>
+              <td>
+                <span class="score-pill {% if r.score >= 90 %}pill-green{% elif r.score >= 70 %}pill-blue{% elif r.score >= 50 %}pill-yellow{% else %}pill-red{% endif %}">
+                  {{ r.score }}%
+                </span>
+              </td>
+              <td class="td-muted td-mono">{{ r.correct }}/{{ r.total }}</td>
+              <td class="td-muted">
+                {% if r.score >= 90 %}Experto
+                {% elif r.score >= 70 %}Avanzado
+                {% elif r.score >= 50 %}Intermedio
+                {% else %}Principiante{% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <p class="adm-empty">Sin resultados de quiz aún.</p>
+      {% endif %}
+    </div>
+
+    <!-- Simulaciones y Cursos -->
+    <div style="display:flex; flex-direction:column; gap:14px;">
+
+      <!-- Historial de Simulaciones -->
+      <div class="adm-card">
+        <div class="adm-card-header">
+          <span class="adm-card-title">🎯 Simulaciones</span>
+          <span class="adm-card-sub">{{ sim_results | length }} intentos</span>
+        </div>
+        {% if sim_results %}
+        <div class="adm-table-wrap">
+          <table class="adm-table">
+            <thead><tr><th>Fecha</th><th>Escenario</th><th>Acción</th><th>Resultado</th><th>Puntos</th></tr></thead>
+            <tbody>
+              {% for r in sim_results %}
+              <tr>
+                <td class="td-muted td-mono" style="white-space:nowrap;">{{ r.created_at.strftime('%d/%m %H:%M') }}</td>
+                <td class="td-muted td-mono">{{ r.scenario_id }}</td>
+                <td class="td-muted">{{ r.action_taken }}</td>
+                <td>
+                  <span class="status-pill {% if r.is_correct %}status-active{% else %}status-inactive{% endif %}">
+                    {{ '✓ Correcto' if r.is_correct else '✗ Incorrecto' }}
+                  </span>
+                </td>
+                <td class="td-mono {% if r.points >= 75 %}text-safe{% elif r.points >= 25 %}text-warn{% else %}text-danger{% endif %}">
+                  {{ r.points }}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <p class="adm-empty">Sin simulaciones registradas.</p>
+        {% endif %}
+      </div>
+
+      <!-- Cursos visitados -->
+      <div class="adm-card">
+        <div class="adm-card-header">
+          <span class="adm-card-title">📚 Cursos Visitados</span>
+          <span class="adm-card-sub">{{ user.courses_visited }}/4 módulos</span>
+        </div>
+        {% set all_courses = [
+          ('redes', 'Redes e Infraestructura', '🌐'),
+          ('phishing', 'Phishing', '🎣'),
+          ('ingenieria', 'Ingeniería Social', '🎭'),
+          ('contrasena', 'Contraseñas', '🔑'),
+        ] %}
+        {% set visited_ids = course_visits | map(attribute='course_id') | list %}
+        <div class="course-check-list">
+          {% for cid, cname, icon in all_courses %}
+          <div class="cc-item {% if cid in visited_ids %}cc-done{% endif %}">
+            <span class="cc-icon">{{ icon }}</span>
+            <span class="cc-name">{{ cname }}</span>
+            <span class="cc-status">{{ '✓' if cid in visited_ids else '○' }}</span>
+          </div>
+          {% endfor %}
+        </div>
+        {% if course_visits %}
+        <div style="margin-top:1rem;">
+          <div class="adm-card-sub" style="margin-bottom:6px;">Última visita por módulo</div>
+          {% for visit in course_visits %}
+          <div style="font-size:12px; color:var(--muted); font-family:var(--mono); padding:3px 0;">
+            {{ visit.course_id }} — {{ visit.visited_at.strftime('%d/%m/%Y %H:%M') }}
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<style>
+:root {
+  --bg:#06060f; --bg2:#0a0a16; --bg3:#0e0e20; --border:#16163a; --border2:#20204a;
+  --accent:#4f6ef7; --accent2:#00d4ff; --danger:#ff4560; --warning:#ffa040;
+  --safe:#00e096; --yellow:#ffcc44; --text:#d8d8f0; --muted:#5a5a80;
+  --mono:'Space Mono',monospace; --sans:'Syne',sans-serif;
+}
+.adm-page { padding:2rem 5%; max-width:1200px; margin:0 auto; position:relative; z-index:1; }
+.adm-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:1.5rem; flex-wrap:wrap; gap:1rem; }
+.adm-eyebrow { font-family:var(--mono); font-size:11px; color:var(--muted); margin-bottom:8px; }
+.adm-back { color:var(--accent2); text-decoration:none; }
+.adm-title { font-size:1.6rem; font-weight:800; color:#fff; display:flex; align-items:center; gap:12px; }
+.user-avatar-lg { width:40px; height:40px; border-radius:10px; background:var(--bg3); border:1px solid var(--border2); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:16px; color:var(--accent2); flex-shrink:0; }
+.user-meta { font-size:13px; color:var(--muted); margin-top:8px; display:flex; gap:6px; flex-wrap:wrap; }
+.dot { color:var(--border2); }
+.text-safe   { color:var(--safe); }
+.text-danger { color:var(--danger); }
+.text-warn   { color:var(--warning); }
+.btn-adm-secondary { padding:10px 22px; background:transparent; color:var(--text); border:1.5px solid var(--border2); border-radius:8px; font-size:13px; font-weight:700; cursor:pointer; text-decoration:none; font-family:var(--sans); }
+.btn-adm-secondary:hover { border-color:var(--accent2); color:var(--accent2); }
+
+/* KPI */
+.prog-kpi-grid { display:grid; grid-template-columns:repeat(6,1fr); gap:12px; margin-bottom:1.5rem; }
+@media(max-width:900px){ .prog-kpi-grid { grid-template-columns:repeat(3,1fr); } }
+@media(max-width:500px){ .prog-kpi-grid { grid-template-columns:repeat(2,1fr); } }
+
+.prog-kpi { background:var(--bg2); border:1px solid var(--border); border-radius:12px; padding:1rem; text-align:center; }
+.pk-num { font-family:var(--mono); font-size:1.4rem; font-weight:700; margin-bottom:4px; }
+.pk-blue   { color:var(--accent2); }
+.pk-purple { color:#a855f7; }
+.pk-green  { color:var(--safe); }
+.pk-orange { color:var(--warning); }
+.pk-label { font-size:11px; color:var(--muted); line-height:1.3; }
+
+/* Progress bar */
+.adm-card { background:var(--bg2); border:1px solid var(--border); border-radius:14px; padding:1.5rem; }
+.adm-card-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; }
+.adm-card-title { font-size:14px; font-weight:700; color:#fff; }
+.adm-card-sub { font-family:var(--mono); font-size:10px; color:var(--muted); }
+.prog-pct { font-family:var(--mono); font-size:1.2rem; font-weight:700; color:var(--safe); }
+.prog-bar-outer { height:10px; background:var(--border); border-radius:5px; overflow:hidden; margin-bottom:8px; }
+.prog-bar-inner { height:100%; background:linear-gradient(90deg, var(--accent), var(--safe)); border-radius:5px; transition:width 0.6s ease; }
+.prog-legend { display:flex; gap:1rem; font-size:11px; color:var(--muted); font-family:var(--mono); }
+
+/* Two col */
+.adm-row-2 { display:grid; grid-template-columns:1.4fr 1fr; gap:14px; }
+@media(max-width:900px){ .adm-row-2 { grid-template-columns:1fr; } }
+
+/* Mini gráfica */
+.mini-chart { display:flex; align-items:flex-end; gap:6px; height:80px; padding:0 4px; border-bottom:1px solid var(--border); margin-bottom:4px; }
+.mc-bar-wrap { flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; height:100%; justify-content:flex-end; cursor:default; }
+.mc-bar { width:100%; border-radius:3px 3px 0 0; min-height:3px; transition:height 0.4s; }
+.mc-green  { background:var(--safe); }
+.mc-blue   { background:var(--accent2); }
+.mc-yellow { background:var(--yellow); }
+.mc-red    { background:var(--danger); }
+.mc-label  { font-family:var(--mono); font-size:9px; color:var(--muted); white-space:nowrap; }
+
+/* Tabla */
+.adm-table-wrap { overflow-x:auto; }
+.adm-table { width:100%; border-collapse:collapse; font-size:12px; }
+.adm-table th { text-align:left; padding:8px 12px; font-family:var(--mono); font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; border-bottom:1px solid var(--border); white-space:nowrap; }
+.adm-table td { padding:10px 12px; border-bottom:1px solid var(--border); vertical-align:middle; }
+.adm-table tr:last-child td { border-bottom:none; }
+.td-muted { color:var(--muted); } .td-mono { font-family:var(--mono); font-size:11px; }
+
+.score-pill { font-family:var(--mono); font-size:10px; font-weight:700; padding:2px 8px; border-radius:20px; }
+.pill-green  { background:rgba(0,224,150,0.1); color:var(--safe);   border:1px solid rgba(0,224,150,0.25); }
+.pill-blue   { background:rgba(0,212,255,0.1); color:var(--accent2);border:1px solid rgba(0,212,255,0.25); }
+.pill-yellow { background:rgba(255,204,68,0.1);color:var(--yellow); border:1px solid rgba(255,204,68,0.25); }
+.pill-red    { background:rgba(255,69,96,0.1); color:var(--danger); border:1px solid rgba(255,69,96,0.25); }
+
+.status-pill { font-family:var(--mono); font-size:10px; font-weight:700; padding:2px 8px; border-radius:20px; }
+.status-active   { background:rgba(0,224,150,0.1); color:var(--safe);  border:1px solid rgba(0,224,150,0.25); }
+.status-inactive { background:rgba(255,69,96,0.1); color:var(--danger); border:1px solid rgba(255,69,96,0.25); }
+
+/* Course check list */
+.course-check-list { display:flex; flex-direction:column; gap:8px; }
+.cc-item { display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg3); }
+.cc-done { border-color:rgba(0,224,150,0.25); background:rgba(0,224,150,0.05); }
+.cc-icon { font-size:18px; }
+.cc-name { flex:1; font-size:13px; color:var(--text); }
+.cc-status { font-family:var(--mono); font-size:14px; }
+.cc-done .cc-status { color:var(--safe); }
+.cc-item:not(.cc-done) .cc-status { color:var(--border2); }
+.adm-empty { font-size:13px; color:var(--muted); text-align:center; padding:1.5rem; }
+</style>
+
+{% endblock %}
