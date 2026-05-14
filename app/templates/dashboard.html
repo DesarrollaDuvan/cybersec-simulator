@@ -1,41 +1,480 @@
-{% extends "base.html" %}
+{% extends "base.html" %} {% block title %}Dashboard — CyberTutor IA{% endblock
+%} {% block content %}
 
-{% block content %}
-
-<section class="welcome">
-    <h1>Bienvenido</h1>
-    <p>Tu progreso:</p>
+<!-- Hero de bienvenida -->
+<section class="welcome fade-in-up">
+  <div class="welcome-text">
+    <h1>Bienvenido a <span class="typing-text" id="typingTitle"></span></h1>
+    <p>
+      Tu plataforma de entrenamiento en ciberseguridad. Aprende, practica y
+      mejora tus habilidades.
+    </p>
+    <div class="progress-label">
+      <span>Progreso general</span>
+      <span class="prog-pct" id="progPct">0%</span>
+    </div>
     <div class="progress-bar">
-        <div class="progress" style="width: 60%;"></div>
+      <div class="progress" id="progressBar" style="width: 0%"></div>
     </div>
+  </div>
+  <div class="welcome-stats">
+    <div class="wstat">
+      <div class="wstat-num" style="color: var(--blue)" id="counter1">0</div>
+      <div class="wstat-label">Lecciones</div>
+    </div>
+    <div class="wstat">
+      <div class="wstat-num" style="color: var(--green)" id="counter2">0</div>
+      <div class="wstat-label">Quizzes</div>
+    </div>
+    <div class="wstat">
+      <div class="wstat-num" style="color: var(--orange)" id="counter3">0</div>
+      <div class="wstat-label">Simulaciones</div>
+    </div>
+  </div>
 </section>
 
-<section class="grid-4">
+<!-- Módulos de aprendizaje -->
+<div class="section-label">
+  <span class="sl-line"></span>
+  <span class="sl-text">Módulos de Aprendizaje</span>
+  <span class="sl-line"></span>
+</div>
 
-    <div class="card">
-        <h3>Phishing</h3>
-        <p>Ataques por correo</p>
-        <a href="/phishing"><button>Ver</button></a>
+<div class="grid-4">
+  <div class="card card-phishing">
+    <a href="/phishing" class="card-link">
+      <div class="card-glow glow-blue"></div>
+      <div class="card-icon">🎣</div>
+      <h3>Phishing</h3>
+      <p>
+        Aprende a identificar correos y sitios falsos antes de caer en la
+        trampa.
+      </p>
+      <button class="btn-blue">Ver módulo →</button></a
+    >
+  </div>
+
+  <div class="card card-pass">
+    <a href="/contraseña" class="card-link"
+      >
+    <div class="card-glow glow-green"></div>
+    <div class="card-icon">🔑</div>
+    <h3>Contraseñas</h3>
+    <p>Crea y gestiona contraseñas seguras para proteger tus cuentas.</p>
+    <button class="btn-green">Ver módulo →</button></a
+    >
+  </div>
+
+  <div class="card card-social">
+    <a href="/ingenieria" class="card-link"
+      >
+    <div class="card-glow glow-orange"></div>
+    <div class="card-icon">🎭</div>
+    <h3>Ing. Social</h3>
+    <p>
+      Entiende cómo los atacantes manipulan psicológicamente a las personas.
+    </p>
+    <button class="btn-orange">Ver módulo →</button></a
+    >
+  </div>
+
+  <div class="card card-networks">
+    <a href="/redes" class="card-link">
+    <div class="card-glow glow-blue"></div>
+    <div class="card-icon">🌐</div>
+    <h3>Redes</h3>
+    <p>Protege tu infraestructura de red contra amenazas y vulnerabilidades.</p>
+    <button class="btn-blue">Ver módulo →</button></a>
+  </div>
+</div>
+
+<!-- Acciones rápidas -->
+<div class="section-label" style="margin-top: 2.5rem">
+  <span class="sl-line"></span>
+  <span class="sl-text">Practica Ahora</span>
+  <span class="sl-line"></span>
+</div>
+
+<div class="actions-grid">
+  <a href="/simulation" class="action-card action-sim">
+    <div class="ac-icon">⚡</div>
+    <div class="ac-body">
+      <div class="ac-title">Simulación de Ataques</div>
+      <div class="ac-desc">
+        Enfrenta escenarios reales de phishing y toma decisiones
+      </div>
     </div>
+    <div class="ac-arrow">→</div>
+  </a>
 
-    <div class="card">
-        <h3>Contraseñas</h3>
-        <p>Seguridad básica</p>
-        <a href="/contraseña"><button>Ver</button></a>
+  <a href="/quiz" class="action-card action-quiz">
+    <div class="ac-icon">📊</div>
+    <div class="ac-body">
+      <div class="ac-title">Quiz de Conocimiento</div>
+      <div class="ac-desc">
+        10 preguntas generadas por IA para medir tu nivel
+      </div>
     </div>
+    <div class="ac-arrow">→</div>
+  </a>
 
-    <div class="card">
-        <h3>Ingeniería Social</h3>
-        <p>Manipulación</p>
-        <a href="/ingenieria"><button>Ver</button></a>
+  <a href="/chat" class="action-card action-chat">
+    <div class="ac-icon">🤖</div>
+    <div class="ac-body">
+      <div class="ac-title">Chat con CyberTutor IA</div>
+      <div class="ac-desc">Pregunta lo que quieras sobre ciberseguridad</div>
     </div>
+    <div class="ac-arrow">→</div>
+  </a>
+</div>
 
-    <div class="card">
-        <h3>Redes</h3>
-        <p>Protección</p>
-        <a href="/redes"><button>Ver</button></a>
-    </div>
+<style>
+  /* ── Welcome hero mejorado ── */
+  .welcome {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 2rem;
+    align-items: center;
+  }
 
-</section>
+  @media (max-width: 700px) {
+    .welcome {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .welcome-text {
+    position: relative;
+    z-index: 1;
+  }
+
+  .welcome h1 {
+    font-size: clamp(1.5rem, 3vw, 2.2rem);
+    font-weight: 900;
+  }
+
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 8px;
+    margin-top: 1rem;
+    font-family: var(--mono);
+  }
+
+  .prog-pct {
+    color: var(--green);
+    font-weight: 700;
+  }
+
+  .welcome-stats {
+    display: flex;
+    gap: 1.5rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .wstat {
+    text-align: center;
+  }
+  .wstat-num {
+    font-family: var(--mono);
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1;
+  }
+  .wstat-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 4px;
+  }
+
+  /* ── Section label ── */
+  .section-label {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 2rem 0 1.25rem;
+  }
+
+  .sl-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+  }
+  .sl-text {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    white-space: nowrap;
+  }
+
+  /* ── Cards mejoradas ── */
+  .card {
+    position: relative;
+    overflow: hidden;
+    text-align: left;
+  }
+
+  .card-glow {
+    position: absolute;
+    top: -50px;
+    right: -50px;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    opacity: 0;
+    transition: opacity 0.4s;
+    pointer-events: none;
+  }
+
+  .card-link {
+    text-decoration: none; /* quita el subrayado */
+    color: inherit; /* mantiene los colores originales */
+    display: inline-block; /* permite que el enlace envuelva el div */
+  }
+
+  .glow-blue {
+    background: radial-gradient(
+      circle,
+      rgba(14, 165, 233, 0.25) 0%,
+      transparent 70%
+    );
+  }
+  .glow-green {
+    background: radial-gradient(
+      circle,
+      rgba(34, 197, 94, 0.25) 0%,
+      transparent 70%
+    );
+  }
+  .glow-orange {
+    background: radial-gradient(
+      circle,
+      rgba(249, 115, 22, 0.25) 0%,
+      transparent 70%
+    );
+  }
+
+  .card:hover .card-glow {
+    opacity: 1;
+  }
+
+  .card-icon {
+    font-size: 2rem;
+    margin-bottom: 0.75rem;
+    display: block;
+    filter: drop-shadow(0 0 8px currentColor);
+  }
+
+  .card h3 {
+    font-size: 1.1rem;
+    font-weight: 800;
+    text-align: left;
+  }
+  .card p {
+    text-align: left;
+  }
+
+  /* Botones de color en cards */
+  .btn-blue,
+  .btn-green,
+  .btn-orange {
+    padding: 9px 18px;
+    border-radius: var(--r-sm);
+    border: none;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: var(--sans);
+    transition:
+      transform 0.2s,
+      box-shadow 0.2s;
+    letter-spacing: 0.3px;
+  }
+
+  .btn-blue {
+    background: linear-gradient(135deg, var(--blue), var(--blue-d));
+    color: #fff;
+  }
+  .btn-green {
+    background: linear-gradient(135deg, var(--green), var(--green-d));
+    color: #fff;
+  }
+  .btn-orange {
+    background: linear-gradient(135deg, var(--orange), var(--orange-d));
+    color: #fff;
+  }
+
+  .btn-blue:hover {
+    box-shadow: 0 4px 16px var(--blue-glow);
+    transform: scale(1.05);
+  }
+  .btn-green:hover {
+    box-shadow: 0 4px 16px var(--green-glow);
+    transform: scale(1.05);
+  }
+  .btn-orange:hover {
+    box-shadow: 0 4px 16px var(--orange-glow);
+    transform: scale(1.05);
+  }
+
+  /* ── Actions grid ── */
+  .actions-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-bottom: 2rem;
+  }
+
+  @media (max-width: 700px) {
+    .actions-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .action-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.25rem 1.5rem;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    text-decoration: none;
+    transition:
+      transform 0.25s,
+      border-color 0.25s,
+      box-shadow 0.25s;
+    position: relative;
+    overflow: hidden;
+    animation: fadeInUp 0.5s ease both;
+  }
+
+  .action-card:nth-child(1) {
+    animation-delay: 0.1s;
+  }
+  .action-card:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+  .action-card:nth-child(3) {
+    animation-delay: 0.3s;
+  }
+
+  .action-sim:hover {
+    border-color: var(--orange);
+    box-shadow: 0 6px 24px var(--orange-glow);
+    transform: translateY(-4px);
+  }
+  .action-quiz:hover {
+    border-color: var(--blue);
+    box-shadow: 0 6px 24px var(--blue-glow);
+    transform: translateY(-4px);
+  }
+  .action-chat:hover {
+    border-color: var(--green);
+    box-shadow: 0 6px 24px var(--green-glow);
+    transform: translateY(-4px);
+  }
+
+  .ac-icon {
+    font-size: 2rem;
+    flex-shrink: 0;
+    filter: drop-shadow(0 0 6px currentColor);
+  }
+
+  .ac-body {
+    flex: 1;
+  }
+  .ac-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--black);
+    margin-bottom: 3px;
+  }
+  .ac-desc {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.4;
+  }
+  .ac-arrow {
+    font-size: 1.2rem;
+    color: var(--muted);
+    transition:
+      transform 0.2s,
+      color 0.2s;
+  }
+
+  .action-sim:hover .ac-arrow {
+    transform: translateX(4px);
+    color: var(--orange);
+  }
+  .action-quiz:hover .ac-arrow {
+    transform: translateX(4px);
+    color: var(--blue);
+  }
+  .action-chat:hover .ac-arrow {
+    transform: translateX(4px);
+    color: var(--green);
+  }
+</style>
+
+<script>
+  /* Efecto typing en el título */
+  (function () {
+    const el = document.getElementById("typingTitle");
+    const text = "CyberTutor IA";
+    let i = 0;
+    function type() {
+      if (i <= text.length) {
+        el.textContent = text.slice(0, i) + (i < text.length ? "|" : "");
+        i++;
+        setTimeout(type, 80);
+      }
+    }
+    setTimeout(type, 400);
+  })();
+
+  /* Contadores animados */
+  function animateCounter(el, target, duration) {
+    let start = 0;
+    const step = target / (duration / 16);
+    function update() {
+      start += step;
+      if (start < target) {
+        el.textContent = Math.floor(start);
+        requestAnimationFrame(update);
+      } else {
+        el.textContent = target;
+      }
+    }
+    requestAnimationFrame(update);
+  }
+
+  setTimeout(() => {
+    animateCounter(document.getElementById("counter1"), 4, 800);
+    animateCounter(document.getElementById("counter2"), 10, 1000);
+    animateCounter(document.getElementById("counter3"), 3, 700);
+  }, 300);
+
+  /* Progress bar animada */
+  setTimeout(() => {
+    const bar = document.getElementById("progressBar");
+    const pct = document.getElementById("progPct");
+    const target = 60;
+    let current = 0;
+    const interval = setInterval(() => {
+      current++;
+      bar.style.width = current + "%";
+      pct.textContent = current + "%";
+      if (current >= target) clearInterval(interval);
+    }, 16);
+  }, 500);
+</script>
 
 {% endblock %}

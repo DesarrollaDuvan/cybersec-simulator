@@ -1,915 +1,681 @@
 {% extends "base.html" %}
+{% block title %}Contraseñas Seguras — CyberTutor IA{% endblock %}
 
 {% block content %}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Contraseñas Seguras — Guía Educativa</title>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    :root {
-      --bg: #0d0f14;
-      --bg2: #13161e;
-      --bg3: #1a1d28;
-      --surface: #1e2132;
-      --border: rgba(255,255,255,0.07);
-      --border2: rgba(255,255,255,0.12);
-      --text: #e8eaf0;
-      --text2: #8b90a8;
-      --text3: #555b73;
-      --accent: #4f9cf9;
-      --accent2: #7c6fff;
-      --red: #f05252;
-      --orange: #fb8b1e;
-      --yellow: #f5c842;
-      --green: #3ecf8e;
-      --green2: #22a76d;
-      --mono: 'JetBrains Mono', monospace;
-      --sans: 'Outfit', sans-serif;
-      --radius: 14px;
-      --radius-sm: 8px;
-    }
-
-    html { scroll-behavior: smooth; }
-
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: var(--sans);
-      font-size: 16px;
-      line-height: 1.7;
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
-
-    /* ── GRID BG ── */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(79,156,249,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(79,156,249,0.03) 1px, transparent 1px);
-      background-size: 48px 48px;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    /* ── GLOW ORBS ── */
-    .orb {
-      position: fixed;
-      border-radius: 50%;
-      filter: blur(80px);
-      pointer-events: none;
-      z-index: 0;
-    }
-    .orb1 { width: 400px; height: 400px; background: rgba(79,156,249,0.08); top: -100px; right: -100px; }
-    .orb2 { width: 300px; height: 300px; background: rgba(124,111,255,0.07); bottom: 100px; left: -80px; }
-
-    /* ── LAYOUT ── */
-    .wrap {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 0 1.5rem;
-      position: relative;
-      z-index: 1;
-    }
-
-    /* ── NAV ── */
-    nav {
-      border-bottom: 1px solid var(--border);
-      padding: 1rem 0;
-      position: sticky;
-      top: 0;
-      background: rgba(13,15,20,0.85);
-      backdrop-filter: blur(12px);
-      z-index: 100;
-    }
-
-    .nav-inner {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 0 1.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .nav-logo {
-      font-family: var(--mono);
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--accent);
-      letter-spacing: 0.04em;
-    }
-
-    .nav-badge {
-      font-family: var(--mono);
-      font-size: 10px;
-      color: var(--text3);
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      background: var(--surface);
-      padding: 4px 10px;
-      border-radius: 20px;
-      border: 1px solid var(--border);
-    }
-
-    /* ── HERO ── */
-    .hero {
-      padding: 5rem 0 3.5rem;
-      text-align: center;
-    }
-
-    .hero-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      font-family: var(--mono);
-      font-size: 11px;
-      color: var(--accent);
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      background: rgba(79,156,249,0.1);
-      border: 1px solid rgba(79,156,249,0.2);
-      padding: 5px 14px;
-      border-radius: 20px;
-      margin-bottom: 1.5rem;
-    }
-
-    .hero h1 {
-      font-size: clamp(32px, 6vw, 58px);
-      font-weight: 900;
-      line-height: 1.1;
-      letter-spacing: -0.02em;
-      margin-bottom: 1.25rem;
-    }
-
-    .hero h1 .grad {
-      background: linear-gradient(135deg, #4f9cf9 0%, #7c6fff 50%, #3ecf8e 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .hero p {
-      font-size: 16.5px;
-      color: var(--text2);
-      max-width: 520px;
-      margin: 0 auto 2rem;
-      line-height: 1.75;
-    }
-
-    /* ── SECTION LABEL ── */
-    .sec-label {
-      font-family: var(--mono);
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--text3);
-      margin-bottom: 1.25rem;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .sec-label::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: var(--border);
-    }
-
-    section { margin-bottom: 3.5rem; }
-
-    /* ── STAT CARDS ── */
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      margin-bottom: 3.5rem;
-    }
-    @media (max-width: 560px) { .stats { grid-template-columns: 1fr; } }
-
-    .stat-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1.25rem 1.5rem;
-      text-align: center;
-    }
-
-    .stat-num {
-      font-size: 32px;
-      font-weight: 800;
-      font-family: var(--mono);
-      line-height: 1.1;
-      margin-bottom: 4px;
-    }
-
-    .stat-num.red { color: var(--red); }
-    .stat-num.orange { color: var(--orange); }
-    .stat-num.yellow { color: var(--yellow); }
-
-    .stat-label { font-size: 12.5px; color: var(--text2); line-height: 1.4; }
-
-    /* ── INFO CARDS ── */
-    .info-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-    @media (max-width: 560px) { .info-grid { grid-template-columns: 1fr; } }
-
-    .info-card {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1.25rem 1.5rem;
-    }
-
-    .info-card .ic-icon { font-size: 20px; margin-bottom: 10px; display: block; }
-    .info-card .ic-title {
-      font-size: 14.5px;
-      font-weight: 700;
-      margin-bottom: 6px;
-      color: var(--text);
-    }
-    .info-card .ic-text { font-size: 13px; color: var(--text2); line-height: 1.6; }
-
-    /* ── RULES ── */
-    .rules-list {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      overflow: hidden;
-    }
-
-    .rule-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 14px;
-      padding: 16px 20px;
-      border-bottom: 1px solid var(--border);
-      transition: background 0.15s;
-    }
-
-    .rule-item:last-child { border-bottom: none; }
-    .rule-item:hover { background: var(--surface); }
-
-    .rule-icon {
-      width: 34px;
-      height: 34px;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 15px;
-      flex-shrink: 0;
-      margin-top: 2px;
-    }
-
-    .rule-icon.g { background: rgba(62,207,142,0.12); }
-    .rule-icon.r { background: rgba(240,82,82,0.12); }
-
-    .rule-title { font-size: 14px; font-weight: 600; margin-bottom: 3px; }
-    .rule-desc { font-size: 12.5px; color: var(--text2); line-height: 1.55; }
-
-    /* ── COMPARATIVA ── */
-    .compare {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-    @media (max-width: 560px) { .compare { grid-template-columns: 1fr; } }
-
-    .compare-box {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      overflow: hidden;
-    }
-
-    .compare-head {
-      padding: 10px 16px;
-      font-family: var(--mono);
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .compare-head.bad { color: var(--red); background: rgba(240,82,82,0.06); }
-    .compare-head.good { color: var(--green); background: rgba(62,207,142,0.06); }
-
-    .compare-body { padding: 14px 16px; }
-
-    .pwd-example {
-      font-family: var(--mono);
-      font-size: 14px;
-      font-weight: 500;
-      padding: 8px 12px;
-      border-radius: 6px;
-      margin-bottom: 8px;
-      letter-spacing: 0.05em;
-    }
-
-    .pwd-example.bad { background: rgba(240,82,82,0.08); color: var(--red); border: 1px solid rgba(240,82,82,0.2); }
-    .pwd-example.good { background: rgba(62,207,142,0.08); color: var(--green); border: 1px solid rgba(62,207,142,0.2); }
-
-    .compare-why { font-size: 12px; color: var(--text2); line-height: 1.5; }
-
-    /* ── CHECKER ── */
-    .checker-card {
-      background: var(--bg2);
-      border: 1px solid var(--border2);
-      border-radius: 18px;
-      padding: 2rem 2.25rem;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .checker-card::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, rgba(79,156,249,0.04) 0%, rgba(124,111,255,0.04) 100%);
-      pointer-events: none;
-    }
-
-    .checker-title {
-      font-size: 20px;
-      font-weight: 800;
-      margin-bottom: 6px;
-      letter-spacing: -0.01em;
-    }
-
-    .checker-subtitle { font-size: 13.5px; color: var(--text2); margin-bottom: 1.75rem; }
-
-    .input-wrap {
-      position: relative;
-      margin-bottom: 1.25rem;
-    }
-
-    .pwd-input {
-      width: 100%;
-      background: var(--bg3);
-      border: 1.5px solid var(--border2);
-      border-radius: var(--radius-sm);
-      color: var(--text);
-      font-family: var(--mono);
-      font-size: 15px;
-      padding: 13px 48px 13px 16px;
-      outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
-      letter-spacing: 0.05em;
-    }
-
-    .pwd-input:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(79,156,249,0.12);
-    }
-
-    .toggle-btn {
-      position: absolute;
-      right: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      background: none;
-      border: none;
-      color: var(--text3);
-      cursor: pointer;
-      font-size: 16px;
-      padding: 4px;
-      transition: color 0.15s;
-    }
-    .toggle-btn:hover { color: var(--text); }
-
-    /* STRENGTH BAR */
-    .strength-bar-wrap { margin-bottom: 1.25rem; }
-
-    .bar-track {
-      height: 6px;
-      background: var(--bg3);
-      border-radius: 10px;
-      overflow: hidden;
-      margin-bottom: 8px;
-    }
-
-    .bar-fill {
-      height: 100%;
-      border-radius: 10px;
-      transition: width 0.4s cubic-bezier(.4,0,.2,1), background 0.4s;
-      width: 0%;
-    }
-
-    .bar-meta {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .strength-label {
-      font-family: var(--mono);
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-    }
-
-    .crack-time {
-      font-family: var(--mono);
-      font-size: 11px;
-      color: var(--text3);
-    }
-
-    /* CRITERIA */
-    .criteria {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin-bottom: 1.5rem;
-    }
-    @media (max-width: 480px) { .criteria { grid-template-columns: 1fr; } }
-
-    .crit {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 12.5px;
-      color: var(--text3);
-      font-family: var(--mono);
-      transition: color 0.2s;
-    }
-
-    .crit.pass { color: var(--green); }
-    .crit.fail { color: var(--text3); }
-
-    .crit-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: var(--text3);
-      flex-shrink: 0;
-      transition: background 0.2s;
-    }
-    .crit.pass .crit-dot { background: var(--green); }
-
-    /* FEEDBACK BOX */
-    .feedback-box {
-      background: var(--bg3);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 12px 16px;
-      font-size: 13px;
-      color: var(--text2);
-      line-height: 1.6;
-      min-height: 48px;
-      transition: border-color 0.3s;
-    }
-
-    .feedback-box.strong { border-color: rgba(62,207,142,0.3); color: var(--green); }
-    .feedback-box.weak { border-color: rgba(240,82,82,0.2); }
-
-    /* TIPS */
-    .tips-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-    }
-    @media (max-width: 580px) { .tips-grid { grid-template-columns: 1fr; } }
-
-    .tip-card {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1.25rem;
-    }
-
-    .tip-num {
-      font-family: var(--mono);
-      font-size: 10px;
-      color: var(--accent);
-      font-weight: 600;
-      letter-spacing: 0.1em;
-      margin-bottom: 8px;
-    }
-
-    .tip-title { font-size: 13.5px; font-weight: 700; margin-bottom: 5px; }
-    .tip-text { font-size: 12px; color: var(--text2); line-height: 1.55; }
-
-    /* FOOTER */
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 2rem 1.5rem 3rem;
-      text-align: center;
-      font-family: var(--mono);
-      font-size: 11px;
-      color: var(--text3);
-      letter-spacing: 0.05em;
-      position: relative;
-      z-index: 1;
-    }
-
-    /* ANIMATIONS */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .hero, .stats, section {
-      animation: fadeUp 0.6s ease both;
-    }
-
-    .stats { animation-delay: 0.1s; }
-    section:nth-of-type(1) { animation-delay: 0.15s; }
-    section:nth-of-type(2) { animation-delay: 0.2s; }
-    section:nth-of-type(3) { animation-delay: 0.25s; }
-    section:nth-of-type(4) { animation-delay: 0.3s; }
-    section:nth-of-type(5) { animation-delay: 0.35s; }
-    section:nth-of-type(6) { animation-delay: 0.4s; }
-
-    /* DIVIDER */
-    .divider {
-      border: none;
-      border-top: 1px solid var(--border);
-      margin: 0 0 3.5rem;
-    }
-  </style>
-</head>
-<body>
-
-<div class="orb orb1"></div>
-<div class="orb orb2"></div>
-
-<!-- NAV -->
-<nav>
-  <div class="nav-inner">
-    <span class="nav-logo">🔐 seguridad.digital</span>
-    <span class="nav-badge">Guía educativa</span>
-  </div>
-</nav>
-
-<!-- HERO -->
-<div class="wrap">
-  <div class="hero">
-    <div class="hero-tag">🔑 Módulo 2 — Contraseñas</div>
-    <h1>Tu contraseña es tu<br><span class="grad">primera línea de defensa</span></h1>
-    <p>Una contraseña débil puede derribar toda tu seguridad digital. Aprende a crear contraseñas que los atacantes no puedan descifrar.</p>
-  </div>
+<div class="curso-page">
+
+  <!-- HERO -->
+  <section class="curso-hero" style="border-top: 4px solid #2563eb;">
+    <div class="curso-eyebrow">
+      <span class="eyebrow-dot" style="background:#2563eb;"></span>
+      Módulo 02 — Autenticación
+    </div>
+    <h1>Tu contraseña es tu <span class="accent" style="color:#2563eb;">primera línea</span> de defensa</h1>
+    <p class="desc">Una contraseña débil puede derribar toda tu seguridad digital. Aprende a crear contraseñas que los atacantes no puedan descifrar.</p>
+    <div class="curso-meta">
+      <div class="meta-item"><span class="meta-num">6</span><span class="meta-label">Secciones</span></div>
+      <div class="meta-div"></div>
+      <div class="meta-item"><span class="meta-num">~8 min</span><span class="meta-label">Lectura</span></div>
+      <div class="meta-div"></div>
+      <div class="meta-item"><span class="meta-num">Básico</span><span class="meta-label">Nivel</span></div>
+    </div>
+  </section>
 
   <!-- STATS -->
-  <div class="stats">
-    <div class="stat-card">
-      <div class="stat-num red">81%</div>
-      <div class="stat-label">de las filtraciones de datos implican contraseñas débiles o robadas</div>
+  <div class="stats-row">
+    <div class="stat-pill stat-danger">
+      <span class="sp-num">81%</span>
+      <span class="sp-label">de filtraciones involucran contraseñas débiles o robadas</span>
     </div>
-    <div class="stat-card">
-      <div class="stat-num orange">2 seg</div>
-      <div class="stat-label">tarda un atacante en descifrar una contraseña de 6 caracteres simples</div>
+    <div class="stat-pill stat-warning">
+      <span class="sp-num">2 seg</span>
+      <span class="sp-label">tarda un atacante en descifrar una contraseña de 6 caracteres simples</span>
     </div>
-    <div class="stat-card">
-      <div class="stat-num yellow">123456</div>
-      <div class="stat-label">sigue siendo la contraseña más usada en el mundo en 2024</div>
+    <div class="stat-pill stat-info">
+      <span class="sp-num">123456</span>
+      <span class="sp-label">sigue siendo la contraseña más usada en el mundo en 2024</span>
     </div>
   </div>
 
-  <!-- ¿POR QUÉ IMPORTA? -->
-  <section>
-    <p class="sec-label">Por qué importa</p>
-    <div class="info-grid">
-      <div class="info-card">
-        <span class="ic-icon">🤖</span>
-        <div class="ic-title">Ataques de fuerza bruta</div>
-        <div class="ic-text">Los programas automáticos prueban millones de combinaciones por segundo hasta encontrar tu contraseña. Una contraseña corta cae en segundos.</div>
-      </div>
-      <div class="info-card">
-        <span class="ic-icon">📖</span>
-        <div class="ic-title">Ataques de diccionario</div>
-        <div class="ic-text">Los atacantes usan listas de palabras comunes, nombres y variaciones típicas como "contraseña123" o "P@ssword1".</div>
-      </div>
-      <div class="info-card">
-        <span class="ic-icon">♻️</span>
-        <div class="ic-title">Reutilización de contraseñas</div>
-        <div class="ic-text">Si usas la misma contraseña en varios sitios y uno es hackeado, todos tus cuentas quedan expuestas automáticamente.</div>
-      </div>
-      <div class="info-card">
-        <span class="ic-icon">🕵️</span>
-        <div class="ic-title">Ingeniería social</div>
-        <div class="ic-text">Los atacantes investigan tus redes sociales para adivinar contraseñas basadas en fechas, nombres de mascotas o lugares favoritos.</div>
-      </div>
-    </div>
-  </section>
+  <!-- TOC -->
+  <nav class="curso-toc">
+    <a href="#pw-1" class="toc-link">01 ¿Por qué importa?</a>
+    <a href="#pw-2" class="toc-link">02 Reglas de oro</a>
+    <a href="#pw-3" class="toc-link">03 Comparativa</a>
+    <a href="#pw-4" class="toc-link">04 Prueba tu contraseña</a>
+    <a href="#pw-5" class="toc-link">05 Consejos extra</a>
+  </nav>
 
-  <!-- REGLAS -->
-  <section>
-    <p class="sec-label">Reglas de oro</p>
-    <div class="rules-list">
-      <div class="rule-item">
-        <div class="rule-icon g">✅</div>
-        <div>
-          <div class="rule-title">Mínimo 12 caracteres</div>
-          <div class="rule-desc">Cada carácter extra multiplica exponencialmente el tiempo que necesita un atacante. 12+ caracteres es el mínimo recomendado hoy.</div>
+  <!-- SECCIÓN 1 — Por qué importa -->
+  <div class="curso-section" id="pw-1">
+    <div class="sec-num">01</div>
+    <div class="section-body">
+      <span class="tag tag-danger">Riesgo Crítico</span>
+      <h2>¿Por qué importa tu contraseña?</h2>
+      <p class="section-intro">Los atacantes tienen herramientas que prueban millones de combinaciones por segundo. Una contraseña débil cae en instantes.</p>
+
+      <div class="threat-grid">
+        <div class="threat-card">
+          <div class="tc-icon tc-danger">🤖</div>
+          <h3>Fuerza bruta</h3>
+          <p>Programas automáticos prueban millones de combinaciones por segundo. Una contraseña de 6 dígitos cae en menos de 2 segundos con hardware moderno.</p>
         </div>
-      </div>
-      <div class="rule-item">
-        <div class="rule-icon g">✅</div>
-        <div>
-          <div class="rule-title">Mezcla mayúsculas, minúsculas, números y símbolos</div>
-          <div class="rule-desc">Una contraseña con los 4 tipos de caracteres aumenta drásticamente la complejidad para cualquier atacante automatizado.</div>
+        <div class="threat-card">
+          <div class="tc-icon tc-warning">📖</div>
+          <h3>Ataque de diccionario</h3>
+          <p>Los atacantes usan listas de palabras comunes, nombres y variaciones típicas como "contraseña123" o "P@ssword1". Si tu contraseña está ahí, caerá de primero.</p>
         </div>
-      </div>
-      <div class="rule-item">
-        <div class="rule-icon r">❌</div>
-        <div>
-          <div class="rule-title">No uses información personal</div>
-          <div class="rule-desc">Fecha de nacimiento, nombre de mascota, ciudad, equipo favorito — todo eso está en tus redes sociales y es lo primero que prueban.</div>
+        <div class="threat-card">
+          <div class="tc-icon tc-info">♻️</div>
+          <h3>Reutilización</h3>
+          <p>Si usas la misma contraseña en varios sitios y uno es hackeado, todas tus cuentas quedan expuestas automáticamente. Una filtración afecta todo.</p>
         </div>
-      </div>
-      <div class="rule-item">
-        <div class="rule-icon r">❌</div>
-        <div>
-          <div class="rule-title">No reutilices contraseñas</div>
-          <div class="rule-desc">Una filtración en un sitio menor puede comprometer tu correo, banco o trabajo si usas la misma contraseña.</div>
-        </div>
-      </div>
-      <div class="rule-item">
-        <div class="rule-icon g">✅</div>
-        <div>
-          <div class="rule-title">Usa frases de contraseña</div>
-          <div class="rule-desc">Una frase larga y aleatoria como <span style="font-family:var(--mono); color: var(--green); font-size:12px;">Nube$Roja!Canta99</span> es más segura y más fácil de recordar que <span style="font-family:var(--mono); color: var(--red); font-size:12px;">xK2!</span></div>
-        </div>
-      </div>
-      <div class="rule-item">
-        <div class="rule-icon g">✅</div>
-        <div>
-          <div class="rule-title">Usa un gestor de contraseñas</div>
-          <div class="rule-desc">Herramientas como Bitwarden, 1Password o KeePass generan y almacenan contraseñas únicas y seguras para cada sitio automáticamente.</div>
+        <div class="threat-card">
+          <div class="tc-icon tc-safe">🕵️</div>
+          <h3>Ingeniería social</h3>
+          <p>Los atacantes investigan tus redes sociales para adivinar contraseñas basadas en fechas, nombres de mascotas o lugares favoritos. Tu info pública es un riesgo.</p>
         </div>
       </div>
     </div>
-  </section>
+  </div>
 
-  <!-- COMPARATIVA -->
-  <section>
-    <p class="sec-label">Contraseñas malas vs. buenas</p>
-    <div class="compare">
-      <div class="compare-box">
-        <div class="compare-head bad">❌ Contraseñas débiles</div>
-        <div class="compare-body">
-          <div class="pwd-example bad">123456</div>
-          <p class="compare-why" style="margin-bottom:10px;">Secuencia numérica. Descifrada en menos de 1 segundo.</p>
-          <div class="pwd-example bad">maria1990</div>
-          <p class="compare-why" style="margin-bottom:10px;">Nombre + año de nacimiento. Adivinable fácilmente.</p>
-          <div class="pwd-example bad">P@ssword1</div>
-          <p class="compare-why">Sustitución predecible. Está en todas las listas de diccionario.</p>
+  <!-- SECCIÓN 2 — Reglas -->
+  <div class="curso-section alt" id="pw-2">
+    <div class="sec-num">02</div>
+    <div class="section-body">
+      <span class="tag tag-info">Buenas Prácticas</span>
+      <h2>Reglas de oro</h2>
+      <p class="section-intro">Estas seis reglas convierten una contraseña débil en una fortaleza digital.</p>
+
+      <div class="rules-list">
+        <div class="rule-item">
+          <div class="rule-icon rule-safe">✓</div>
+          <div>
+            <div class="rule-title">Mínimo 12 caracteres</div>
+            <div class="rule-desc">Cada carácter extra multiplica exponencialmente el tiempo que necesita un atacante. 12+ caracteres es el mínimo recomendado hoy en día por todos los expertos.</div>
+          </div>
         </div>
-      </div>
-      <div class="compare-box">
-        <div class="compare-head good">✅ Contraseñas fuertes</div>
-        <div class="compare-body">
-          <div class="pwd-example good">Tr3n!AzulMar</div>
-          <p class="compare-why" style="margin-bottom:10px;">Frase aleatoria con símbolos. Miles de años para descifrar.</p>
-          <div class="pwd-example good">Ñ8v$kQp#2wLm</div>
-          <p class="compare-why" style="margin-bottom:10px;">Generada aleatoriamente. Prácticamente invulnerable.</p>
-          <div class="pwd-example good">Sol@Nube!99Paz</div>
-          <p class="compare-why">Palabras sin relación + símbolos. Fácil de recordar, muy segura.</p>
+        <div class="rule-item">
+          <div class="rule-icon rule-safe">✓</div>
+          <div>
+            <div class="rule-title">Mezcla mayúsculas, minúsculas, números y símbolos</div>
+            <div class="rule-desc">Una contraseña con los 4 tipos de caracteres aumenta drásticamente la complejidad para cualquier herramienta de ataque automatizado.</div>
+          </div>
+        </div>
+        <div class="rule-item">
+          <div class="rule-icon rule-danger">✗</div>
+          <div>
+            <div class="rule-title">No uses información personal</div>
+            <div class="rule-desc">Fecha de nacimiento, nombre de mascota, ciudad, equipo favorito — todo eso está en tus redes sociales y es lo primero que prueban los atacantes.</div>
+          </div>
+        </div>
+        <div class="rule-item">
+          <div class="rule-icon rule-danger">✗</div>
+          <div>
+            <div class="rule-title">No reutilices contraseñas</div>
+            <div class="rule-desc">Una filtración en un sitio menor puede comprometer tu correo, banco o trabajo si usas la misma contraseña en todos lados.</div>
+          </div>
+        </div>
+        <div class="rule-item">
+          <div class="rule-icon rule-safe">✓</div>
+          <div>
+            <div class="rule-title">Usa frases de contraseña</div>
+            <div class="rule-desc">Una frase aleatoria como <code style="background:#dbeafe;color:#1d4ed8;padding:2px 6px;border-radius:4px;font-size:12px;">Nube$Roja!Canta99</code> es más segura y más fácil de recordar que <code style="background:#fee2e2;color:#dc2626;padding:2px 6px;border-radius:4px;font-size:12px;">xK2!</code></div>
+          </div>
+        </div>
+        <div class="rule-item">
+          <div class="rule-icon rule-safe">✓</div>
+          <div>
+            <div class="rule-title">Usa un gestor de contraseñas</div>
+            <div class="rule-desc">Herramientas como Bitwarden, 1Password o KeePass generan y almacenan contraseñas únicas y seguras para cada sitio automáticamente.</div>
+          </div>
         </div>
       </div>
     </div>
-  </section>
+  </div>
 
-  <hr class="divider"/>
+  <!-- SECCIÓN 3 — Comparativa -->
+  <div class="curso-section" id="pw-3">
+    <div class="sec-num">03</div>
+    <div class="section-body">
+      <span class="tag tag-warning">Comparativa</span>
+      <h2>Contraseñas malas vs. buenas</h2>
+      <p class="section-intro">Aprende a reconocer visualmente la diferencia entre una contraseña que te protege y una que te pone en riesgo.</p>
 
-  <!-- CHECKER -->
-  <section>
-    <p class="sec-label">Prueba tu contraseña</p>
-    <div class="checker-card">
-      <div class="checker-title">¿Qué tan segura es tu contraseña?</div>
-      <div class="checker-subtitle">Escríbela aquí para analizarla. No se envía ni almacena ningún dato.</div>
-
-      <div class="input-wrap">
-        <input
-          type="password"
-          class="pwd-input"
-          id="pwdInput"
-          placeholder="Escribe tu contraseña aquí..."
-          autocomplete="new-password"
-          spellcheck="false"
-        />
-        <button class="toggle-btn" id="toggleBtn" title="Mostrar/ocultar">👁</button>
-      </div>
-
-      <div class="strength-bar-wrap">
-        <div class="bar-track">
-          <div class="bar-fill" id="barFill"></div>
+      <div class="compare-grid">
+        <div class="compare-box compare-bad">
+          <div class="compare-head">
+            <span class="ch-icon">✗</span> Contraseñas débiles
+          </div>
+          <div class="compare-body">
+            <div class="pwd-ex pwd-bad"><code>123456</code></div>
+            <p class="pwd-why">Secuencia numérica. Descifrada en menos de 1 segundo.</p>
+            <div class="pwd-ex pwd-bad"><code>maria1990</code></div>
+            <p class="pwd-why">Nombre + año de nacimiento. Adivinable con ingeniería social.</p>
+            <div class="pwd-ex pwd-bad"><code>P@ssword1</code></div>
+            <p class="pwd-why">Sustitución predecible. Está en todas las listas de diccionario.</p>
+          </div>
         </div>
-        <div class="bar-meta">
-          <span class="strength-label" id="strengthLabel" style="color: var(--text3);">Escribe para analizar</span>
-          <span class="crack-time" id="crackTime"></span>
+        <div class="compare-box compare-good">
+          <div class="compare-head">
+            <span class="ch-icon">✓</span> Contraseñas fuertes
+          </div>
+          <div class="compare-body">
+            <div class="pwd-ex pwd-good"><code>Tr3n!AzulMar</code></div>
+            <p class="pwd-why">Frase aleatoria con símbolos. Miles de años para descifrar.</p>
+            <div class="pwd-ex pwd-good"><code>Ñ8v$kQp#2wLm</code></div>
+            <p class="pwd-why">Generada aleatoriamente. Prácticamente invulnerable.</p>
+            <div class="pwd-ex pwd-good"><code>Sol@Nube!99Paz</code></div>
+            <p class="pwd-why">Palabras sin relación + símbolos. Fácil de recordar, muy segura.</p>
+          </div>
         </div>
-      </div>
-
-      <div class="criteria">
-        <div class="crit fail" id="crit-len">
-          <div class="crit-dot"></div>
-          Mínimo 12 caracteres
-        </div>
-        <div class="crit fail" id="crit-upper">
-          <div class="crit-dot"></div>
-          Letra mayúscula
-        </div>
-        <div class="crit fail" id="crit-lower">
-          <div class="crit-dot"></div>
-          Letra minúscula
-        </div>
-        <div class="crit fail" id="crit-num">
-          <div class="crit-dot"></div>
-          Número
-        </div>
-        <div class="crit fail" id="crit-sym">
-          <div class="crit-dot"></div>
-          Símbolo (!@#$...)
-        </div>
-        <div class="crit fail" id="crit-nocom">
-          <div class="crit-dot"></div>
-          No es contraseña común
-        </div>
-      </div>
-
-      <div class="feedback-box" id="feedbackBox">
-        Ingresa una contraseña para ver el análisis detallado.
       </div>
     </div>
-  </section>
+  </div>
 
-  <!-- TIPS EXTRA -->
-  <section>
-    <p class="sec-label">Consejos adicionales</p>
-    <div class="tips-grid">
-      <div class="tip-card">
-        <div class="tip-num">// 01</div>
-        <div class="tip-title">Activa el 2FA</div>
-        <div class="tip-text">La autenticación en dos pasos añade una segunda capa. Aunque roben tu contraseña, no podrán entrar sin el código.</div>
-      </div>
-      <div class="tip-card">
-        <div class="tip-num">// 02</div>
-        <div class="tip-title">Cámbiala si fue filtrada</div>
-        <div class="tip-text">Consulta haveibeenpwned.com para saber si tu correo aparece en filtraciones de datos conocidas.</div>
-      </div>
-      <div class="tip-card">
-        <div class="tip-num">// 03</div>
-        <div class="tip-title">Nunca la compartas</div>
-        <div class="tip-text">Ni por WhatsApp, correo ni llamada. Ningún servicio legítimo te pedirá tu contraseña directamente.</div>
+  <!-- SECCIÓN 4 — Checker interactivo -->
+  <div class="curso-section alt" id="pw-4">
+    <div class="sec-num">04</div>
+    <div class="section-body">
+      <span class="tag tag-info">Herramienta</span>
+      <h2>Prueba tu contraseña</h2>
+      <p class="section-intro">Escríbela aquí para analizarla. <strong>No se envía ni almacena ningún dato</strong> — el análisis ocurre 100% en tu navegador.</p>
+
+      <div class="checker-card">
+        <div class="checker-input-wrap">
+          <input type="password" id="pwdInput" class="checker-input"
+                 placeholder="Escribe tu contraseña aquí..."
+                 autocomplete="new-password" spellcheck="false">
+          <button class="checker-toggle" id="toggleBtn">👁</button>
+        </div>
+
+        <div class="strength-wrap">
+          <div class="strength-track">
+            <div class="strength-fill" id="barFill"></div>
+          </div>
+          <div class="strength-meta">
+            <span class="strength-label" id="strengthLabel">Escribe para analizar</span>
+            <span class="crack-time" id="crackTime"></span>
+          </div>
+        </div>
+
+        <div class="criteria-grid">
+          <div class="crit" id="crit-len">
+            <span class="crit-dot"></span> Mínimo 12 caracteres
+          </div>
+          <div class="crit" id="crit-upper">
+            <span class="crit-dot"></span> Letra mayúscula
+          </div>
+          <div class="crit" id="crit-lower">
+            <span class="crit-dot"></span> Letra minúscula
+          </div>
+          <div class="crit" id="crit-num">
+            <span class="crit-dot"></span> Número
+          </div>
+          <div class="crit" id="crit-sym">
+            <span class="crit-dot"></span> Símbolo (!@#$...)
+          </div>
+          <div class="crit" id="crit-nocom">
+            <span class="crit-dot"></span> No es contraseña común
+          </div>
+        </div>
+
+        <div class="checker-feedback" id="feedbackBox">
+          Ingresa una contraseña para ver el análisis detallado.
+        </div>
       </div>
     </div>
-  </section>
+  </div>
 
-</div><!-- /wrap -->
+  <!-- SECCIÓN 5 — Tips -->
+  <div class="curso-section" id="pw-5">
+    <div class="sec-num">05</div>
+    <div class="section-body">
+      <span class="tag tag-safe">Consejos extra</span>
+      <h2>Más allá de la contraseña</h2>
+      <p class="section-intro">Una buena contraseña es el primer paso. Estos hábitos complementan tu seguridad.</p>
 
-<footer>
-  Contenido educativo sobre ciberseguridad · La contraseña ingresada no se almacena · Usa un gestor de contraseñas
-</footer>
+      <div class="threat-grid">
+        <div class="threat-card">
+          <div class="tc-icon tc-info">🔐</div>
+          <h3>Activa el 2FA</h3>
+          <p>La autenticación en dos pasos añade una segunda capa. Aunque roben tu contraseña, no podrán entrar sin el código de tu teléfono.</p>
+        </div>
+        <div class="threat-card">
+          <div class="tc-icon tc-warning">🔎</div>
+          <h3>Verifica si fuiste filtrado</h3>
+          <p>Consulta <strong>haveibeenpwned.com</strong> para saber si tu correo aparece en filtraciones de datos conocidas y actúa de inmediato.</p>
+        </div>
+        <div class="threat-card">
+          <div class="tc-icon tc-danger">🤐</div>
+          <h3>Nunca la compartas</h3>
+          <p>Ni por WhatsApp, correo ni llamada. Ningún servicio legítimo te pedirá tu contraseña directamente — si lo hacen, es una alerta roja.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="curso-cta">
+    <h2>¿Listo para poner a prueba lo que aprendiste?</h2>
+    <p>Toma el quiz de ciberseguridad y descubre tu nivel real de conocimiento.</p>
+    <div class="cta-row">
+      <a href="/quiz" class="btn-primary">Ir al Quiz →</a>
+      <a href="/simulation" class="btn-secondary">Simulación de ataques</a>
+    </div>
+  </div>
+
+</div>
+
+<style>
+/* ── Stats row ── */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 1.5rem;
+}
+
+@media (max-width: 700px) { .stats-row { grid-template-columns: 1fr; } }
+
+.stat-pill {
+  border-radius: var(--radius-lg);
+  padding: 1.25rem 1.5rem;
+  border: 1px solid;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.stat-danger  { background: var(--danger-light); border-color: rgba(220,38,38,0.2); }
+.stat-warning { background: var(--orange-light);  border-color: rgba(217,119,6,0.2); }
+.stat-info    { background: var(--blue-light);    border-color: rgba(37,99,235,0.2); }
+
+.sp-num {
+  font-family: var(--mono);
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.stat-danger  .sp-num { color: var(--danger); }
+.stat-warning .sp-num { color: var(--orange); }
+.stat-info    .sp-num { color: var(--blue); }
+
+.sp-label { font-size: 12px; color: var(--text-secondary); line-height: 1.4; }
+
+/* ── Rules list ── */
+.rules-list {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-xs);
+}
+
+.rule-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.15s;
+}
+
+.rule-item:last-child { border-bottom: none; }
+.rule-item:hover { background: var(--bg2); }
+
+.rule-icon {
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.rule-safe   { background: var(--green-light);  color: var(--green-dark); }
+.rule-danger { background: var(--danger-light); color: var(--danger); }
+
+.rule-title { font-size: 14px; font-weight: 700; color: var(--text-primary); margin-bottom: 3px; }
+.rule-desc  { font-size: 13px; color: var(--text-muted); line-height: 1.55; }
+
+/* ── Compare ── */
+.compare-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+@media (max-width: 600px) { .compare-grid { grid-template-columns: 1fr; } }
+
+.compare-box {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid;
+}
+
+.compare-bad  { border-color: rgba(220,38,38,0.2); }
+.compare-good { border-color: rgba(5,150,105,0.2); }
+
+.compare-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  font-size: 13px;
+  font-weight: 700;
+  border-bottom: 1px solid;
+}
+
+.compare-bad  .compare-head { background: var(--danger-light); color: #991b1b; border-color: rgba(220,38,38,0.15); }
+.compare-good .compare-head { background: var(--green-light);  color: var(--green-dark); border-color: rgba(5,150,105,0.15); }
+
+.ch-icon { font-size: 15px; }
+.compare-body { padding: 1rem 1.25rem; background: var(--surface); }
+
+.pwd-ex {
+  padding: 8px 12px;
+  border-radius: 6px;
+  margin-bottom: 4px;
+}
+
+.pwd-bad  { background: var(--danger-light); }
+.pwd-good { background: var(--green-xlight); }
+
+.pwd-ex code {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.pwd-bad  code { color: var(--danger); }
+.pwd-good code { color: var(--green-dark); }
+
+.pwd-why { font-size: 12px; color: var(--text-muted); margin-bottom: 10px; padding: 0 4px; }
+
+/* ── Checker ── */
+.checker-card {
+  background: var(--surface);
+  border: 1.5px solid var(--border-blue);
+  border-radius: var(--radius-xl);
+  padding: 2rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.checker-input-wrap {
+  position: relative;
+  margin-bottom: 1.25rem;
+}
+
+.checker-input {
+  width: 100%;
+  background: var(--bg);
+  border: 1.5px solid var(--border-mid);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-family: var(--mono);
+  font-size: 15px;
+  padding: 13px 48px 13px 16px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  letter-spacing: 0.05em;
+}
+
+.checker-input:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px var(--blue-glow);
+  background: white;
+}
+
+.checker-input::placeholder { color: var(--text-hint); }
+
+.checker-toggle {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 4px;
+  color: var(--text-muted);
+  transition: color 0.15s;
+}
+
+.checker-toggle:hover { color: var(--blue); }
+
+/* Barra de fortaleza */
+.strength-wrap { margin-bottom: 1.25rem; }
+
+.strength-track {
+  height: 6px;
+  background: var(--bg3);
+  border-radius: 99px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.strength-fill {
+  height: 100%;
+  border-radius: 99px;
+  transition: width 0.4s cubic-bezier(.4,0,.2,1), background 0.4s;
+  width: 0%;
+}
+
+.strength-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.strength-label {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-hint);
+}
+
+.crack-time {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-hint);
+}
+
+/* Criterios */
+.criteria-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 1.25rem;
+}
+
+@media (max-width: 480px) { .criteria-grid { grid-template-columns: 1fr; } }
+
+.crit {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text-hint);
+  font-family: var(--mono);
+  transition: color 0.2s;
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: var(--bg);
+}
+
+.crit.pass { color: var(--green); background: var(--green-xlight); }
+
+.crit-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--border-mid);
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+
+.crit.pass .crit-dot { background: var(--green); }
+
+/* Feedback */
+.checker-feedback {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.6;
+  min-height: 48px;
+  transition: border-color 0.3s, background 0.3s;
+}
+
+.checker-feedback.strong {
+  border-color: rgba(5,150,105,0.3);
+  background: var(--green-xlight);
+  color: var(--green-dark);
+}
+
+.checker-feedback.weak {
+  border-color: rgba(220,38,38,0.2);
+  background: var(--danger-light);
+  color: #991b1b;
+}
+</style>
 
 <script>
-  const COMMON = [
-    '123456','password','123456789','qwerty','abc123','111111','password1',
-    'iloveyou','admin','letmein','monkey','1234567','sunshine','master',
-    'dragon','654321','superman','123123','pass','michael','shadow',
-    'contraseña','clave','holamundo','qwerty123','welcome','login'
-  ];
+const COMMON = [
+  '123456','password','123456789','qwerty','abc123','111111','password1',
+  'iloveyou','admin','letmein','monkey','1234567','sunshine','master',
+  'dragon','654321','superman','123123','pass','michael','shadow',
+  'contraseña','clave','holamundo','qwerty123','welcome','login'
+];
 
-  const input  = document.getElementById('pwdInput');
-  const toggle = document.getElementById('toggleBtn');
-  const bar    = document.getElementById('barFill');
-  const label  = document.getElementById('strengthLabel');
-  const crack  = document.getElementById('crackTime');
-  const feed   = document.getElementById('feedbackBox');
+const input  = document.getElementById('pwdInput');
+const toggle = document.getElementById('toggleBtn');
+const bar    = document.getElementById('barFill');
+const label  = document.getElementById('strengthLabel');
+const crack  = document.getElementById('crackTime');
+const feed   = document.getElementById('feedbackBox');
 
-  toggle.addEventListener('click', () => {
-    const isPass = input.type === 'password';
-    input.type = isPass ? 'text' : 'password';
-    toggle.textContent = isPass ? '🙈' : '👁';
+toggle.addEventListener('click', () => {
+  const isPass = input.type === 'password';
+  input.type = isPass ? 'text' : 'password';
+  toggle.textContent = isPass ? '🙈' : '👁';
+});
+
+function setCrit(id, pass) {
+  const el = document.getElementById('crit-' + id);
+  el.className = 'crit ' + (pass ? 'pass' : '');
+}
+
+function calcCrackTime(pwd) {
+  const len = pwd.length;
+  if (len === 0) return '';
+  let charset = 0;
+  if (/[a-z]/.test(pwd)) charset += 26;
+  if (/[A-Z]/.test(pwd)) charset += 26;
+  if (/[0-9]/.test(pwd)) charset += 10;
+  if (/[^a-zA-Z0-9]/.test(pwd)) charset += 32;
+  const combinations = Math.pow(charset || 1, len);
+  const seconds = combinations / 1e10;
+  if (seconds < 1)          return 'instantáneo';
+  if (seconds < 60)         return Math.round(seconds) + ' seg';
+  if (seconds < 3600)       return Math.round(seconds/60) + ' min';
+  if (seconds < 86400)      return Math.round(seconds/3600) + ' horas';
+  if (seconds < 2592000)    return Math.round(seconds/86400) + ' días';
+  if (seconds < 31536000)   return Math.round(seconds/2592000) + ' meses';
+  if (seconds < 3153600000) return Math.round(seconds/31536000) + ' años';
+  return '> 100 años';
+}
+
+function analyze(pwd) {
+  const len = pwd.length;
+  const hasUp  = /[A-Z]/.test(pwd);
+  const hasLo  = /[a-z]/.test(pwd);
+  const hasNum = /[0-9]/.test(pwd);
+  const hasSym = /[^a-zA-Z0-9]/.test(pwd);
+  const isCommon = COMMON.includes(pwd.toLowerCase());
+  const long12 = len >= 12;
+  setCrit('len',   long12);
+  setCrit('upper', hasUp);
+  setCrit('lower', hasLo);
+  setCrit('num',   hasNum);
+  setCrit('sym',   hasSym);
+  setCrit('nocom', !isCommon && len > 0);
+  let score = 0;
+  if (len >= 8) score++; if (len >= 12) score++; if (len >= 16) score++;
+  if (hasUp) score++; if (hasLo) score++; if (hasNum) score++; if (hasSym) score++;
+  if (!isCommon && len > 0) score++;
+  if (isCommon) score = 0;
+  if (len < 6) score = Math.min(score, 1);
+  return { score, len, hasUp, hasLo, hasNum, hasSym, isCommon, long12 };
+}
+
+const LEVELS = [
+  { max: 0,  label: 'Sin contraseña', color: 'var(--border-mid)', pct: 0,   feedClass: '' },
+  { max: 2,  label: 'Muy débil',      color: '#dc2626',            pct: 12,  feedClass: 'weak' },
+  { max: 3,  label: 'Débil',          color: '#ef4444',            pct: 28,  feedClass: 'weak' },
+  { max: 4,  label: 'Regular',        color: '#d97706',            pct: 46,  feedClass: '' },
+  { max: 5,  label: 'Aceptable',      color: '#f59e0b',            pct: 62,  feedClass: '' },
+  { max: 6,  label: 'Buena',          color: '#10b981',            pct: 76,  feedClass: '' },
+  { max: 7,  label: 'Muy buena',      color: '#059669',            pct: 88,  feedClass: 'strong' },
+  { max: 99, label: 'Excelente',      color: '#047857',            pct: 100, feedClass: 'strong' },
+];
+
+function getFeedback({ score, len, hasUp, hasLo, hasNum, hasSym, isCommon, long12 }) {
+  if (len === 0) return 'Ingresa una contraseña para ver el análisis detallado.';
+  if (isCommon) return '⛔ Esta contraseña está en todas las listas de ataques. Cámbiala de inmediato.';
+  const tips = [];
+  if (!long12) tips.push('Aumenta la longitud a 12+ caracteres');
+  if (!hasUp)  tips.push('Agrega letras mayúsculas');
+  if (!hasLo)  tips.push('Agrega letras minúsculas');
+  if (!hasNum) tips.push('Incluye al menos un número');
+  if (!hasSym) tips.push('Añade símbolos como !@#$%&*');
+  if (tips.length === 0) return '✅ ¡Excelente contraseña! Es larga, variada y no está comprometida.';
+  return '💡 Para mejorarla: ' + tips.join(' · ');
+}
+
+input.addEventListener('input', () => {
+  const pwd = input.value;
+  if (pwd.length === 0) {
+    bar.style.width = '0%';
+    label.textContent = 'Escribe para analizar';
+    label.style.color = 'var(--text-hint)';
+    crack.textContent = '';
+    feed.textContent = 'Ingresa una contraseña para ver el análisis detallado.';
+    feed.className = 'checker-feedback';
+    ['len','upper','lower','num','sym','nocom'].forEach(id => setCrit(id, false));
+    return;
+  }
+  const result = analyze(pwd);
+  const level  = LEVELS.find(l => result.score <= l.max) || LEVELS[LEVELS.length - 1];
+  bar.style.width      = level.pct + '%';
+  bar.style.background = level.color;
+  label.textContent    = level.label;
+  label.style.color    = level.color;
+  crack.textContent    = '⏱ ' + calcCrackTime(pwd);
+  feed.textContent     = getFeedback(result);
+  feed.className       = 'checker-feedback ' + level.feedClass;
+});
+
+// TOC activo
+const tocLinks = document.querySelectorAll('.toc-link');
+const sections = document.querySelectorAll('[id^="pw-"]');
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting)
+      tocLinks.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + e.target.id));
   });
-
-  function setCrit(id, pass) {
-    const el = document.getElementById('crit-' + id);
-    el.className = 'crit ' + (pass ? 'pass' : 'fail');
-  }
-
-  function calcCrackTime(pwd) {
-    const len = pwd.length;
-    if (len === 0) return '';
-
-    let charset = 0;
-    if (/[a-z]/.test(pwd)) charset += 26;
-    if (/[A-Z]/.test(pwd)) charset += 26;
-    if (/[0-9]/.test(pwd)) charset += 10;
-    if (/[^a-zA-Z0-9]/.test(pwd)) charset += 32;
-
-    const combinations = Math.pow(charset || 1, len);
-    const guessesPerSec = 1e10; // 10 billion/sec (modern GPU)
-    const seconds = combinations / guessesPerSec;
-
-    if (seconds < 1)          return 'instantáneo';
-    if (seconds < 60)         return Math.round(seconds) + ' segundos';
-    if (seconds < 3600)       return Math.round(seconds/60) + ' minutos';
-    if (seconds < 86400)      return Math.round(seconds/3600) + ' horas';
-    if (seconds < 2592000)    return Math.round(seconds/86400) + ' días';
-    if (seconds < 31536000)   return Math.round(seconds/2592000) + ' meses';
-    if (seconds < 3153600000) return Math.round(seconds/31536000) + ' años';
-    return '> 100 años';
-  }
-
-  function analyze(pwd) {
-    const len    = pwd.length;
-    const hasUp  = /[A-Z]/.test(pwd);
-    const hasLo  = /[a-z]/.test(pwd);
-    const hasNum = /[0-9]/.test(pwd);
-    const hasSym = /[^a-zA-Z0-9]/.test(pwd);
-    const isCommon = COMMON.includes(pwd.toLowerCase());
-    const long12 = len >= 12;
-
-    setCrit('len',   long12);
-    setCrit('upper', hasUp);
-    setCrit('lower', hasLo);
-    setCrit('num',   hasNum);
-    setCrit('sym',   hasSym);
-    setCrit('nocom', !isCommon && len > 0);
-
-    let score = 0;
-    if (len >= 8)   score++;
-    if (len >= 12)  score++;
-    if (len >= 16)  score++;
-    if (hasUp)      score++;
-    if (hasLo)      score++;
-    if (hasNum)     score++;
-    if (hasSym)     score++;
-    if (!isCommon && len > 0) score++;
-
-    if (isCommon) score = 0;
-    if (len < 6)  score = Math.min(score, 1);
-
-    return { score, len, hasUp, hasLo, hasNum, hasSym, isCommon, long12 };
-  }
-
-  const LEVELS = [
-    { max: 0,  label: 'Sin contraseña', color: 'var(--text3)', pct: 0,   feedClass: '' },
-    { max: 2,  label: 'Muy débil',      color: 'var(--red)',    pct: 12,  feedClass: 'weak' },
-    { max: 3,  label: 'Débil',          color: 'var(--red)',    pct: 28,  feedClass: 'weak' },
-    { max: 4,  label: 'Regular',        color: 'var(--orange)', pct: 46,  feedClass: '' },
-    { max: 5,  label: 'Aceptable',      color: 'var(--yellow)', pct: 62,  feedClass: '' },
-    { max: 6,  label: 'Buena',          color: 'var(--yellow)', pct: 76,  feedClass: '' },
-    { max: 7,  label: 'Muy buena',      color: 'var(--green)',  pct: 88,  feedClass: 'strong' },
-    { max: 99, label: 'Excelente',      color: 'var(--green)',  pct: 100, feedClass: 'strong' },
-  ];
-
-  function getFeedback({ score, len, hasUp, hasLo, hasNum, hasSym, isCommon, long12 }) {
-    if (len === 0) return 'Ingresa una contraseña para ver el análisis detallado.';
-    if (isCommon)  return '⛔ Esta contraseña está en todas las listas de ataques. Cámbiala de inmediato.';
-
-    const tips = [];
-    if (!long12)  tips.push('Aumenta la longitud a 12 caracteres o más');
-    if (!hasUp)   tips.push('Agrega letras mayúsculas');
-    if (!hasLo)   tips.push('Agrega letras minúsculas');
-    if (!hasNum)  tips.push('Incluye al menos un número');
-    if (!hasSym)  tips.push('Añade símbolos como !@#$%&*');
-
-    if (tips.length === 0) return '✅ ¡Excelente contraseña! Es larga, variada y no está comprometida.';
-    return '💡 Para mejorarla: ' + tips.join(' · ');
-  }
-
-  input.addEventListener('input', () => {
-    const pwd = input.value;
-
-    if (pwd.length === 0) {
-      bar.style.width = '0%';
-      label.textContent = 'Escribe para analizar';
-      label.style.color = 'var(--text3)';
-      crack.textContent = '';
-      feed.textContent = 'Ingresa una contraseña para ver el análisis detallado.';
-      feed.className = 'feedback-box';
-      ['len','upper','lower','num','sym','nocom'].forEach(id => setCrit(id, false));
-      return;
-    }
-
-    const result = analyze(pwd);
-    const level  = LEVELS.find(l => result.score <= l.max) || LEVELS[LEVELS.length - 1];
-
-    bar.style.width      = level.pct + '%';
-    bar.style.background = level.color;
-    label.textContent    = level.label;
-    label.style.color    = level.color;
-    crack.textContent    = pwd.length > 0 ? '⏱ ' + calcCrackTime(pwd) : '';
-    feed.textContent     = getFeedback(result);
-    feed.className       = 'feedback-box ' + level.feedClass;
-  });
+}, { threshold: 0.3 });
+sections.forEach(s => obs.observe(s));
 </script>
-</body>
-</html>
+
 {% endblock %}

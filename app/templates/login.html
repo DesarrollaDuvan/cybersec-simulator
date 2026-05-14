@@ -1,60 +1,653 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Iniciar Sesión — CyberTutor IA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --blue:       #2563eb;
+      --blue-d:     #1d4ed8;
+      --blue-light: #dbeafe;
+      --blue-xl:    #eff6ff;
+      --green:      #059669;
+      --green-d:    #047857;
+      --green-xl:   #ecfdf5;
+      --indigo:     #4f46e5;
+      --text:       #0f172a;
+      --text2:      #334155;
+      --muted:      #64748b;
+      --hint:       #94a3b8;
+      --border:     rgba(15,23,42,0.08);
+      --border2:    rgba(15,23,42,0.12);
+      --bg:         #f4f7fb;
+      --surface:    #ffffff;
+      --sans:       'Plus Jakarta Sans', sans-serif;
+      --mono:       'DM Mono', monospace;
+      --r-sm: 8px; --r-md: 12px; --r-lg: 18px; --r-xl: 24px;
+      --shadow-sm: 0 2px 8px rgba(15,23,42,0.08), 0 1px 3px rgba(15,23,42,0.05);
+      --shadow-md: 0 4px 20px rgba(15,23,42,0.10), 0 2px 8px rgba(15,23,42,0.06);
+      --blue-glow: rgba(37,99,235,0.15);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--sans);
+      background: var(--bg);
+      min-height: 100vh;
+      display: flex;
+      align-items: stretch;
+      overflow: hidden;
+    }
+
+    /* ── Layout ── */
+    .auth-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      width: 100%;
+      min-height: 100vh;
+    }
+
+    @media (max-width: 860px) {
+      .auth-layout { grid-template-columns: 1fr; }
+      .auth-deco { display: none; }
+    }
+
+    /* ── Panel izquierdo ── */
+    .auth-deco {
+      background: linear-gradient(150deg, #1d4ed8 0%, #2563eb 45%, #0891b2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Patrón geométrico sutil */
+    .auth-deco::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(circle at 25% 25%, rgba(255,255,255,0.06) 0%, transparent 50%),
+        radial-gradient(circle at 75% 75%, rgba(255,255,255,0.04) 0%, transparent 50%);
+    }
+
+    /* Grid pattern */
+    .auth-deco::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+
+    .deco-content {
+      position: relative;
+      z-index: 1;
+      max-width: 420px;
+    }
+
+    .deco-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 3rem;
+    }
+
+    .logo-icon {
+      width: 40px; height: 40px;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      backdrop-filter: blur(8px);
+    }
+
+    .logo-text {
+      font-size: 16px;
+      font-weight: 800;
+      color: white;
+      letter-spacing: -0.3px;
+    }
+
+    .deco-headline {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 800;
+      color: white;
+      line-height: 1.1;
+      letter-spacing: -1px;
+      margin-bottom: 1rem;
+    }
+
+    .deco-accent {
+      display: inline-block;
+      background: rgba(255,255,255,0.15);
+      padding: 2px 12px;
+      border-radius: 8px;
+      font-style: italic;
+    }
+
+    .deco-sub {
+      color: rgba(255,255,255,0.7);
+      font-size: 15px;
+      line-height: 1.65;
+      margin-bottom: 2.5rem;
+    }
+
+    .deco-features {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 2.5rem;
+    }
+
+    .deco-feat {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 14px;
+      color: rgba(255,255,255,0.85);
+    }
+
+    .feat-icon {
+      width: 32px; height: 32px;
+      background: rgba(255,255,255,0.12);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    /* Tarjeta de alerta animada */
+    .alert-card {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 14px;
+      padding: 16px 20px;
+      backdrop-filter: blur(12px);
+      animation: float 4s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-6px); }
+    }
+
+    .ac-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .ac-dots { display: flex; gap: 5px; }
+    .ac-dot  { width: 9px; height: 9px; border-radius: 50%; }
+    .ac-dot.r { background: #ff6b6b; }
+    .ac-dot.y { background: #ffd93d; }
+    .ac-dot.g { background: #6bcb77; }
+
+    .ac-title {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: rgba(255,255,255,0.5);
+      margin-left: 4px;
+    }
+
+    .ac-rows { display: flex; flex-direction: column; gap: 8px; }
+
+    .ac-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      color: rgba(255,255,255,0.85);
+    }
+
+    .ac-badge {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 99px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .badge-safe   { background: rgba(107,203,119,0.25); color: #6bcb77; }
+    .badge-danger { background: rgba(255,107,107,0.25); color: #ff6b6b; }
+
+    /* ── Panel derecho (formulario) ── */
+    .auth-form-side {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      background: var(--surface);
+    }
+
+    .auth-card {
+      width: 100%;
+      max-width: 400px;
+      animation: fadeInUp 0.5s ease both;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .auth-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: var(--green-xl);
+      border: 1px solid rgba(5,150,105,0.2);
+      border-radius: 99px;
+      padding: 5px 14px;
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--green);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+    }
+
+    .auth-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      animation: blink 2s ease-in-out infinite;
+    }
+
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+    .auth-title {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.5px;
+      margin-bottom: 6px;
+    }
+
+    .auth-sub {
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 2rem;
+    }
+
+    /* Flash */
+    .flash {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      border-radius: var(--r-sm);
+      margin-bottom: 1.25rem;
+      font-size: 13px;
+      font-weight: 500;
+      border: 1px solid;
+    }
+
+    .flash-error   { background: #fef2f2; color: #991b1b; border-color: rgba(220,38,38,0.2); }
+    .flash-success { background: var(--green-xl); color: var(--green-d); border-color: rgba(5,150,105,0.2); }
+
+    /* Campos */
+    .auth-form { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem; }
+
+    .field-group { display: flex; flex-direction: column; gap: 6px; }
+
+    .field-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text2);
+      letter-spacing: 0.3px;
+    }
+
+    .field-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .field-icon {
+      position: absolute;
+      left: 13px;
+      color: var(--hint);
+      font-size: 15px;
+      pointer-events: none;
+      font-style: normal;
+      font-family: var(--mono);
+      z-index: 1;
+    }
+
+    .field-input {
+      width: 100%;
+      background: var(--bg);
+      border: 1.5px solid var(--border2);
+      border-radius: var(--r-sm);
+      padding: 12px 14px 12px 40px;
+      color: var(--text);
+      font-size: 14px;
+      font-family: var(--sans);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+    }
+
+    .field-input:focus {
+      background: white;
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px var(--blue-glow);
+    }
+
+    .field-input::placeholder { color: var(--hint); }
+
+    .field-toggle {
+      position: absolute;
+      right: 11px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 15px;
+      padding: 5px;
+      color: var(--hint);
+      transition: color 0.2s;
+    }
+
+    .field-toggle:hover { color: var(--blue); }
+
+    /* Opciones */
+    .field-options {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+    }
+
+    .remember-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      color: var(--muted);
+      user-select: none;
+    }
+
+    .remember-check { display: none; }
+
+    .remember-box {
+      width: 17px; height: 17px;
+      border: 1.5px solid var(--border2);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      transition: all 0.15s;
+    }
+
+    .remember-check:checked ~ .remember-box {
+      background: var(--blue);
+      border-color: var(--blue);
+      color: white;
+    }
+
+    .remember-check:checked ~ .remember-box::after { content: '✓'; font-weight: 700; }
+
+    .forgot-link {
+      color: var(--blue);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 13px;
+      transition: color 0.2s;
+    }
+
+    .forgot-link:hover { color: var(--blue-d); }
+
+    /* Botón submit */
+    .auth-submit {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 13px;
+      background: var(--blue);
+      color: white;
+      border: none;
+      border-radius: var(--r-sm);
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: var(--sans);
+      letter-spacing: 0.3px;
+      transition: all 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .auth-submit::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, transparent 40%, rgba(255,255,255,0.08));
+    }
+
+    .auth-submit:hover {
+      background: var(--blue-d);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px var(--blue-glow);
+    }
+
+    .auth-submit:active { transform: scale(0.99); }
+
+    .submit-icon { transition: transform 0.2s; }
+    .auth-submit:hover .submit-icon { transform: translateX(4px); }
+
+    /* Divisor */
+    .auth-divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 1.25rem 0;
+      font-size: 12px;
+      color: var(--hint);
+    }
+
+    .auth-divider::before, .auth-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* Footer */
+    .auth-footer { text-align: center; font-size: 14px; color: var(--muted); }
+    .auth-link { color: var(--blue); text-decoration: none; font-weight: 700; }
+    .auth-link:hover { color: var(--blue-d); }
+
+    /* Estadísticas en panel deco */
+    .deco-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      padding: 16px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px;
+      margin-top: 2rem;
+    }
+
+    .deco-stat { text-align: center; }
+    .dstat-num   { font-family: var(--mono); font-size: 1.5rem; font-weight: 600; color: white; display: block; }
+    .dstat-label { font-size: 11px; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 1px; }
+  </style>
 </head>
 <body>
-    <div class="login-container">
-        <div class="login-card">
-            <div class="login-header">
-                <h2>Inicio de sesion</h2>
-                <p>Ingrese sus Credenciales</p>
-            </div>
 
-            <form action="{{ url_for('auth.login') }}" method="POST" class="login-form" id="loginForm" novalidate>
-                <div class="form-group">
-                    <div class="input-wrapper">
-                        <input type="email" id="email" name="email" required autocomplete="email">
-                        <label for="email">Correo</label>
-                    </div>
-                    <span class="error-message" id="emailError"></span>
-                </div>
+<div class="auth-layout">
 
-                <div class="form-group">
-                    <div class="input-wrapper">
-                        <input type="password" id="password" name="password" required autocomplete="current-password">
-                        <label for="password">Contraseña</label>
-                        <button type="button" class="password-toggle" id="passwordToggle" aria-label="Toggle password visibility">
-                            <span class="toggle-icon"></span>
-                        </button>
-                    </div>
-                    <span class="error-message" id="passwordError"></span>
-                </div>
+  <!-- Panel izquierdo decorativo -->
+  <div class="auth-deco">
+    <div class="deco-content">
 
-                <div class="form-options">
-                    <div class="remember-wrapper">
-                        <input type="checkbox" id="remember" name="remember">
-                        <label for="remember" class="checkbox-label">
-                            <span class="checkmark"></span>
-                            Recordar
-                        </label>
-                    </div>
-                    <a href="#" class="forgot-password">Olvide Contraseña?</a>
-                </div>
+      <div class="deco-logo">
+        <div class="logo-icon">⬡</div>
+        <span class="logo-text">CyberTutor IA</span>
+      </div>
 
-                <button type="submit" class="login-btn">
-                    <span class="btn-text">Ingresar</span>
-                    <span class="btn-loader"></span>
-                </button>
-            </form>
+      <h2 class="deco-headline">
+        Aprende a<br>
+        <span class="deco-accent">protegerte</span><br>
+        en línea.
+      </h2>
 
-            <div class="signup-link">
-                <p>No tiene un cuenta? <a href="{{ url_for('auth.register') }}">Crear cuenta</a></p>
-            </div>
+      <p class="deco-sub">Simulaciones reales de ataques, quizzes generados por IA y un tutor disponible 24/7.</p>
+
+      <div class="deco-features">
+        <div class="deco-feat">
+          <div class="feat-icon">🎯</div>
+          Simulaciones de phishing con análisis de IA
         </div>
+        <div class="deco-feat">
+          <div class="feat-icon">📊</div>
+          Quiz adaptativo de 10 preguntas
+        </div>
+        <div class="deco-feat">
+          <div class="feat-icon">🤖</div>
+          Chat con CyberTutor 24/7
+        </div>
+      </div>
+
+      <div class="alert-card">
+        <div class="ac-header">
+          <div class="ac-dots">
+            <span class="ac-dot r"></span>
+            <span class="ac-dot y"></span>
+            <span class="ac-dot g"></span>
+          </div>
+          <span class="ac-title">Análisis en tiempo real</span>
+        </div>
+        <div class="ac-rows">
+          <div class="ac-row">
+            <span>⚡</span>
+            <span>Intento de phishing detectado</span>
+            <span class="ac-badge badge-danger">Alto</span>
+          </div>
+          <div class="ac-row">
+            <span>🛡</span>
+            <span>Usuario entrenado: SEGURO</span>
+            <span class="ac-badge badge-safe">OK</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="deco-stats">
+        <div class="deco-stat">
+          <span class="dstat-num">4</span>
+          <span class="dstat-label">Módulos</span>
+        </div>
+        <div class="deco-stat">
+          <span class="dstat-num">IA</span>
+          <span class="dstat-label">Generativa</span>
+        </div>
+        <div class="deco-stat">
+          <span class="dstat-num">∞</span>
+          <span class="dstat-label">Escenarios</span>
+        </div>
+      </div>
+
     </div>
+  </div>
+
+  <!-- Panel formulario -->
+  <div class="auth-form-side">
+    <div class="auth-card">
+
+      <div class="auth-badge">
+        <span class="auth-dot"></span>
+        Acceso seguro
+      </div>
+
+      <h1 class="auth-title">Bienvenido de vuelta</h1>
+      <p class="auth-sub">Ingresa tus credenciales para continuar</p>
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="flash flash-{{ category }}">
+              <span>{{ '⚠' if category == 'error' else '✓' }}</span>
+              {{ message }}
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      <form action="{{ url_for('auth.login') }}" method="POST" class="auth-form">
+
+        <div class="field-group">
+          <label class="field-label" for="email">Correo electrónico</label>
+          <div class="field-wrap">
+            <i class="field-icon">@</i>
+            <input type="email" id="email" name="email" class="field-input"
+                   placeholder="tu@correo.com" required autocomplete="email">
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label" for="password">Contraseña</label>
+          <div class="field-wrap">
+            <span class="field-icon" style="font-size:13px;">🔒</span>
+            <input type="password" id="password" name="password" class="field-input"
+                   placeholder="••••••••" required autocomplete="current-password">
+            <button type="button" class="field-toggle" onclick="togglePwd()" title="Ver contraseña">👁</button>
+          </div>
+        </div>
+
+        <div class="field-options">
+          <label class="remember-label">
+            <input type="checkbox" name="remember" id="remember" class="remember-check">
+            <span class="remember-box"></span>
+            Recordarme
+          </label>
+          <a href="#" class="forgot-link">¿Olvidaste tu contraseña?</a>
+        </div>
+
+        <button type="submit" class="auth-submit">
+          <span>Ingresar</span>
+          <span class="submit-icon">→</span>
+        </button>
+
+      </form>
+
+      <div class="auth-divider">o</div>
+
+      <div class="auth-footer">
+        <p>¿No tienes cuenta? <a href="{{ url_for('auth.register') }}" class="auth-link">Crear cuenta gratis</a></p>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<script>
+function togglePwd() {
+  const i = document.getElementById('password');
+  i.type = i.type === 'password' ? 'text' : 'password';
+}
+</script>
 </body>
 </html>

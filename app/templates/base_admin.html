@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Admin{% endblock %} — CyberTutor Admin</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --blue:       #2563eb;
+      --blue-d:     #1d4ed8;
+      --blue-light: #dbeafe;
+      --blue-xl:    #eff6ff;
+      --green:      #059669;
+      --green-xl:   #ecfdf5;
+      --green-light:#d1fae5;
+      --orange:     #d97706;
+      --orange-xl:  #fffbeb;
+      --danger:     #dc2626;
+      --danger-xl:  #fef2f2;
+      --indigo:     #4f46e5;
+      --text:       #0f172a;
+      --text2:      #334155;
+      --muted:      #64748b;
+      --hint:       #94a3b8;
+      --border:     rgba(15,23,42,0.08);
+      --border2:    rgba(15,23,42,0.12);
+      --bg:         #f4f7fb;
+      --bg2:        #eef2f8;
+      --surface:    #ffffff;
+      --sans:       'Plus Jakarta Sans', sans-serif;
+      --mono:       'DM Mono', monospace;
+      --sidebar-w:  240px;
+      --r-sm: 6px; --r-md: 10px; --r-lg: 16px;
+      --shadow-xs: 0 1px 3px rgba(15,23,42,0.06);
+      --shadow-sm: 0 2px 8px rgba(15,23,42,0.08);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      min-height: 100vh;
+      display: flex;
+    }
+
+    /* ════════ SIDEBAR ════════ */
+    .adm-sidebar {
+      width: var(--sidebar-w);
+      min-height: 100vh;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0; left: 0;
+      z-index: 100;
+      box-shadow: var(--shadow-xs);
+      transition: transform 0.3s;
+    }
+
+    .sidebar-logo {
+      padding: 1.25rem 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-icon {
+      width: 34px; height: 34px;
+      background: linear-gradient(135deg, var(--blue), var(--indigo));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      color: white;
+      flex-shrink: 0;
+    }
+
+    .logo-title { font-size: 14px; font-weight: 800; color: var(--text); letter-spacing: -0.3px; }
+    .logo-sub   { font-family: var(--mono); font-size: 10px; color: var(--hint); letter-spacing: 1px; text-transform: uppercase; margin-top: 2px; }
+
+    /* Nav */
+    .sidebar-nav {
+      flex: 1;
+      padding: 0.75rem 0.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      overflow-y: auto;
+    }
+
+    .nav-section-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--hint);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      padding: 10px 8px 4px;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 9px 12px;
+      border-radius: var(--r-md);
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      transition: all 0.15s;
+    }
+
+    .nav-link:hover {
+      color: var(--text);
+      background: var(--bg2);
+    }
+
+    .nav-link.active {
+      color: var(--blue);
+      background: var(--blue-xl);
+    }
+
+    .nav-icon { font-size: 15px; width: 20px; text-align: center; flex-shrink: 0; }
+
+    .nav-divider { height: 1px; background: var(--border); margin: 6px 0; }
+
+    /* Sidebar footer */
+    .sidebar-footer {
+      padding: 0.75rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .admin-profile {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 10px;
+      border-radius: var(--r-md);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      margin-bottom: 8px;
+    }
+
+    .profile-avatar {
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      background: var(--blue-xl);
+      border: 1px solid var(--blue-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--blue);
+      flex-shrink: 0;
+    }
+
+    .profile-name { font-size: 12px; font-weight: 700; color: var(--text); }
+    .profile-role { font-family: var(--mono); font-size: 10px; color: var(--blue); }
+
+    .btn-logout {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      width: 100%;
+      padding: 8px 12px;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: var(--sans);
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .btn-logout:hover { border-color: rgba(220,38,38,0.3); color: var(--danger); background: var(--danger-xl); }
+
+    /* ════════ TOPBAR MÓVIL ════════ */
+    .adm-topbar {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 56px;
+      background: white;
+      border-bottom: 1px solid var(--border);
+      z-index: 150;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1.25rem;
+      box-shadow: var(--shadow-xs);
+    }
+
+    .topbar-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--blue);
+    }
+
+    .burger-btn {
+      background: none;
+      border: none;
+      color: var(--text);
+      font-size: 20px;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 6px;
+      transition: background 0.2s;
+    }
+
+    .burger-btn:hover { background: var(--bg2); }
+
+    /* ════════ CONTENIDO ════════ */
+    .adm-main {
+      margin-left: var(--sidebar-w);
+      flex: 1;
+      min-height: 100vh;
+    }
+
+    .adm-topnav {
+      height: 56px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      background: white;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      box-shadow: var(--shadow-xs);
+    }
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--hint);
+    }
+
+    .breadcrumb a { color: var(--hint); text-decoration: none; transition: color 0.15s; }
+    .breadcrumb a:hover { color: var(--blue); }
+    .breadcrumb .sep { color: var(--border2); }
+    .breadcrumb .current { color: var(--text2); font-weight: 500; }
+
+    .topnav-right a {
+      font-size: 13px;
+      color: var(--muted);
+      text-decoration: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      transition: all 0.15s;
+      font-family: var(--sans);
+      font-weight: 600;
+    }
+
+    .topnav-right a:hover { background: var(--bg2); color: var(--text); }
+
+    .adm-content { padding: 2rem; }
+
+    /* Flash messages */
+    .flash {
+      padding: 12px 16px;
+      border-radius: var(--r-md);
+      margin-bottom: 1rem;
+      font-size: 14px;
+      border: 1px solid;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .flash-error   { background: var(--danger-xl); color: #7f1d1d; border-color: rgba(220,38,38,0.2); }
+    .flash-success { background: var(--green-xl);  color: #064e3b; border-color: rgba(5,150,105,0.2); }
+    .flash-info    { background: var(--blue-xl);   color: #1e3a8a; border-color: rgba(37,99,235,0.2); }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .adm-sidebar { transform: translateX(-100%); }
+      .adm-sidebar.open { transform: translateX(0); }
+      .adm-main { margin-left: 0; padding-top: 56px; }
+      .adm-topbar { display: flex; }
+      .adm-content { padding: 1.25rem; }
+    }
+
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15,23,42,0.3);
+      z-index: 99;
+      backdrop-filter: blur(2px);
+    }
+
+    .sidebar-overlay.show { display: block; }
+
+    /* ── Animación de entrada ── */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .adm-content > * { animation: fadeInUp 0.35s ease both; }
+  </style>
+
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+<!-- Topbar móvil -->
+<div class="adm-topbar" id="topbar">
+  <button class="burger-btn" onclick="toggleSidebar()">☰</button>
+  <span class="topbar-title">CyberTutor Admin</span>
+  <span style="width:36px;"></span>
+</div>
+
+<!-- Overlay móvil -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+<!-- ════ SIDEBAR ════ -->
+<aside class="adm-sidebar" id="sidebar">
+
+  <div class="sidebar-logo">
+    <div class="logo-wrap">
+      <div class="logo-icon">⬡</div>
+      <div>
+        <div class="logo-title">CyberTutor IA</div>
+        <div class="logo-sub">Panel de administración</div>
+      </div>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+
+    <span class="nav-section-label">General</span>
+
+    <a href="{{ url_for('admin.dashboard') }}"
+       class="nav-link {% if request.endpoint == 'admin.dashboard' %}active{% endif %}">
+      <span class="nav-icon">📊</span> Dashboard
+    </a>
+
+    <div class="nav-divider"></div>
+    <span class="nav-section-label">Usuarios</span>
+
+    <a href="{{ url_for('admin.users') }}"
+       class="nav-link {% if request.endpoint in ['admin.users', 'admin.create_user', 'admin.edit_user'] %}active{% endif %}">
+      <span class="nav-icon">👥</span> Gestionar usuarios
+    </a>
+
+    <a href="{{ url_for('admin.create_user') }}" class="nav-link">
+      <span class="nav-icon">➕</span> Nuevo usuario
+    </a>
+
+    <div class="nav-divider"></div>
+    <span class="nav-section-label">Plataforma</span>
+
+    <a href="{{ url_for('main.home') }}" class="nav-link" target="_blank">
+      <span class="nav-icon">🌐</span> Ver plataforma
+    </a>
+
+    <a href="{{ url_for('admin.api_stats') }}" class="nav-link" target="_blank">
+      <span class="nav-icon">📡</span> API estadísticas
+    </a>
+
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="admin-profile">
+      <div class="profile-avatar">
+        {{ current_user.email[0].upper() if current_user.is_authenticated else 'A' }}
+      </div>
+      <div>
+        <div class="profile-name">
+          {{ current_user.name or current_user.email if current_user.is_authenticated else 'Admin' }}
+        </div>
+        <div class="profile-role">Administrador</div>
+      </div>
+    </div>
+    <a href="{{ url_for('auth.logout') }}" class="btn-logout">
+      <span>⎋</span> Cerrar sesión
+    </a>
+  </div>
+
+</aside>
+
+<!-- ════ CONTENIDO ════ -->
+<main class="adm-main">
+
+  <div class="adm-topnav">
+    <div class="breadcrumb">
+      <a href="{{ url_for('admin.dashboard') }}">Admin</a>
+      <span class="sep">/</span>
+      <span class="current">{% block breadcrumb %}Dashboard{% endblock %}</span>
+    </div>
+    <div class="topnav-right">
+      <a href="{{ url_for('main.home') }}" target="_blank">← Ir a la plataforma</a>
+    </div>
+  </div>
+
+  <div style="padding: 0 2rem; padding-top: 1.25rem;">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash flash-{{ category }}">
+            <span>{{ '⚠' if category == 'error' else '✓' if category == 'success' else 'ℹ' }}</span>
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+  </div>
+
+  <div class="adm-content">
+    {% block content %}{% endblock %}
+  </div>
+
+</main>
+
+<script>
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebarOverlay').classList.toggle('show');
+}
+
+document.querySelectorAll('.nav-link').forEach(link => {
+  link.addEventListener('click', () => {
+    if (window.innerWidth <= 900) toggleSidebar();
+  });
+});
+</script>
+
+{% block extra_scripts %}{% endblock %}
+
+</body>
+</html>
