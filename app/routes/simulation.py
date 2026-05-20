@@ -1,21 +1,20 @@
-import os
+"""
+app/routes/simulation.py
+"""
+
 import json
 import random
 from flask import Blueprint, render_template, request, session
-from flask_login import login_required
-from anthropic import Anthropic
+from flask_login import login_required, current_user
+from app.ai.gemini_client import ask_gemini_json
+from app.models.progress import SimulationResult
+from app import db
 
 simulation = Blueprint("simulation", __name__)
-client = Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
 
-
-from app.models.progress import QuizResult, SimulationResult
-from app import db
-from flask_login import current_user
-
-# ---------------------------------------------------------------------------
-# ESCENARIOS DE PHISHING (puedes mover esto a una BD o JSON externo)
-# ---------------------------------------------------------------------------
+# ── Escenarios ──────────────────────────────────────────────────────────────
+# IMPORTANTE: Los links ahora apuntan a rutas internas de la simulación
+# para que el usuario viva la experiencia del phishing en ambiente controlado.
 
 SCENARIOS = [
     {
@@ -27,7 +26,9 @@ SCENARIOS = [
             "Para evitar el bloqueo permanente, debe verificar su identidad en las "
             "próximas 24 horas. Haga clic en el enlace para actualizar sus datos."
         ),
-        "link": "http://banco-seguro-col.net/verificar?token=abc123",
+        # ← Apunta a la página de phishing falsa del banco
+        "link": "/simulation/trap/banco",
+        "link_display": "http://banco-seguro-col.net/verificar?token=abc123",
         "correct_action": "report",
         "risk": "alto",
         "clues": [
@@ -47,6 +48,7 @@ SCENARIOS = [
             "formulario adjunto. Por favor hazlo antes del viernes."
         ),
         "link": None,
+        "link_display": None,
         "correct_action": "ignore",
         "risk": "medio",
         "clues": [
@@ -65,7 +67,9 @@ SCENARIOS = [
             "de tu contenido favorito sin interrupciones, actualiza tu método de pago "
             "ahora. Si no lo haces, tu cuenta será cancelada esta noche."
         ),
-        "link": "http://netflix-pagos.com/update",
+        # ← Apunta a la página de phishing falsa de Netflix
+        "link": "/simulation/trap/netflix",
+        "link_display": "http://netflix-pagos.com/update",
         "correct_action": "report",
         "risk": "alto",
         "clues": [
@@ -77,89 +81,79 @@ SCENARIOS = [
     },
 ]
 
+ACTION_LABELS = {
+    "click_link": "Abrió el enlace sospechoso",
+    "reply":      "Respondió el correo con información",
+    "ignore":     "Ignoró y eliminó el correo",
+    "report":     "Reportó el correo como phishing",
+}
+
+ACTION_DISPLAY = {
+    "click_link": "Abrió el enlace",
+    "reply":      "Respondió el correo",
+    "ignore":     "Ignoró el correo",
+    "report":     "Reportó como phishing",
+}
+
+RISK_MAP = {
+    "click_link": "alto",
+    "reply":      "medio",
+    "ignore":     "bajo",
+    "report":     "bajo",
+}
+
 
 def get_scenario(scenario_id=None):
-    """Retorna un escenario por ID, o uno aleatorio si no se especifica."""
     if scenario_id:
         return next((s for s in SCENARIOS if s["id"] == scenario_id), None)
     return random.choice(SCENARIOS)
 
 
-# ---------------------------------------------------------------------------
-# FUNCIÓN PRINCIPAL: ANÁLISIS CON CLAUDE
-# ---------------------------------------------------------------------------
+# ── Análisis con Gemini ─────────────────────────────────────────────────────
 
-def analyze_decision_with_claude(scenario: dict, user_action: str) -> dict:
-    """
-    Llama a la API de Claude para analizar la decisión del usuario
-    y generar un análisis educativo personalizado.
-
-    Retorna un dict con:
-      - analysis: explicación detallada de Claude
-      - tip: consejo para el futuro
-      - points: puntuación (0-100)
-    """
-
-    action_labels = {
-        "click_link": "Abrió el enlace sospechoso",
-        "reply": "Respondió el correo con información",
-        "ignore": "Ignoró y eliminó el correo",
-        "report": "Reportó el correo como phishing",
-    }
-
-    prompt = f"""
-Eres CyberTutor IA, un experto en ciberseguridad que enseña a identificar ataques de phishing.
-Un usuario acaba de enfrentar el siguiente escenario de simulación:
+def analyze_decision(scenario: dict, user_action: str) -> dict:
+    prompt = f"""Eres CyberTutor IA, experto en ciberseguridad que enseña a identificar phishing.
+Un usuario enfrentó este escenario de simulación:
 
 ESCENARIO:
 - Remitente: {scenario['sender']}
 - Asunto: {scenario['subject']}
-- Cuerpo del correo: {scenario['body']}
-- Enlace incluido: {scenario.get('link', 'Ninguno')}
-- Señales de alerta reales: {', '.join(scenario['clues'])}
+- Cuerpo: {scenario['body']}
+- Enlace visible: {scenario.get('link_display', 'Ninguno')}
+- Señales reales de alerta: {', '.join(scenario['clues'])}
 - Acción correcta: {scenario['correct_action']}
 
-DECISIÓN DEL USUARIO: {action_labels.get(user_action, user_action)}
+DECISIÓN DEL USUARIO: {ACTION_LABELS.get(user_action, user_action)}
 
-Responde ÚNICAMENTE con un objeto JSON con esta estructura exacta (sin markdown, sin texto extra):
+Responde ÚNICAMENTE con JSON válido, sin markdown ni texto adicional:
 {{
-  "analysis": "Explicación clara de 3-4 oraciones sobre por qué la decisión fue correcta o incorrecta, mencionando las señales concretas del correo.",
-  "tip": "Un consejo práctico de 1-2 oraciones para situaciones similares en el futuro.",
-  "points": <número entre 0 y 100 según la calidad de la decisión>
+  "analysis": "Explicación de 3-4 oraciones sobre si la decisión fue correcta o no, mencionando señales concretas del correo.",
+  "tip": "Consejo práctico de 1-2 oraciones para situaciones similares.",
+  "points": <entero 0-100>
 }}
 
-Reglas para los puntos:
-- report (correcto): 100
-- ignore (aceptable): 75
-- reply (mala): 25
-- click_link (peligroso): 0
-Si la acción correcta era 'ignore' y el usuario reportó, dale 90 puntos (casi perfecto).
+Puntuación:
+- report cuando era correcto: 100
+- report cuando correct_action era ignore: 90
+- ignore cuando era correcto: 75
+- reply: 25
+- click_link: 0
 """
-
-    message = client.messages.create(
-        model="claude-opus-4-5",
-        max_tokens=600,
-        messages=[{"role": "user", "content": prompt}],
-    )
-
-    raw = message.content[0].text.strip()
-
-    # Limpiar posibles backticks de markdown
-    if raw.startswith("```"):
-        raw = raw.split("```")[1]
-        if raw.startswith("json"):
-            raw = raw[4:]
-
-    result = json.loads(raw)
-    return result
+    try:
+        return ask_gemini_json(prompt)
+    except Exception:
+        return {
+            "analysis": "No se pudo conectar con CyberTutor IA. Revisa tu GEMINI_API_KEY.",
+            "tip": "Verifica siempre el dominio del remitente antes de hacer clic en cualquier enlace.",
+            "points": 0,
+        }
 
 
-# ---------------------------------------------------------------------------
-# RUTAS DEL BLUEPRINT
-# ---------------------------------------------------------------------------
+# ── Rutas ───────────────────────────────────────────────────────────────────
 
 @simulation.route("/")
-def start_simulation():
+@login_required
+def start():
     """Muestra un escenario de phishing al usuario."""
     scenario = get_scenario()
     session["current_scenario"] = scenario["id"]
@@ -168,63 +162,123 @@ def start_simulation():
 
 @simulation.route("/decision", methods=["POST"])
 @login_required
-def simulation_decision():
-    """Procesa la decisión del usuario y consulta a Claude para el análisis."""
-
-    user_action = request.form.get("action")
+def decision():
+    """Procesa la decisión del usuario (botones de acción)."""
+    user_action = request.form.get("action", "")
     scenario_id = request.form.get("scenario_id") or session.get("current_scenario")
 
     scenario = get_scenario(scenario_id)
     if not scenario:
         return "Escenario no encontrado", 404
 
-    # Llamada a Claude
+    ai_result = analyze_decision(scenario, user_action)
+
+    # Guardar resultado en BD
     try:
-        ai_result = analyze_decision_with_claude(scenario, user_action)
-    except Exception as e:
-        # Fallback si hay error con la API
-        ai_result = {
-            "analysis": "No se pudo conectar con CyberTutor IA en este momento. Revisa tu API key.",
-            "tip": "Siempre verifica el dominio del remitente antes de hacer clic en cualquier enlace.",
-            "points": 0,
-        }
-
-    # Determinar nivel de riesgo según la acción
-    risk_map = {"click_link": "alto", "reply": "medio", "ignore": "bajo", "report": "bajo"}
-    risk_level = risk_map.get(user_action, "medio")
-
-    action_display = {
-        "click_link": "Abrió el enlace",
-        "reply": "Respondió el correo",
-        "ignore": "Ignoró el correo",
-        "report": "Reportó como phishing",
-    }
+        sim_record = SimulationResult(
+            user_id=current_user.id,
+            scenario_id=scenario["id"],
+            action_taken=user_action,
+            is_correct=(
+                user_action == scenario["correct_action"] or
+                (user_action == "report" and scenario["correct_action"] == "ignore")
+            ),
+            points=ai_result["points"],
+            risk_level=RISK_MAP.get(user_action, "medio"),
+        )
+        db.session.add(sim_record)
+        db.session.commit()
+    except Exception:
+        db.session.rollback()
 
     return render_template(
         "result.html",
         ai_analysis=ai_result["analysis"],
         ai_tip=ai_result["tip"],
         points=ai_result["points"],
-        user_action=action_display.get(user_action, user_action),
-        correct_action=action_display.get(scenario["correct_action"], scenario["correct_action"]),
-        risk_level=risk_level,
+        user_action=ACTION_DISPLAY.get(user_action, user_action),
+        correct_action=ACTION_DISPLAY.get(scenario["correct_action"], scenario["correct_action"]),
+        risk_level=RISK_MAP.get(user_action, "medio"),
         red_flags=scenario["clues"],
     )
-    
-@simulation.route("/save_quiz", methods=["POST"])
+
+
+# ── RUTAS DE TRAMPAS DE PHISHING ────────────────────────────────────────────
+
+@simulation.route("/trap/banco")
 @login_required
-def save_quiz():
-    score = request.form.get("score", type=int)
-    correct_count = request.form.get("correct", type=int)
-    total = request.form.get("total", type=int)
+def trap_banco():
+    """
+    Página falsa de banco (trampa).
+    Si el usuario llegó aquí, hizo clic en el enlace del phishing.
+    Registra automáticamente la acción como 'click_link'.
+    """
+    scenario_id = session.get("current_scenario")
+    scenario = get_scenario(scenario_id)
 
-    result = QuizResult(
-        user_id=current_user.id,
-        score=score,
-        correct=correct_count,
-        total=total
-    )
-    db.session.add(result)
-    db.session.commit()
+    # Registrar que el usuario cayó en la trampa
+    if scenario:
+        _register_trap_click(scenario, "click_link")
 
-    return "Resultado guardado correctamente"
+    return render_template("phishing_banco.html")
+
+
+@simulation.route("/trap/netflix")
+@login_required
+def trap_netflix():
+    """Página falsa de Netflix (trampa)."""
+    scenario_id = session.get("current_scenario")
+    scenario = get_scenario(scenario_id)
+
+    if scenario:
+        _register_trap_click(scenario, "click_link")
+
+    return render_template("phishing_netflix.html")
+
+
+@simulation.route("/phishing-caught")
+@login_required
+def phishing_caught():
+    """
+    Página educativa que se muestra después de que el usuario
+    ingresó datos en la página de phishing falsa.
+    """
+    phishing_type = request.args.get("type", "banco")
+
+    # Registrar en BD como click_link con 0 puntos si no se hizo ya
+    scenario_id = session.get("current_scenario")
+    scenario = get_scenario(scenario_id)
+    if scenario:
+        _register_trap_click(scenario, "click_link", force=False)
+
+    return render_template("phishing_caught.html", phishing_type=phishing_type)
+
+
+def _register_trap_click(scenario: dict, action: str, force: bool = True):
+    """
+    Registra en la BD que el usuario hizo clic en el enlace trampa.
+    force=False evita duplicados si ya se registró.
+    """
+    if not force:
+        # Verificar si ya existe un registro para este escenario en esta sesión
+        existing = SimulationResult.query.filter_by(
+            user_id=current_user.id,
+            scenario_id=scenario["id"],
+            action_taken=action,
+        ).first()
+        if existing:
+            return
+
+    try:
+        sim_record = SimulationResult(
+            user_id=current_user.id,
+            scenario_id=scenario["id"],
+            action_taken=action,
+            is_correct=False,
+            points=0,
+            risk_level="alto",
+        )
+        db.session.add(sim_record)
+        db.session.commit()
+    except Exception:
+        db.session.rollback()

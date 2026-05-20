@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BancoSeguro Colombia — Verificación de Identidad</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'IBM Plex Sans', sans-serif;
+      background: #f0f4f8;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Barra superior del banco */
+    .bank-topbar {
+      background: #003087;
+      color: white;
+      padding: 8px 2rem;
+      font-size: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .bank-topbar a { color: #a8c4e8; text-decoration: none; font-size: 11px; }
+
+    /* Header principal */
+    .bank-header {
+      background: white;
+      border-bottom: 3px solid #003087;
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 70px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .bank-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-icon {
+      width: 42px; height: 42px;
+      background: linear-gradient(135deg, #003087, #0050c8);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .logo-name {
+      font-size: 18px;
+      font-weight: 700;
+      color: #003087;
+      letter-spacing: -0.5px;
+    }
+
+    .logo-sub { font-size: 10px; color: #64748b; text-transform: uppercase; letter-spacing: 1px; }
+
+    .bank-nav { display: flex; gap: 1.5rem; }
+    .bank-nav a { font-size: 13px; color: #334155; text-decoration: none; font-weight: 500; }
+
+    /* Security badge */
+    .security-bar {
+      background: #f8fffe;
+      border-bottom: 1px solid #dcfce7;
+      padding: 6px 2rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: #166534;
+    }
+
+    /* Main content */
+    .main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+    }
+
+    .login-box {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+      width: 100%;
+      max-width: 420px;
+      overflow: hidden;
+    }
+
+    .login-header {
+      background: linear-gradient(135deg, #003087, #0050c8);
+      padding: 2rem 2rem 1.5rem;
+      color: white;
+    }
+
+    .login-header h2 { font-size: 20px; font-weight: 600; margin-bottom: 6px; }
+    .login-header p  { font-size: 13px; opacity: 0.8; line-height: 1.5; }
+
+    .alert-banner {
+      background: #fef3c7;
+      border: 1px solid #f59e0b;
+      margin: 1.25rem;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 12px;
+      color: #92400e;
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+    }
+
+    .login-form { padding: 0 1.5rem 1.5rem; }
+
+    .form-group { margin-bottom: 1rem; }
+    .form-group label { display: block; font-size: 12px; font-weight: 600; color: #374151; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+    .form-group input {
+      width: 100%;
+      border: 1.5px solid #d1d5db;
+      border-radius: 8px;
+      padding: 11px 14px;
+      font-size: 14px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      color: #111827;
+    }
+
+    .form-group input:focus { border-color: #003087; box-shadow: 0 0 0 3px rgba(0,48,135,0.1); }
+
+    .form-group input::placeholder { color: #9ca3af; }
+
+    .submit-btn {
+      width: 100%;
+      padding: 13px;
+      background: linear-gradient(135deg, #003087, #0050c8);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      margin-top: 0.5rem;
+      transition: opacity 0.2s, transform 0.1s;
+      letter-spacing: 0.3px;
+    }
+
+    .submit-btn:hover { opacity: 0.92; transform: translateY(-1px); }
+
+    .form-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1rem;
+      font-size: 12px;
+    }
+
+    .form-footer a { color: #003087; text-decoration: none; }
+
+    .login-footer {
+      background: #f8fafc;
+      border-top: 1px solid #e5e7eb;
+      padding: 1rem 1.5rem;
+      font-size: 11px;
+      color: #6b7280;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Footer del banco */
+    .bank-footer {
+      background: #1e293b;
+      color: #94a3b8;
+      padding: 1.5rem 2rem;
+      font-size: 11px;
+      text-align: center;
+      line-height: 1.8;
+    }
+
+    .bank-footer a { color: #64748b; text-decoration: none; margin: 0 8px; }
+
+    /* ── OVERLAY de alerta (se muestra después de submit) ── */
+    .caught-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(6px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .caught-overlay.show { display: flex; }
+  </style>
+</head>
+<body>
+
+<!-- Barra superior -->
+<div class="bank-topbar">
+  <span>Banca en Línea — Acceso Seguro</span>
+  <div style="display:flex;gap:16px;">
+    <a href="#">Sucursales</a>
+    <a href="#">Ayuda</a>
+    <a href="#">Contacto</a>
+  </div>
+</div>
+
+<!-- Header -->
+<header class="bank-header">
+  <div class="bank-logo">
+    <div class="logo-icon">B</div>
+    <div>
+      <div class="logo-name">BancoSeguro</div>
+      <div class="logo-sub">Colombia S.A.</div>
+    </div>
+  </div>
+  <nav class="bank-nav">
+    <a href="#">Personas</a>
+    <a href="#">Empresas</a>
+    <a href="#">Inversiones</a>
+    <a href="#">Seguros</a>
+  </nav>
+</header>
+
+<!-- Barra de seguridad -->
+<div class="security-bar">
+  <span>🔒</span>
+  <span>Conexión segura SSL — <strong>banco-seguro-col.net</strong> — Sus datos están protegidos</span>
+</div>
+
+<!-- Contenido -->
+<main class="main">
+  <div class="login-box">
+
+    <div class="login-header">
+      <h2>Verificación de Identidad</h2>
+      <p>Hemos detectado actividad inusual en su cuenta. Por favor verifique sus datos para evitar el bloqueo.</p>
+    </div>
+
+    <div class="alert-banner">
+      <span>⚠️</span>
+      <span>Su cuenta será bloqueada permanentemente en <strong id="countdown">24:00:00</strong> si no completa la verificación.</span>
+    </div>
+
+    <form class="login-form" onsubmit="handleSubmit(event)">
+
+      <div class="form-group">
+        <label>Número de documento o usuario</label>
+        <input type="text" id="user-input" placeholder="Ej. 1234567890" required autocomplete="off">
+      </div>
+
+      <div class="form-group">
+        <label>Contraseña</label>
+        <input type="password" id="pass-input" placeholder="••••••••" required autocomplete="off">
+      </div>
+
+      <div class="form-group">
+        <label>Número de tarjeta (últimos 4 dígitos)</label>
+        <input type="text" id="card-input" placeholder="••••" maxlength="4" required autocomplete="off">
+      </div>
+
+      <button type="submit" class="submit-btn">Verificar mi cuenta →</button>
+
+      <div class="form-footer">
+        <a href="#">¿Olvidó su contraseña?</a>
+        <a href="#">Primer acceso</a>
+      </div>
+    </form>
+
+    <div class="login-footer">
+      <span>🔐</span>
+      <span>Protegido por cifrado SSL de 256 bits. BancoSeguro nunca solicitará su PIN completo.</span>
+    </div>
+
+  </div>
+</main>
+
+<footer class="bank-footer">
+  BancoSeguro Colombia S.A. — Vigilado por la Superfinanciera de Colombia — NIT 900.123.456-7
+  <br>
+  <a href="#">Política de privacidad</a> · <a href="#">Términos y condiciones</a> · <a href="#">HABEAS DATA</a>
+</footer>
+
+<!-- Overlay: "Caíste en el ataque" -->
+<div class="caught-overlay" id="caughtOverlay">
+  <!-- El contenido lo inyecta JS para reutilizar el mismo componente -->
+</div>
+
+<script>
+// Countdown falso
+let secs = 86400;
+setInterval(() => {
+  secs = Math.max(0, secs - 1);
+  const h = String(Math.floor(secs / 3600)).padStart(2,'0');
+  const m = String(Math.floor((secs % 3600) / 60)).padStart(2,'0');
+  const s = String(secs % 60).padStart(2,'0');
+  const el = document.getElementById('countdown');
+  if (el) el.textContent = `${h}:${m}:${s}`;
+}, 1000);
+
+function handleSubmit(e) {
+  e.preventDefault();
+  // Redirigir a la página de "caíste"
+  window.location.href = '/simulation/phishing-caught?type=banco';
+}
+</script>
+</body>
+</html>

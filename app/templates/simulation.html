@@ -7,54 +7,104 @@
   <div class="sim-header">
     <span class="sim-badge">Módulo 1 — Phishing</span>
     <h2>Simulación de Ataque</h2>
-    <p class="sim-subtitle">Analiza el correo y toma una decisión. La IA evaluará tu respuesta.</p>
+    <p class="sim-subtitle">Analiza el correo y toma una decisión. Puedes hacer clic en el enlace si quieres vivir la experiencia completa.</p>
   </div>
 
-  <!-- Escenario dinámico enviado desde Flask -->
+  <!-- Correo simulado -->
   <div class="email-panel">
     <div class="email-toolbar">
-      <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
-      <span class="email-label">Bandeja de entrada</span>
+      <span class="dot red"></span>
+      <span class="dot yellow"></span>
+      <span class="dot green"></span>
+      <span class="email-label">📥 Bandeja de entrada</span>
+      <span class="email-label-right">Hoy, {{ "09:47" }}</span>
+    </div>
+    <div class="email-meta">
+      <div class="email-field">
+        <span class="field-key">De:</span>
+        <span class="field-val sender-suspicious">{{ scenario.sender }}</span>
+        <span class="suspicious-tag">⚠ Remitente externo</span>
+      </div>
+      <div class="email-field">
+        <span class="field-key">Para:</span>
+        <span class="field-val">yo@empresa.com</span>
+      </div>
+      <div class="email-field">
+        <span class="field-key">Asunto:</span>
+        <span class="field-val subject-text">{{ scenario.subject }}</span>
+      </div>
     </div>
     <div class="email-body">
-      <div class="email-field"><span class="field-key">De:</span> <span class="field-val">{{ scenario.sender }}</span></div>
-      <div class="email-field"><span class="field-key">Asunto:</span> <span class="field-val">{{ scenario.subject }}</span></div>
-      <hr class="email-divider">
       <p class="email-content">{{ scenario.body }}</p>
       {% if scenario.link %}
-      <a class="email-link" href="#">{{ scenario.link }}</a>
+      <div class="email-link-wrap">
+        <!-- El href apunta a la trampa real, el texto muestra la URL falsa -->
+        <a class="email-link" href="{{ scenario.link }}" title="Haz clic para vivir la simulación completa">
+          <span class="link-icon">🔗</span>
+          <span class="link-url">{{ scenario.link_display or scenario.link }}</span>
+        </a>
+        <span class="link-hint">← Puedes hacer clic aquí para vivir la experiencia</span>
+      </div>
       {% endif %}
     </div>
   </div>
 
-  <!-- Decisión del usuario -->
+  <!-- Decisión del usuario (botones) -->
   <div class="decision-panel">
     <p class="decision-label">¿Qué harías con este correo?</p>
     <form method="POST" action="/simulation/decision">
       <input type="hidden" name="scenario_id" value="{{ scenario.id }}">
       <div class="decision-buttons">
-        <button class="btn-decision btn-danger" name="action" value="click_link">
-          <span class="btn-icon">⚠</span> Abrir el enlace
+
+        <button class="btn-decision btn-d-danger" name="action" value="click_link">
+          <div class="bd-icon">⚠</div>
+          <div class="bd-text">
+            <div class="bd-title">Abrir el enlace</div>
+            <div class="bd-sub">O haz clic directamente en el enlace del correo</div>
+          </div>
         </button>
-        <button class="btn-decision btn-warning" name="action" value="reply">
-          <span class="btn-icon">↩</span> Responder el correo
+
+        <button class="btn-decision btn-d-warning" name="action" value="reply">
+          <div class="bd-icon">↩</div>
+          <div class="bd-text">
+            <div class="bd-title">Responder el correo</div>
+            <div class="bd-sub">Enviar información solicitada</div>
+          </div>
         </button>
-        <button class="btn-decision btn-safe" name="action" value="ignore">
-          <span class="btn-icon">✓</span> Ignorar / Eliminar
+
+        <button class="btn-decision btn-d-safe" name="action" value="ignore">
+          <div class="bd-icon">🗑</div>
+          <div class="bd-text">
+            <div class="bd-title">Ignorar / Eliminar</div>
+            <div class="bd-sub">Moverlo a la papelera sin abrirlo</div>
+          </div>
         </button>
-        <button class="btn-decision btn-report" name="action" value="report">
-          <span class="btn-icon">⚑</span> Reportar como phishing
+
+        <button class="btn-decision btn-d-report" name="action" value="report">
+          <div class="bd-icon">⚑</div>
+          <div class="bd-text">
+            <div class="bd-title">Reportar como phishing</div>
+            <div class="bd-sub">Notificar al equipo de seguridad</div>
+          </div>
         </button>
+
       </div>
     </form>
   </div>
 
-  <!-- Indicadores del escenario -->
+  <!-- Pistas -->
   <div class="clues-panel">
-    <p class="clues-title">Pistas en este correo:</p>
-    <ul class="clues-list">
+    <div class="clues-header">
+      <span>🔍</span>
+      <span class="clues-title">Pistas en este correo</span>
+      <button class="clues-toggle" onclick="toggleClues()" id="cluesToggle">Mostrar pistas</button>
+    </div>
+    <ul class="clues-list" id="cluesList" style="display:none;">
       {% for clue in scenario.clues %}
-      <li class="clue-item">{{ clue }}</li>
+      <li class="clue-item">
+        <span class="clue-dot"></span>
+        {{ clue }}
+      </li>
       {% endfor %}
     </ul>
   </div>
@@ -62,43 +112,313 @@
 </div>
 
 <style>
-  .sim-container { max-width: 720px; margin: 2rem auto; padding: 0 1rem; }
-  .sim-header { margin-bottom: 2rem; }
-  .sim-badge { background: #1a1a2e; color: #00d4ff; font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; padding: 4px 12px; border-radius: 20px; }
-  .sim-header h2 { font-size: 2rem; margin: 0.75rem 0 0.25rem; color: #fff; }
-  .sim-subtitle { color: #888; font-size: 0.95rem; }
+  .sim-container {
+    max-width: 720px;
+    margin: 2rem auto;
+    padding: 0 1rem 3rem;
+  }
 
-  .email-panel { background: #0f0f1a; border: 1px solid #2a2a4a; border-radius: 12px; overflow: hidden; margin-bottom: 1.5rem; }
-  .email-toolbar { background: #1a1a2e; padding: 10px 16px; display: flex; align-items: center; gap: 6px; }
+  /* Header */
+  .sim-header { margin-bottom: 1.75rem; }
+
+  .sim-badge {
+    display: inline-block;
+    background: var(--blue-xlight);
+    color: var(--blue);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 99px;
+    border: 1px solid var(--border-blue);
+    margin-bottom: 0.75rem;
+  }
+
+  .sim-header h2 {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+    letter-spacing: -0.5px;
+  }
+
+  .sim-subtitle { color: var(--text-muted); font-size: 14px; }
+
+  /* Email panel */
+  .email-panel {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow-sm);
+    animation: fadeInUp 0.4s ease both;
+  }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .email-toolbar {
+    background: #f4f7fb;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+
   .dot { width: 11px; height: 11px; border-radius: 50%; }
-  .dot.red { background: #ff5f57; }
+  .dot.red    { background: #ff5f57; }
   .dot.yellow { background: #ffbd2e; }
-  .dot.green { background: #28c840; }
-  .email-label { margin-left: 8px; font-size: 12px; color: #555; }
+  .dot.green  { background: #28c840; }
+
+  .email-label { margin-left: 10px; font-size: 12px; color: var(--text-muted); font-weight: 600; }
+  .email-label-right { margin-left: auto; font-size: 11px; color: var(--text-hint); font-family: var(--mono); }
+
+  .email-meta {
+    padding: 1rem 1.5rem 0.75rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .email-field {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    flex-wrap: wrap;
+  }
+
+  .field-key {
+    color: var(--text-hint);
+    min-width: 55px;
+    font-family: var(--mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .field-val { color: var(--text-secondary); }
+
+  .sender-suspicious { color: #dc2626 !important; font-weight: 600; }
+
+  .suspicious-tag {
+    background: #fef3c7;
+    color: #92400e;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 99px;
+    border: 1px solid rgba(245,158,11,0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .subject-text { font-weight: 600; color: var(--text-primary); }
+
   .email-body { padding: 1.5rem; }
-  .email-field { font-size: 13px; margin-bottom: 6px; }
-  .field-key { color: #555; width: 60px; display: inline-block; }
-  .field-val { color: #ccc; }
-  .email-divider { border: none; border-top: 1px solid #2a2a4a; margin: 1rem 0; }
-  .email-content { color: #ddd; line-height: 1.7; font-size: 0.95rem; }
-  .email-link { display: inline-block; margin-top: 1rem; color: #00d4ff; font-size: 0.9rem; border-bottom: 1px solid #00d4ff44; text-decoration: none; }
 
+  .email-content {
+    color: var(--text-secondary);
+    line-height: 1.75;
+    font-size: 14px;
+    margin-bottom: 1.25rem;
+  }
+
+  /* Enlace trampa */
+  .email-link-wrap {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .email-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 8px;
+    color: #1d4ed8;
+    text-decoration: none;
+    font-size: 13px;
+    font-family: var(--mono);
+    transition: all 0.2s;
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  .email-link:hover {
+    background: #dbeafe;
+    border-color: var(--blue);
+    box-shadow: 0 2px 8px rgba(37,99,235,0.15);
+  }
+
+  .link-icon { flex-shrink: 0; }
+
+  .link-url {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #1d4ed8;
+  }
+
+  .link-hint {
+    font-size: 11px;
+    color: var(--text-hint);
+    font-style: italic;
+  }
+
+  /* Decision panel */
   .decision-panel { margin-bottom: 1.5rem; }
-  .decision-label { color: #aaa; font-size: 0.9rem; margin-bottom: 1rem; }
-  .decision-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .btn-decision { padding: 14px 16px; border-radius: 10px; border: 1.5px solid; cursor: pointer; font-size: 0.9rem; font-weight: 600; display: flex; align-items: center; gap: 8px; transition: transform 0.1s, opacity 0.2s; background: transparent; }
-  .btn-decision:hover { opacity: 0.85; transform: scale(0.98); }
-  .btn-icon { font-size: 16px; }
-  .btn-danger { border-color: #ff4444; color: #ff6666; }
-  .btn-warning { border-color: #ffaa00; color: #ffcc44; }
-  .btn-safe { border-color: #00cc88; color: #00ffaa; }
-  .btn-report { border-color: #6688ff; color: #88aaff; }
 
-  .clues-panel { background: #0f0f1a; border: 1px solid #2a2a4a; border-radius: 10px; padding: 1.25rem; }
-  .clues-title { color: #666; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.75rem; }
-  .clues-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 6px; }
-  .clue-item { font-size: 13px; color: #888; padding-left: 16px; position: relative; }
-  .clue-item::before { content: "—"; position: absolute; left: 0; color: #444; }
+  .decision-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.75rem;
+    font-family: var(--mono);
+  }
+
+  .decision-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  @media (max-width: 500px) { .decision-buttons { grid-template-columns: 1fr; } }
+
+  .btn-decision {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    border-radius: 12px;
+    border: 1.5px solid;
+    cursor: pointer;
+    background: white;
+    text-align: left;
+    transition: all 0.2s;
+    font-family: var(--sans);
+  }
+
+  .btn-decision:hover { transform: translateY(-2px); }
+
+  .bd-icon {
+    font-size: 1.4rem;
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .bd-title { font-size: 14px; font-weight: 700; margin-bottom: 2px; }
+  .bd-sub   { font-size: 11px; opacity: 0.7; line-height: 1.3; }
+
+  .btn-d-danger  { border-color: rgba(220,38,38,0.25); color: #991b1b; }
+  .btn-d-danger .bd-icon  { background: #fee2e2; }
+  .btn-d-danger:hover  { background: #fff5f5; border-color: rgba(220,38,38,0.5); box-shadow: 0 4px 16px rgba(220,38,38,0.1); }
+
+  .btn-d-warning { border-color: rgba(217,119,6,0.25); color: #78350f; }
+  .btn-d-warning .bd-icon { background: #fef3c7; }
+  .btn-d-warning:hover { background: #fffbf0; border-color: rgba(217,119,6,0.5); box-shadow: 0 4px 16px rgba(217,119,6,0.1); }
+
+  .btn-d-safe    { border-color: rgba(5,150,105,0.25); color: #065f46; }
+  .btn-d-safe .bd-icon    { background: #d1fae5; }
+  .btn-d-safe:hover    { background: #f0fdf9; border-color: rgba(5,150,105,0.5); box-shadow: 0 4px 16px rgba(5,150,105,0.1); }
+
+  .btn-d-report  { border-color: rgba(37,99,235,0.25); color: #1e3a8a; }
+  .btn-d-report .bd-icon  { background: #dbeafe; }
+  .btn-d-report:hover  { background: #f0f7ff; border-color: rgba(37,99,235,0.5); box-shadow: 0 4px 16px rgba(37,99,235,0.1); }
+
+  /* Clues panel */
+  .clues-panel {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--shadow-xs);
+  }
+
+  .clues-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+  }
+
+  .clues-title {
+    flex: 1;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .clues-toggle {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 5px 12px;
+    font-size: 12px;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-family: var(--sans);
+    transition: all 0.15s;
+  }
+
+  .clues-toggle:hover { background: var(--blue-xlight); color: var(--blue); border-color: var(--border-blue); }
+
+  .clues-list {
+    list-style: none;
+    padding: 0 1rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .clue-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    padding: 10px 12px;
+    background: var(--bg2);
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    line-height: 1.5;
+  }
+
+  .clue-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--orange);
+    flex-shrink: 0;
+    margin-top: 5px;
+  }
 </style>
+
+<script>
+function toggleClues() {
+  const list = document.getElementById('cluesList');
+  const btn  = document.getElementById('cluesToggle');
+  const visible = list.style.display !== 'none';
+  list.style.display = visible ? 'none' : 'flex';
+  btn.textContent = visible ? 'Mostrar pistas' : 'Ocultar pistas';
+}
+</script>
 
 {% endblock %}

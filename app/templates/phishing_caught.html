@@ -1,0 +1,701 @@
+{% extends "base.html" %}
+{% block title %}⚠ Alerta de Seguridad — CyberTutor IA{% endblock %}
+
+{% block content %}
+
+<div class="caught-wrapper" id="caughtWrapper">
+
+  <!-- Animación de "hackeo" inicial -->
+  <div class="glitch-screen" id="glitchScreen">
+    <div class="glitch-text" id="glitchText">ACCESO CONCEDIDO</div>
+    <div class="glitch-subtext">Cargando datos...</div>
+    <div class="progress-fake">
+      <div class="progress-fake-fill" id="progressFake"></div>
+    </div>
+  </div>
+
+  <!-- Contenido principal (oculto hasta que termina la animación) -->
+  <div class="caught-content" id="caughtContent" style="display:none;">
+
+    <!-- Alerta principal -->
+    <div class="alert-hero">
+      <div class="alert-icon-wrap">
+        <div class="alert-ring alert-ring-1"></div>
+        <div class="alert-ring alert-ring-2"></div>
+        <div class="alert-icon">⚠</div>
+      </div>
+      <div class="alert-label">SIMULACIÓN — Ambiente controlado</div>
+      <h1 class="alert-title">Acabas de caer<br>en un ataque de <span class="red-text">Phishing</span></h1>
+      <p class="alert-desc">
+        En un ataque real, el atacante ya tendría tus credenciales y datos de pago. 
+        Veamos exactamente qué pasó y cómo protegerte.
+      </p>
+    </div>
+
+    <!-- Lo que "robaron" -->
+    <div class="stolen-card">
+      <div class="stolen-header">
+        <span class="stolen-dot"></span>
+        <span>Datos que un atacante real hubiera capturado</span>
+      </div>
+      <div class="stolen-items" id="stolenItems">
+        <!-- Se llena según el tipo de phishing -->
+      </div>
+      <div class="stolen-footer">
+        ⚠ En la simulación los datos ingresados <strong>NO fueron almacenados</strong>. En un ataque real, ya estarían en manos del atacante.
+      </div>
+    </div>
+
+    <!-- Timeline del ataque -->
+    <div class="section-card">
+      <h2 class="section-title">¿Cómo funcionó el engaño?</h2>
+      <div class="timeline" id="attackTimeline">
+        <!-- Se llena por JS -->
+      </div>
+    </div>
+
+    <!-- Señales que debiste notar -->
+    <div class="section-card">
+      <h2 class="section-title">🔍 Señales que no deberías haber ignorado</h2>
+      <div class="red-flags-grid" id="redFlagsGrid">
+        <!-- Se llena por JS -->
+      </div>
+    </div>
+
+    <!-- Consecuencias reales -->
+    <div class="consequences-card">
+      <h2 class="section-title" style="color:white;margin-bottom:1.25rem;">💸 En un ataque real, esto hubiera pasado</h2>
+      <div class="consequences-grid" id="consequencesGrid">
+        <!-- Se llena por JS -->
+      </div>
+    </div>
+
+    <!-- Qué hacer si caíste en uno real -->
+    <div class="section-card">
+      <h2 class="section-title">🛡 Si caes en uno real — actúa en los próximos 10 minutos</h2>
+      <div class="action-steps">
+        <div class="action-step">
+          <div class="step-num">1</div>
+          <div>
+            <div class="step-title">Cambia la contraseña inmediatamente</div>
+            <div class="step-desc">Desde un dispositivo diferente y una red segura. Si reutilizas esa contraseña en otros sitios, cámbialas todas.</div>
+          </div>
+        </div>
+        <div class="action-step">
+          <div class="step-num">2</div>
+          <div>
+            <div class="step-title">Notifica a tu banco si compartiste datos financieros</div>
+            <div class="step-desc">Llama a la línea de fraudes de tu banco. Pueden bloquear la tarjeta y revertir transacciones fraudulentas si actúas rápido.</div>
+          </div>
+        </div>
+        <div class="action-step">
+          <div class="step-num">3</div>
+          <div>
+            <div class="step-title">Activa la autenticación en dos pasos (2FA)</div>
+            <div class="step-desc">Aunque tengan tu contraseña, sin el código del 2FA no podrán acceder a tu cuenta.</div>
+          </div>
+        </div>
+        <div class="action-step">
+          <div class="step-num">4</div>
+          <div>
+            <div class="step-title">Reporta el sitio fraudulento</div>
+            <div class="step-desc">En Colombia puedes reportarlo al CSIRT de la Policía Nacional o directamente a la empresa suplantada para que tomen acción.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Score y acciones -->
+    <div class="score-section">
+      <div class="score-badge score-bad">
+        <span class="score-num">0</span>
+        <span class="score-label">puntos</span>
+      </div>
+      <div class="score-message">
+        <h3>Abriste el enlace sospechoso</h3>
+        <p>Esta es la decisión de mayor riesgo. Pero ahora conoces exactamente cómo funciona el engaño — y eso ya te hace más seguro.</p>
+      </div>
+    </div>
+
+    <div class="cta-row">
+      <a href="/simulation" class="btn-retry">↺ Intentar de nuevo</a>
+      <a href="/cursos/phishing" class="btn-learn">Ver módulo de phishing</a>
+      <a href="/" class="btn-home">Ir al inicio</a>
+    </div>
+
+  </div>
+</div>
+
+<style>
+/* ── Wrapper ── */
+.caught-wrapper {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 1rem 3rem;
+}
+
+/* ── Glitch screen ── */
+.glitch-screen {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  gap: 1rem;
+}
+
+.glitch-text {
+  font-family: 'DM Mono', monospace;
+  font-size: clamp(1.5rem, 5vw, 3rem);
+  font-weight: 700;
+  color: #22c55e;
+  letter-spacing: 4px;
+  animation: glitch 0.3s infinite;
+  text-shadow: 0 0 20px #22c55e88;
+}
+
+@keyframes glitch {
+  0%,100% { transform: translate(0); }
+  20%  { transform: translate(-3px, 1px); color: #ff0033; }
+  40%  { transform: translate(3px, -1px); color: #00ffff; }
+  60%  { transform: translate(-1px, 2px); color: #22c55e; }
+  80%  { transform: translate(2px, -2px); color: #ffff00; }
+}
+
+.glitch-subtext {
+  font-family: 'DM Mono', monospace;
+  font-size: 14px;
+  color: #444;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.progress-fake {
+  width: 280px;
+  height: 3px;
+  background: #111;
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: 8px;
+}
+
+.progress-fake-fill {
+  height: 100%;
+  width: 0%;
+  background: #22c55e;
+  transition: width 0.1s linear;
+  box-shadow: 0 0 8px #22c55e;
+}
+
+/* ── Alert hero ── */
+.alert-hero {
+  text-align: center;
+  padding: 3rem 1rem 2rem;
+  animation: fadeInUp 0.6s ease both;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.alert-icon-wrap {
+  position: relative;
+  width: 90px; height: 90px;
+  margin: 0 auto 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.alert-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 2px solid rgba(220,38,38,0.3);
+  animation: ring-pulse 2s ease-in-out infinite;
+}
+
+.alert-ring-1 { inset: -10px; animation-delay: 0s; }
+.alert-ring-2 { inset: -20px; animation-delay: 0.4s; }
+
+@keyframes ring-pulse {
+  0%,100% { transform: scale(1); opacity: 0.5; }
+  50% { transform: scale(1.06); opacity: 0.2; }
+}
+
+.alert-icon {
+  width: 70px; height: 70px;
+  background: linear-gradient(135deg, #dc2626, #ef4444);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  box-shadow: 0 8px 32px rgba(220,38,38,0.35);
+  position: relative;
+  z-index: 1;
+}
+
+.alert-label {
+  display: inline-block;
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #f59e0b;
+  border-radius: 99px;
+  padding: 4px 16px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+.alert-title {
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1.15;
+  margin-bottom: 1rem;
+  letter-spacing: -0.5px;
+}
+
+.red-text { color: #dc2626; }
+
+.alert-desc {
+  font-size: 15px;
+  color: var(--text-muted);
+  max-width: 520px;
+  margin: 0 auto;
+  line-height: 1.7;
+}
+
+/* ── Stolen card ── */
+.stolen-card {
+  background: #fef2f2;
+  border: 1.5px solid rgba(220,38,38,0.25);
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+  animation: fadeInUp 0.6s ease 0.1s both;
+}
+
+.stolen-header {
+  background: #dc2626;
+  color: white;
+  padding: 12px 20px;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'DM Mono', monospace;
+  letter-spacing: 0.5px;
+}
+
+.stolen-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: #fca5a5;
+  animation: blink 1s ease-in-out infinite;
+}
+
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+.stolen-items {
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.stolen-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: white;
+  border: 1px solid rgba(220,38,38,0.15);
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.stolen-item-key {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--danger);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  min-width: 140px;
+  font-family: 'DM Mono', monospace;
+}
+
+.stolen-item-val {
+  font-family: 'DM Mono', monospace;
+  color: #111;
+  font-size: 13px;
+  background: #fef2f2;
+  padding: 3px 10px;
+  border-radius: 4px;
+  border: 1px solid rgba(220,38,38,0.2);
+}
+
+.stolen-footer {
+  background: #fff1f2;
+  border-top: 1px solid rgba(220,38,38,0.15);
+  padding: 10px 20px;
+  font-size: 12px;
+  color: #7f1d1d;
+}
+
+/* ── Section card ── */
+.section-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.75rem;
+  margin-bottom: 1.5rem;
+  box-shadow: var(--shadow-xs);
+  animation: fadeInUp 0.6s ease 0.2s both;
+}
+
+.section-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 1.25rem;
+  letter-spacing: -0.3px;
+}
+
+/* ── Timeline ── */
+.timeline { display: flex; flex-direction: column; gap: 0; }
+
+.timeline-step {
+  display: flex;
+  gap: 14px;
+  position: relative;
+  padding-bottom: 20px;
+}
+
+.timeline-step:last-child { padding-bottom: 0; }
+
+.timeline-step:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: 15px;
+  top: 34px;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(180deg, var(--border-mid), transparent);
+}
+
+.tl-dot {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+  border: 2px solid;
+}
+
+.tl-attacker { background: #fef2f2; border-color: rgba(220,38,38,0.3); }
+.tl-victim   { background: var(--blue-xlight); border-color: rgba(37,99,235,0.2); }
+.tl-danger   { background: #fef3c7; border-color: rgba(217,119,6,0.3); }
+
+.tl-content { padding-top: 5px; }
+.tl-title { font-size: 14px; font-weight: 700; color: var(--text-primary); margin-bottom: 3px; }
+.tl-desc  { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+
+/* ── Red flags ── */
+.red-flags-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.red-flag {
+  background: #fff7f7;
+  border: 1px solid rgba(220,38,38,0.15);
+  border-radius: 10px;
+  padding: 1rem;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.rf-icon {
+  width: 30px; height: 30px;
+  background: #fee2e2;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.rf-title { font-size: 13px; font-weight: 700; color: #991b1b; margin-bottom: 3px; }
+.rf-desc  { font-size: 12px; color: var(--text-muted); line-height: 1.45; }
+
+/* ── Consequences ── */
+.consequences-card {
+  background: linear-gradient(135deg, #1e293b, #0f172a);
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+  animation: fadeInUp 0.6s ease 0.3s both;
+}
+
+.consequences-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.consequence-item {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  padding: 1rem;
+  text-align: center;
+}
+
+.cons-icon { font-size: 1.75rem; margin-bottom: 8px; display: block; }
+.cons-title { font-size: 13px; font-weight: 700; color: #f1f5f9; margin-bottom: 4px; }
+.cons-desc  { font-size: 11px; color: #94a3b8; line-height: 1.45; }
+
+/* ── Action steps ── */
+.action-steps { display: flex; flex-direction: column; gap: 12px; }
+
+.action-step {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  padding: 14px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  transition: border-color 0.2s;
+}
+
+.action-step:hover { border-color: var(--blue); }
+
+.step-num {
+  width: 32px; height: 32px;
+  background: var(--blue);
+  color: white;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.step-title { font-size: 14px; font-weight: 700; color: var(--text-primary); margin-bottom: 3px; }
+.step-desc  { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+
+/* ── Score ── */
+.score-section {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: var(--shadow-xs);
+  animation: fadeInUp 0.6s ease 0.4s both;
+}
+
+.score-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.score-bad { background: #fee2e2; border: 3px solid rgba(220,38,38,0.3); }
+.score-num { font-family: 'DM Mono', monospace; font-size: 1.5rem; font-weight: 700; color: #dc2626; line-height: 1; }
+.score-label { font-size: 10px; color: #dc2626; text-transform: uppercase; letter-spacing: 1px; }
+
+.score-message h3 { font-size: 16px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; }
+.score-message p  { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+
+/* ── CTA ── */
+.cta-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  animation: fadeInUp 0.6s ease 0.5s both;
+}
+
+.btn-retry, .btn-learn, .btn-home {
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.2s;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.btn-retry { background: #dc2626; color: white; }
+.btn-retry:hover { background: #b91c1c; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(220,38,38,0.25); }
+
+.btn-learn { background: var(--blue-xlight); color: var(--blue); border: 1.5px solid var(--border-blue); }
+.btn-learn:hover { background: var(--blue); color: white; }
+
+.btn-home { background: white; color: var(--text-muted); border: 1.5px solid var(--border-mid); }
+.btn-home:hover { color: var(--text-primary); border-color: var(--border-blue); }
+</style>
+
+<script>
+// ── Datos por tipo de phishing ──
+const PHISHING_DATA = {
+  banco: {
+    stolen: [
+      { key: 'Usuario / Documento', val: '••••••••••' },
+      { key: 'Contraseña', val: '••••••••' },
+      { key: 'Últimos 4 dígitos tarjeta', val: '••••' },
+    ],
+    timeline: [
+      { icon: '📧', type: 'attacker', title: 'El atacante envió un correo falso', desc: 'Usó un dominio parecido al banco real ("banco-seguro-col.net") para engañarte.' },
+      { icon: '🖱', type: 'victim',   title: 'Hiciste clic en el enlace', desc: 'El enlace apuntaba a una página falsa, no al banco real.' },
+      { icon: '🎭', type: 'danger',   title: 'Viste una página convincente', desc: 'El sitio imitaba visualmente al banco real, con logos y formularios idénticos.' },
+      { icon: '⌨', type: 'victim',   title: 'Ingresaste tus credenciales', desc: 'En ese momento, el atacante capturó tu usuario, contraseña y datos de tarjeta.' },
+      { icon: '💸', type: 'attacker', title: 'El atacante tiene acceso total', desc: 'Con esos datos puede vaciar tu cuenta, cambiar la contraseña y bloquearte el acceso.' },
+    ],
+    redFlags: [
+      { icon: '🌐', title: 'Dominio incorrecto', desc: 'El banco real usa .com.co, no .net. Siempre revisa la URL completa.' },
+      { icon: '⏰', title: 'Urgencia artificial', desc: '"24 horas para evitar bloqueo permanente" es una táctica de presión para que actúes sin pensar.' },
+      { icon: '🔒', title: 'SSL no garantiza legitimidad', desc: 'El candado verde solo significa que la conexión está cifrada, no que el sitio sea real.' },
+      { icon: '📋', title: 'Pide demasiados datos', desc: 'Un banco legítimo nunca te pide número de tarjeta para "verificar tu identidad".' },
+    ],
+    consequences: [
+      { icon: '💸', title: 'Robo de dinero', desc: 'Transferencias y compras fraudulentas inmediatas' },
+      { icon: '🔒', title: 'Cuenta bloqueada', desc: 'Cambio de contraseña y bloqueo de acceso' },
+      { icon: '📊', title: 'Fraude crediticio', desc: 'Uso de tu identidad para solicitar créditos' },
+      { icon: '😰', title: 'Semanas de trámites', desc: 'Proceso largo para recuperar fondos y cuenta' },
+    ],
+  },
+  netflix: {
+    stolen: [
+      { key: 'Correo electrónico', val: '••••••@•••••.com' },
+      { key: 'Contraseña', val: '••••••••' },
+      { key: 'Número de tarjeta', val: '•••• •••• •••• ••••' },
+      { key: 'Fecha vencimiento', val: '••/••' },
+      { key: 'Código CVV', val: '•••' },
+    ],
+    timeline: [
+      { icon: '📧', type: 'attacker', title: 'Correo con el logo de Netflix', desc: 'El remitente era "no-reply@netflix.com" pero el enlace llevaba a netflix-pagos.com.' },
+      { icon: '😰', title: 'Urgencia creada', type: 'danger', desc: '"Tu cuenta expira hoy" — El miedo a perder el servicio hizo que actuaras sin verificar.' },
+      { icon: '🖱', type: 'victim',   title: 'Hiciste clic y llegaste al sitio falso', desc: 'La página se veía idéntica a Netflix real, con los mismos colores y diseño.' },
+      { icon: '💳', type: 'victim',   title: 'Ingresaste tus datos de pago', desc: 'Email, contraseña y datos de tarjeta de crédito completos capturados.' },
+      { icon: '🛒', type: 'attacker', title: 'El atacante usa tu tarjeta', desc: 'Compras fraudulentas online en minutos, antes de que notes algo raro.' },
+    ],
+    redFlags: [
+      { icon: '🌐', title: 'URL falsa', desc: '"netflix-pagos.com" no es Netflix. La URL real siempre es netflix.com sin subdominios extraños.' },
+      { icon: '💳', title: 'Netflix no pide CVV por email', desc: 'Netflix nunca te redirige a ingresar datos de tarjeta completos después de un correo.' },
+      { icon: '⏰', title: '"Expira hoy" es mentira', desc: 'Netflix avisa con días de anticipación y no amenaza con cancelación inmediata.' },
+      { icon: '📧', title: 'Remitente vs. enlace', desc: 'El remitente puede parecer legítimo pero el enlace real siempre delata el fraude.' },
+    ],
+    consequences: [
+      { icon: '💳', title: 'Datos de tarjeta expuestos', desc: 'Compras fraudulentas de inmediato' },
+      { icon: '📧', title: 'Contraseña de correo en riesgo', desc: 'Si la reusas, acceden a más cuentas' },
+      { icon: '🔑', title: 'Robo de identidad', desc: 'Datos suficientes para fraude financiero' },
+      { icon: '📞', title: 'Llamadas bancarias urgentes', desc: 'Días de trámites para revertir cargos' },
+    ],
+  },
+};
+
+// Detectar tipo
+const params = new URLSearchParams(window.location.search);
+const type = params.get('type') || 'banco';
+const data = PHISHING_DATA[type] || PHISHING_DATA['banco'];
+
+// ── Animación de entrada (glitch screen) ──
+let pct = 0;
+const fill = document.getElementById('progressFake');
+const interval = setInterval(() => {
+  pct += Math.random() * 8 + 2;
+  if (pct >= 100) {
+    pct = 100;
+    clearInterval(interval);
+    setTimeout(() => {
+      const glitch = document.getElementById('glitchScreen');
+      glitch.style.transition = 'opacity 0.5s';
+      glitch.style.opacity = '0';
+      setTimeout(() => {
+        glitch.style.display = 'none';
+        const content = document.getElementById('caughtContent');
+        content.style.display = 'block';
+      }, 500);
+    }, 600);
+  }
+  fill.style.width = pct + '%';
+}, 80);
+
+// ── Rellenar contenido dinámico ──
+document.addEventListener('DOMContentLoaded', () => {
+  // Datos robados
+  const stolenEl = document.getElementById('stolenItems');
+  data.stolen.forEach(item => {
+    stolenEl.innerHTML += `
+      <div class="stolen-item">
+        <span class="stolen-item-key">${item.key}</span>
+        <span class="stolen-item-val">${item.val}</span>
+        <span style="font-size:11px;color:#dc2626;margin-left:auto;">✓ capturado</span>
+      </div>`;
+  });
+
+  // Timeline
+  const tlEl = document.getElementById('attackTimeline');
+  data.timeline.forEach(step => {
+    const dotClass = step.type === 'attacker' ? 'tl-attacker' : step.type === 'danger' ? 'tl-danger' : 'tl-victim';
+    tlEl.innerHTML += `
+      <div class="timeline-step">
+        <div class="tl-dot ${dotClass}">${step.icon}</div>
+        <div class="tl-content">
+          <div class="tl-title">${step.title}</div>
+          <div class="tl-desc">${step.desc}</div>
+        </div>
+      </div>`;
+  });
+
+  // Red flags
+  const rfEl = document.getElementById('redFlagsGrid');
+  data.redFlags.forEach(flag => {
+    rfEl.innerHTML += `
+      <div class="red-flag">
+        <div class="rf-icon">${flag.icon}</div>
+        <div>
+          <div class="rf-title">${flag.title}</div>
+          <div class="rf-desc">${flag.desc}</div>
+        </div>
+      </div>`;
+  });
+
+  // Consecuencias
+  const conEl = document.getElementById('consequencesGrid');
+  data.consequences.forEach(c => {
+    conEl.innerHTML += `
+      <div class="consequence-item">
+        <span class="cons-icon">${c.icon}</span>
+        <div class="cons-title">${c.title}</div>
+        <div class="cons-desc">${c.desc}</div>
+      </div>`;
+  });
+});
+</script>
+
+{% endblock %}
