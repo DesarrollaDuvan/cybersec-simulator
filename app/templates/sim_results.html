@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}Resultados — {{ scenario.title }}{% endblock %}
+
+{% block content %}
+<div style="max-width:640px;margin:0 auto;padding:2rem 0 4rem;position:relative;z-index:1;text-align:center;">
+
+  <!-- Score ring -->
+  <div style="margin-bottom:2rem;">
+    <svg width="160" height="160" viewBox="0 0 160 160" style="display:block;margin:0 auto;">
+      <circle cx="80" cy="80" r="68" fill="none" stroke="var(--border)" stroke-width="12"/>
+      <circle cx="80" cy="80" r="68" fill="none"
+        stroke="{% if score_pct >= 80 %}#4ade80{% elif score_pct >= 50 %}#0ea5e9{% else %}#f87171{% endif %}"
+        stroke-width="12" stroke-linecap="round"
+        stroke-dasharray="{{ (score_pct / 100 * 427) | round }} 427"
+        transform="rotate(-90 80 80)"
+        style="transition:stroke-dasharray 1s ease;"/>
+      <text x="80" y="76" text-anchor="middle" font-family="var(--mono)" font-size="28" font-weight="700"
+        fill="{% if score_pct >= 80 %}#4ade80{% elif score_pct >= 50 %}#0ea5e9{% else %}#f87171{% endif %}">
+        {{ score_pct }}%
+      </text>
+      <text x="80" y="96" text-anchor="middle" font-family="var(--mono)" font-size="12"
+        fill="var(--muted)">{{ total_points }}/{{ max_points }} pts</text>
+    </svg>
+  </div>
+
+  <!-- Nivel -->
+  {% if score_pct >= 80 %}
+  <div style="display:inline-block;font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:5px 16px;border-radius:20px;background:rgba(34,197,94,.1);color:#4ade80;border:1px solid rgba(34,197,94,.25);margin-bottom:1rem;">
+    🛡 Experto en Seguridad
+  </div>
+  <p style="color:var(--muted);font-size:15px;line-height:1.7;margin-bottom:2rem;">Excelente. Tomaste las decisiones correctas bajo presión. Esas habilidades te protegen en el mundo real.</p>
+  {% elif score_pct >= 50 %}
+  <div style="display:inline-block;font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:5px 16px;border-radius:20px;background:rgba(14,165,233,.1);color:var(--blue);border:1px solid rgba(14,165,233,.25);margin-bottom:1rem;">
+    📈 En Desarrollo
+  </div>
+  <p style="color:var(--muted);font-size:15px;line-height:1.7;margin-bottom:2rem;">Vas bien. Algunos escenarios te atraparon, pero lo importante es que ahora sabes qué señales buscar.</p>
+  {% else %}
+  <div style="display:inline-block;font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:5px 16px;border-radius:20px;background:rgba(239,68,68,.1);color:#f87171;border:1px solid rgba(239,68,68,.25);margin-bottom:1rem;">
+    ⚠ Necesitas Práctica
+  </div>
+  <p style="color:var(--muted);font-size:15px;line-height:1.7;margin-bottom:2rem;">Los atacantes reales no dan segundas oportunidades. Repite la simulación y estudia cada señal de alerta.</p>
+  {% endif %}
+
+  <!-- Escenario completado -->
+  <div style="background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:1.5rem;margin-bottom:1.5rem;text-align:left;">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:1rem;">
+      <div style="font-size:2rem;">{{ scenario.thumbnail }}</div>
+      <div>
+        <div style="font-size:15px;font-weight:700;color:#fff;">{{ scenario.title }}</div>
+        <div style="font-family:var(--mono);font-size:11px;color:var(--muted);">{{ scenario.location }}</div>
+      </div>
+      <div style="margin-left:auto;font-family:var(--mono);font-size:1.2rem;font-weight:700;color:{% if score_pct >= 80 %}#4ade80{% elif score_pct >= 50 %}var(--blue){% else %}#f87171{% endif %};">
+        {{ score_pct }}%
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat({{ scenario.stages|length }},1fr);gap:8px;">
+      {% for stage in scenario.stages %}
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px;text-align:center;">
+        <div style="font-size:18px;margin-bottom:4px;">{{ '✓' if score_pct >= 50 else '✗' }}</div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--muted);">Etapa {{ loop.index }}</div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Acciones -->
+  <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+    <a href="{{ url_for('sim_immersive.play', scenario_id=scenario.id) }}"
+       style="padding:13px 28px;background:linear-gradient(135deg,var(--blue),var(--blue-d));color:#fff;text-decoration:none;border-radius:10px;font-size:14px;font-weight:700;transition:transform .2s,box-shadow .2s;"
+       onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 20px var(--blue-glow)'"
+       onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='none'">
+      ↺ Repetir simulación
+    </a>
+    <a href="{{ url_for('sim_immersive.home') }}"
+       style="padding:13px 28px;background:transparent;color:var(--text);text-decoration:none;border-radius:10px;font-size:14px;font-weight:700;border:1.5px solid var(--border2);">
+      Ver más simulaciones
+    </a>
+  </div>
+
+</div>
+{% endblock %}

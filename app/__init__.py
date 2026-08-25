@@ -19,6 +19,8 @@ def create_app():
     db.init_app(app)
     login_manager.init_app(app)
     migrate.init_app(app, db)   # 👈 aquí sí pasas app y db
+    
+    
 
     with app.app_context():
         from app.models.user import User
@@ -35,6 +37,7 @@ def create_app():
     from app.routes.main import main
     from app.routes.auth import auth
     from app.routes.simulation import simulation
+    from app.routes.simulation_immersive import sim_immersive
     from app.routes.quiz import quiz
 
     app.register_blueprint(chat, url_prefix='/chat')
@@ -42,6 +45,7 @@ def create_app():
     app.register_blueprint(main)
     app.register_blueprint(auth, url_prefix='/auth')
     app.register_blueprint(simulation, url_prefix='/simulation')
+    app.register_blueprint(sim_immersive, url_prefix='/sim')
     app.register_blueprint(quiz, url_prefix='/quiz')
 
     return app

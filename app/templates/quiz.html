@@ -552,6 +552,94 @@ async function startQuiz() {
 .btn-retry { border-color: #00d4ff; color: #00d4ff; }
 .btn-home-q { border-color: #333; color: #888; }
 .btn-retry:hover, .btn-home-q:hover { opacity: 0.75; }
+
+/* Agregar a quiz.html - Estilos específicos para tema claro */
+[data-theme="light"] .quiz-center {
+  background: transparent;
+}
+
+[data-theme="light"] .quiz-start-card,
+[data-theme="light"] .question-card,
+[data-theme="light"] .results-card {
+  background: white;
+  border-color: #e2e8f0;
+}
+
+[data-theme="light"] .quiz-start-card h1,
+[data-theme="light"] .question-card .question-text,
+[data-theme="light"] .results-card .result-message {
+  color: #0f172a;
+}
+
+[data-theme="light"] .quiz-desc {
+  color: #475569;
+}
+
+[data-theme="light"] .info-item {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+}
+
+[data-theme="light"] .info-label {
+  color: #64748b;
+}
+
+[data-theme="light"] .progress-header .progress-label {
+  color: #64748b;
+}
+
+[data-theme="light"] .option-btn {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+}
+
+[data-theme="light"] .option-text {
+  color: #1e293b;
+}
+
+[data-theme="light"] .option-btn:hover:not(:disabled) {
+  border-color: #3b82f6;
+  background: #eff6ff;
+}
+
+[data-theme="light"] .feedback-box {
+  background: #f8fafc;
+}
+
+[data-theme="light"] .fb-correct {
+  background: #ecfdf5;
+  border-color: #6ee7b7;
+}
+
+[data-theme="light"] .fb-wrong {
+  background: #fef2f2;
+  border-color: #fecaca;
+}
+
+[data-theme="light"] .feedback-title {
+  color: #0f172a;
+}
+
+[data-theme="light"] .feedback-explanation {
+  color: #475569;
+}
+
+[data-theme="light"] .answer-row {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+}
+
+[data-theme="light"] .answer-question {
+  color: #0f172a;
+}
+
+[data-theme="light"] .answer-explanation {
+  color: #64748b;
+}
+
+[data-theme="light"] .detail-title {
+  color: #64748b;
+}
 </style>
 
 {% endblock %}

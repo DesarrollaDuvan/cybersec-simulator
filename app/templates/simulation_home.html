@@ -1,0 +1,340 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="sim-home">
+
+  <div class="sh-header fade-in-up">
+    <div class="sh-eyebrow">
+      <span class="sh-dot"></span>
+      Centro de Simulaciones
+    </div>
+    <h1>Pon a prueba tus <span class="sh-accent">defensas</span></h1>
+    <p>Elige un módulo y enfrenta escenarios reales. La IA analizará tus decisiones y te dará retroalimentación personalizada.</p>
+  </div>
+
+  <div class="sh-modules">
+
+    <!-- Módulo Phishing -->
+    <div class="sh-card sh-phishing fade-in-up" style="animation-delay:0.1s">
+      <div class="sh-card-bg"></div>
+      <div class="sh-card-content">
+        <div class="sh-icon">🎣</div>
+        <div class="sh-module-badge">Módulo 01</div>
+        <h2>Simulación de Phishing</h2>
+        <p>Recibe correos sospechosos y decide cómo reaccionar. ¿Abrirías el enlace, responderías o lo reportarías?</p>
+
+        <div class="sh-stats-row">
+          <div class="sh-stat">
+            <span class="sh-stat-num">3</span>
+            <span class="sh-stat-label">Escenarios</span>
+          </div>
+          <div class="sh-stat">
+            <span class="sh-stat-num">4</span>
+            <span class="sh-stat-label">Decisiones</span>
+          </div>
+          <div class="sh-stat">
+            <span class="sh-stat-num">IA</span>
+            <span class="sh-stat-label">Análisis</span>
+          </div>
+        </div>
+
+        <div class="sh-tags">
+          <span class="sh-tag sh-tag-red">Riesgo Alto</span>
+          <span class="sh-tag sh-tag-blue">Email Fraud</span>
+          <span class="sh-tag sh-tag-orange">Urgencia</span>
+        </div>
+
+        <a href="{{ url_for('simulation.start_phishing') }}" class="sh-btn sh-btn-phishing">
+          Iniciar simulación →
+        </a>
+      </div>
+    </div>
+
+    <!-- Módulo Contraseñas -->
+    <div class="sh-card sh-passwords fade-in-up" style="animation-delay:0.2s">
+      <div class="sh-card-bg sh-card-bg-green"></div>
+      <div class="sh-card-content">
+        <div class="sh-icon">🔑</div>
+        <div class="sh-module-badge sh-badge-green">Módulo 02</div>
+        <h2>Simulación de Contraseñas</h2>
+        <p>Enfrenta situaciones reales de gestión de contraseñas. ¿Tomarías la decisión más segura bajo presión?</p>
+
+        <div class="sh-stats-row">
+          <div class="sh-stat">
+            <span class="sh-stat-num">3</span>
+            <span class="sh-stat-label">Escenarios</span>
+          </div>
+          <div class="sh-stat">
+            <span class="sh-stat-num">4</span>
+            <span class="sh-stat-label">Opciones</span>
+          </div>
+          <div class="sh-stat">
+            <span class="sh-stat-num">IA</span>
+            <span class="sh-stat-label">Feedback</span>
+          </div>
+        </div>
+
+        <div class="sh-tags">
+          <span class="sh-tag sh-tag-green">Seguridad Básica</span>
+          <span class="sh-tag sh-tag-blue">Gestión</span>
+          <span class="sh-tag sh-tag-orange">Decisiones</span>
+        </div>
+
+        <a href="{{ url_for('simulation.start_passwords') }}" class="sh-btn sh-btn-passwords">
+          Iniciar simulación →
+        </a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Info strip -->
+  <div class="sh-info-strip fade-in-up" style="animation-delay:0.3s">
+    <div class="sh-info-item">
+      <span class="sh-info-icon">🤖</span>
+      <span>Análisis generado por IA en tiempo real</span>
+    </div>
+    <div class="sh-info-sep"></div>
+    <div class="sh-info-item">
+      <span class="sh-info-icon">📊</span>
+      <span>Tu progreso se guarda automáticamente</span>
+    </div>
+    <div class="sh-info-sep"></div>
+    <div class="sh-info-item">
+      <span class="sh-info-icon">🔄</span>
+      <span>Escenarios aleatorios en cada intento</span>
+    </div>
+  </div>
+
+</div>
+
+<style>
+.sim-home {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 0;
+  position: relative;
+  z-index: 1;
+}
+
+/* Header */
+.sh-header { text-align: center; margin-bottom: 3rem; }
+
+.sh-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--blue);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  background: var(--blue-glow);
+  border: 1px solid rgba(14,165,233,0.25);
+  padding: 5px 14px;
+  border-radius: 20px;
+  margin-bottom: 1.25rem;
+}
+
+.sh-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--blue);
+  box-shadow: 0 0 8px var(--blue);
+  animation: blink 2s ease-in-out infinite;
+}
+
+.sh-header h1 {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 900;
+  color: #fff;
+  margin-bottom: 0.75rem;
+}
+
+.sh-accent {
+  background: linear-gradient(90deg, var(--blue), var(--green));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.sh-header p {
+  color: var(--muted);
+  font-size: 1rem;
+  max-width: 540px;
+  margin: 0 auto;
+  line-height: 1.7;
+}
+
+/* Módulos */
+.sh-modules {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 2rem;
+}
+
+@media (max-width: 700px) { .sh-modules { grid-template-columns: 1fr; } }
+
+.sh-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  overflow: hidden;
+  position: relative;
+  transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+}
+
+.sh-card:hover { transform: translateY(-6px); }
+
+.sh-phishing:hover  { border-color: var(--orange); box-shadow: 0 12px 40px var(--orange-glow); }
+.sh-passwords:hover { border-color: var(--green);  box-shadow: 0 12px 40px var(--green-glow); }
+
+/* Fondo degradado por card */
+.sh-card-bg {
+  position: absolute;
+  top: -80px; right: -80px;
+  width: 250px; height: 250px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(249,115,22,0.1) 0%, transparent 70%);
+  pointer-events: none;
+  transition: opacity 0.4s;
+}
+
+.sh-card-bg-green {
+  background: radial-gradient(circle, rgba(34,197,94,0.1) 0%, transparent 70%);
+}
+
+.sh-card-content { padding: 2rem; position: relative; z-index: 1; }
+
+.sh-icon { font-size: 2.5rem; margin-bottom: 0.5rem; display: block; filter: drop-shadow(0 0 8px currentColor); }
+
+.sh-module-badge {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 4px;
+  background: rgba(249,115,22,0.1);
+  color: var(--orange);
+  border: 1px solid rgba(249,115,22,0.25);
+  margin-bottom: 0.75rem;
+}
+
+.sh-badge-green {
+  background: rgba(34,197,94,0.1);
+  color: var(--green);
+  border-color: rgba(34,197,94,0.25);
+}
+
+.sh-card-content h2 {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 0.6rem;
+}
+
+.sh-card-content p {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.65;
+  margin-bottom: 1.25rem;
+}
+
+/* Stats */
+.sh-stats-row {
+  display: flex;
+  gap: 1.25rem;
+  margin-bottom: 1.25rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.sh-stat { display: flex; flex-direction: column; gap: 2px; }
+.sh-stat-num   { font-family: var(--mono); font-size: 1.2rem; font-weight: 700; color: #fff; }
+.sh-stat-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+
+/* Tags */
+.sh-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 1.5rem; }
+
+.sh-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.sh-tag-red    { background: rgba(239,68,68,0.1); color: #f87171; border: 1px solid rgba(239,68,68,0.2); }
+.sh-tag-blue   { background: rgba(14,165,233,0.1); color: var(--blue); border: 1px solid rgba(14,165,233,0.2); }
+.sh-tag-orange { background: rgba(249,115,22,0.1); color: var(--orange); border: 1px solid rgba(249,115,22,0.2); }
+.sh-tag-green  { background: rgba(34,197,94,0.1); color: var(--green); border: 1px solid rgba(34,197,94,0.2); }
+
+/* Botones */
+.sh-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 13px 20px;
+  border-radius: 10px;
+  border: none;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+  font-family: var(--sans);
+  transition: transform 0.2s, box-shadow 0.2s;
+  letter-spacing: 0.3px;
+}
+
+.sh-btn-phishing {
+  background: linear-gradient(135deg, var(--orange), var(--orange-d));
+  color: #fff;
+}
+
+.sh-btn-phishing:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 20px var(--orange-glow);
+}
+
+.sh-btn-passwords {
+  background: linear-gradient(135deg, var(--green), var(--green-d));
+  color: #fff;
+}
+
+.sh-btn-passwords:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 20px var(--green-glow);
+}
+
+/* Info strip */
+.sh-info-strip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  padding: 1.25rem 2rem;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  flex-wrap: wrap;
+}
+
+.sh-info-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.sh-info-icon { font-size: 18px; }
+.sh-info-sep  { width: 1px; height: 24px; background: var(--border); }
+</style>
+
+{% endblock %}

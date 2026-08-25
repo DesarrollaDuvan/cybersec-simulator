@@ -1,72 +1,89 @@
+<!-- templates/base.html actualizado -->
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}CyberTutor IA{% endblock %}</title>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <!-- Google Fonts mejoradas -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <!-- Tabler Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.19.0/tabler-icons.min.css">
+
+  <!-- Estilos -->
+ <!-- En base.html, dentro de <head> -->
+<link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/theme-fixes.css') }}">
+
+  {% block extra_head %}{% endblock %}
 </head>
 <body>
 
-<!-- ══ Barra de progreso de scroll ══ -->
-<div id="scroll-bar" style="
-  position: fixed; top: 0; left: 0; height: 3px; width: 0%;
-  background: linear-gradient(90deg, #2563eb, #059669);
-  z-index: 999; transition: width 0.1s linear;
-"></div>
+<!-- Fondo de grid decorativo -->
+<div class="bg-grid"></div>
 
-<!-- ══ NAVBAR ══ -->
+<!-- Contenedor de partículas -->
+<div class="particles-container" id="particlesContainer"></div>
+
 <header class="navbar">
-
-  <a href="/" style="text-decoration:none;">
-    <h2>CyberTutor IA</h2>
-  </a>
-
-  <!-- Menú desktop -->
-  <nav id="nav-desktop">
-    <a href="/"           {% if request.endpoint == 'main.home' %}class="active"{% endif %}>Inicio</a>
-    <a href="/simulation" {% if request.endpoint and 'simulation' in request.endpoint %}class="active"{% endif %}>Simulación</a>
-    <a href="/quiz"       {% if request.endpoint and 'quiz' in request.endpoint %}class="active"{% endif %}>Quiz</a>
-    <a href="/chat"       {% if request.endpoint and 'chat' in request.endpoint %}class="active"{% endif %}>Chat IA</a>
-
+  <div class="nav-brand">
+    <div class="brand-icon">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <h2>CyberTutor <span class="highlight">IA</span></h2>
+  </div>
+  
+  <nav>
+    <a href="/" {% if request.endpoint == 'main.home' %}class="active"{% endif %}>
+      <i class="ti ti-home"></i>
+      <span>Inicio</span>
+    </a>
+    <a href="/sim" {% if request.endpoint and 'sim_immersive' in request.endpoint %}class="active"{% endif %}>
+      <i class="ti ti-device-gamepad"></i>
+      <span>Simulaciones</span>
+    </a>
+    <a href="/quiz" {% if request.endpoint and 'quiz' in request.endpoint %}class="active"{% endif %}>
+      <i class="ti ti-checklist"></i>
+      <span>Quiz</span>
+    </a>
+    <a href="/chat" {% if request.endpoint and 'chat' in request.endpoint %}class="active"{% endif %}>
+      <i class="ti ti-message-circle"></i>
+      <span>Chat IA</span>
+    </a>
     {% if current_user.is_authenticated and current_user.is_admin %}
-    <a href="/admin" style="color:#2563eb; background:#eff6ff; border-radius:6px;">⬡ Admin</a>
+    <a href="/admin" class="admin-link">
+      <i class="ti ti-shield"></i>
+      <span>Admin</span>
+    </a>
     {% endif %}
-
-    <a href="/auth/logout" style="color:#dc2626; margin-left:4px;">Salir</a>
+    <a href="/auth/logout" class="logout-link">
+      <i class="ti ti-logout"></i>
+      <span>Salir</span>
+    </a>
   </nav>
 
-  <!-- Hamburger móvil -->
-  <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Menú">
-    <span></span><span></span><span></span>
+  <!-- Botón de cambio de tema -->
+  <button class="theme-toggle" id="themeToggle" aria-label="Cambiar tema">
+    <i class="ti ti-sun sun-icon"></i>
+    <i class="ti ti-moon moon-icon"></i>
   </button>
 </header>
 
-<!-- Menú móvil drawer -->
-<div class="mobile-menu" id="mobile-menu">
-  <a href="/">Inicio</a>
-  <a href="/simulation">Simulación</a>
-  <a href="/quiz">Quiz</a>
-  <a href="/chat">Chat IA</a>
-  {% if current_user.is_authenticated and current_user.is_admin %}
-  <a href="/admin">⬡ Admin</a>
-  {% endif %}
-  <a href="/auth/logout" style="color:#dc2626;">Salir</a>
-</div>
-
-<!-- ══ CONTENIDO PRINCIPAL ══ -->
 <main class="container">
   {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
       {% for category, message in messages %}
-        <div class="flash flash-{{ category }}" style="animation: slideDown 0.3s ease;">
-          <span>{{ '⚠' if category == 'error' else '✓' if category == 'success' else 'ℹ' }}</span>
-          {{ message }}
+        <div class="flash-message flash-{{ category }} animate-fade-up">
+          <i class="ti ti-{{ 'alert-circle' if category == 'error' else 'circle-check' if category == 'success' else 'info-circle' }}"></i>
+          <span>{{ message }}</span>
+          <button class="flash-close" onclick="this.parentElement.remove()">×</button>
         </div>
       {% endfor %}
     {% endif %}
@@ -75,124 +92,93 @@
   {% block content %}{% endblock %}
 </main>
 
-<!-- ══ FOOTER ══ -->
-<footer style="
-  text-align: center;
-  padding: 2rem;
-  border-top: 1px solid rgba(15,23,42,0.06);
-  margin-top: 3rem;
-  font-size: 13px;
-  color: #94a3b8;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-">
-  CyberTutor IA — Plataforma de entrenamiento en ciberseguridad
-</footer>
-
-<style>
-  /* ── Scroll bar ── */
-  @keyframes slideDown {
-    from { opacity: 0; transform: translateY(-8px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  /* ── Hamburger ── */
-  .hamburger {
-    display: none;
-    flex-direction: column;
-    justify-content: center;
-    gap: 5px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 6px;
-    border-radius: 8px;
-    transition: background 0.2s;
-  }
-
-  .hamburger:hover { background: rgba(15,23,42,0.06); }
-
-  .hamburger span {
-    display: block;
-    width: 22px;
-    height: 2px;
-    background: #334155;
-    border-radius: 2px;
-    transition: all 0.3s;
-  }
-
-  .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-  .hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
-  .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
-
-  /* ── Mobile menu ── */
-  .mobile-menu {
-    position: fixed;
-    top: 64px;
-    left: 0; right: 0;
-    background: white;
-    border-bottom: 1px solid rgba(15,23,42,0.08);
-    box-shadow: 0 8px 24px rgba(15,23,42,0.1);
-    display: none;
-    flex-direction: column;
-    padding: 0.75rem 1.25rem 1rem;
-    gap: 4px;
-    z-index: 90;
-    animation: slideDown 0.25s ease;
-  }
-
-  .mobile-menu.open { display: flex; }
-
-  .mobile-menu a {
-    padding: 11px 14px;
-    border-radius: 8px;
-    font-size: 15px;
-    font-weight: 600;
-    color: #334155;
-    text-decoration: none;
-    transition: background 0.15s, color 0.15s;
-    font-family: 'Plus Jakarta Sans', sans-serif;
-  }
-
-  .mobile-menu a:hover { background: #f4f7fb; color: #2563eb; }
-
-  @media (max-width: 768px) {
-    #nav-desktop { display: none; }
-    .hamburger   { display: flex; }
-  }
-</style>
-
 <script>
-/* ── Scroll progress bar ── */
-window.addEventListener('scroll', () => {
-  const scrollTop = document.documentElement.scrollTop;
-  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-  const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
-  document.getElementById('scroll-bar').style.width = pct + '%';
+// Sistema de temas
+(function() {
+  const themeToggle = document.getElementById('themeToggle');
+  const savedTheme = localStorage.getItem('cybertutor-theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  
+  const currentTheme = savedTheme || (prefersDark ? 'dark' : 'light');
+  document.documentElement.setAttribute('data-theme', currentTheme);
+  
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      const newTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', newTheme);
+      localStorage.setItem('cybertutor-theme', newTheme);
+      
+      // Emitir evento para componentes que necesiten reaccionar
+      window.dispatchEvent(new CustomEvent('themeChange', { detail: { theme: newTheme } }));
+    });
+  }
+})();
+
+// Sistema de partículas
+(function() {
+  const container = document.getElementById('particlesContainer');
+  if (!container) return;
+  
+  const particleCount = window.innerWidth < 768 ? 30 : 60;
+  
+  for (let i = 0; i < particleCount; i++) {
+    const particle = document.createElement('div');
+    particle.className = 'particle';
+    
+    const size = Math.random() * 4 + 2;
+    particle.style.width = size + 'px';
+    particle.style.height = size + 'px';
+    particle.style.left = Math.random() * 100 + '%';
+    particle.style.animationDelay = Math.random() * 8 + 's';
+    particle.style.animationDuration = Math.random() * 8 + 6 + 's';
+    particle.style.opacity = Math.random() * 0.3 + 0.1;
+    
+    container.appendChild(particle);
+  }
+})();
+
+// Smooth scroll para enlaces internos
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function(e) {
+    const href = this.getAttribute('href');
+    if (href !== '#' && href !== '#') {
+      const target = document.querySelector(href);
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+  });
 });
 
-/* ── Mobile menu ── */
-function toggleMenu() {
-  const btn  = document.getElementById('hamburger');
-  const menu = document.getElementById('mobile-menu');
-  btn.classList.toggle('open');
-  menu.classList.toggle('open');
-}
+// Intersection Observer para animaciones al hacer scroll
+const observerOptions = {
+  threshold: 0.1,
+  rootMargin: '0px 0px -50px 0px'
+};
 
-/* ── Intersection Observer para animaciones ── */
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
-      entry.target.style.opacity = '1';
-      entry.target.style.transform = 'translateY(0)';
+      entry.target.classList.add('animate-fade-up');
+      observer.unobserve(entry.target);
     }
   });
-}, { threshold: 0.08 });
+}, observerOptions);
 
-document.querySelectorAll('.card, .action-card, .curso-section, .threat-card').forEach(el => {
+document.querySelectorAll('.card, .action-card, .sim-card').forEach(el => {
   el.style.opacity = '0';
-  el.style.transform = 'translateY(16px)';
-  el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
   observer.observe(el);
+});
+
+// Agregar al final de base.html - Para detectar cambios de tema en tiempo real
+window.addEventListener('themeChange', (e) => {
+  const isDark = e.detail.theme === 'dark';
+  
+  // Disparar evento para componentes que necesiten re-renderizar
+  document.dispatchEvent(new CustomEvent('themeChanged', { 
+    detail: { isDark } 
+  }));
 });
 </script>
 

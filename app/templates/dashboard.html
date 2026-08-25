@@ -1,480 +1,674 @@
-{% extends "base.html" %} {% block title %}Dashboard — CyberTutor IA{% endblock
-%} {% block content %}
+<!-- templates/dashboard.html (versión mejorada) -->
+{% extends "base.html" %} 
+{% block title %}Dashboard — CyberTutor IA{% endblock %}
 
-<!-- Hero de bienvenida -->
-<section class="welcome fade-in-up">
-  <div class="welcome-text">
-    <h1>Bienvenido a <span class="typing-text" id="typingTitle"></span></h1>
-    <p>
-      Tu plataforma de entrenamiento en ciberseguridad. Aprende, practica y
-      mejora tus habilidades.
-    </p>
-    <div class="progress-label">
-      <span>Progreso general</span>
-      <span class="prog-pct" id="progPct">0%</span>
+{% block content %}
+
+<!-- Hero con animación -->
+<section class="welcome-modern animate-fade-scale">
+  <div class="welcome-content">
+    <div class="welcome-badge">
+      <i class="ti ti-shield-check"></i>
+      <span>Bienvenido de vuelta</span>
     </div>
-    <div class="progress-bar">
-      <div class="progress" id="progressBar" style="width: 0%"></div>
+    <h1>Aprende a defenderte en el <span class="gradient-text">mundo digital</span></h1>
+    <p>Domina conceptos de ciberseguridad con simulaciones reales, quizzes adaptativos y un tutor IA siempre disponible.</p>
+    
+    <div class="progress-modern">
+      <div class="progress-header">
+        <span><i class="ti ti-chart-line"></i> Progreso general</span>
+        <span class="progress-value" id="progPct">0%</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progressBar" style="width: 0%"></div>
+      </div>
+      <div class="progress-tip">Completa módulos para aumentar tu nivel</div>
     </div>
   </div>
-  <div class="welcome-stats">
-    <div class="wstat">
-      <div class="wstat-num" style="color: var(--blue)" id="counter1">0</div>
-      <div class="wstat-label">Lecciones</div>
+  
+  <div class="stats-modern stagger-children">
+    <div class="stat-card">
+      <div class="stat-icon">📚</div>
+      <div class="stat-info">
+        <span class="stat-value" id="counter1">0</span>
+        <span class="stat-label">Módulos</span>
+      </div>
     </div>
-    <div class="wstat">
-      <div class="wstat-num" style="color: var(--green)" id="counter2">0</div>
-      <div class="wstat-label">Quizzes</div>
+    <div class="stat-card">
+      <div class="stat-icon">📊</div>
+      <div class="stat-info">
+        <span class="stat-value" id="counter2">0</span>
+        <span class="stat-label">Quizzes</span>
+      </div>
     </div>
-    <div class="wstat">
-      <div class="wstat-num" style="color: var(--orange)" id="counter3">0</div>
-      <div class="wstat-label">Simulaciones</div>
+    <div class="stat-card">
+      <div class="stat-icon">🎮</div>
+      <div class="stat-info">
+        <span class="stat-value" id="counter3">0</span>
+        <span class="stat-label">Simulaciones</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">🏆</div>
+      <div class="stat-info">
+        <span class="stat-value" id="streakDays">7</span>
+        <span class="stat-label">Racha activa</span>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- Módulos de aprendizaje -->
-<div class="section-label">
-  <span class="sl-line"></span>
-  <span class="sl-text">Módulos de Aprendizaje</span>
-  <span class="sl-line"></span>
+<!-- Sección de módulos -->
+<div class="section-header-modern">
+  <div class="section-title-group">
+    <div class="section-icon">📖</div>
+    <div>
+      <h2>Módulos de aprendizaje</h2>
+      <p>Domina cada área de la seguridad informática</p>
+    </div>
+  </div>
+  <div class="section-line"></div>
 </div>
 
-<div class="grid-4">
-  <div class="card card-phishing">
-    <a href="/phishing" class="card-link">
-      <div class="card-glow glow-blue"></div>
-      <div class="card-icon">🎣</div>
-      <h3>Phishing</h3>
-      <p>
-        Aprende a identificar correos y sitios falsos antes de caer en la
-        trampa.
-      </p>
-      <button class="btn-blue">Ver módulo →</button></a
-    >
+<div class="modules-grid stagger-children">
+  <!-- Phishing -->
+  <div class="module-card module-phishing" data-module="phishing">
+    <div class="module-glow"></div>
+    <div class="module-header">
+      <span class="module-icon">🎣</span>
+      <span class="module-badge badge-danger">Alta prioridad</span>
+    </div>
+    <h3>Phishing</h3>
+    <p>Aprende a identificar correos y sitios web fraudulentos antes de caer en la trampa.</p>
+    <div class="module-progress">
+      <div class="module-progress-bar" style="width: 75%"></div>
+    </div>
+    <div class="module-footer">
+      <span class="module-stats">4 lecciones • 85% completado</span>
+      <a href="/phishing" class="module-link">
+        Continuar <i class="ti ti-arrow-right"></i>
+      </a>
+    </div>
   </div>
 
-  <div class="card card-pass">
-    <a href="/contraseña" class="card-link"
-      >
-    <div class="card-glow glow-green"></div>
-    <div class="card-icon">🔑</div>
-    <h3>Contraseñas</h3>
-    <p>Crea y gestiona contraseñas seguras para proteger tus cuentas.</p>
-    <button class="btn-green">Ver módulo →</button></a
-    >
+  <!-- Contraseñas -->
+  <div class="module-card module-passwords" data-module="passwords">
+    <div class="module-glow"></div>
+    <div class="module-header">
+      <span class="module-icon">🔑</span>
+      <span class="module-badge badge-success">Recomendado</span>
+    </div>
+    <h3>Contraseñas seguras</h3>
+    <p>Crea y gestiona contraseñas robustas que resistan ataques de fuerza bruta.</p>
+    <div class="module-progress">
+      <div class="module-progress-bar" style="width: 60%"></div>
+    </div>
+    <div class="module-footer">
+      <span class="module-stats">3 lecciones • 60% completado</span>
+      <a href="/contraseña" class="module-link">
+        Explorar <i class="ti ti-arrow-right"></i>
+      </a>
+    </div>
   </div>
 
-  <div class="card card-social">
-    <a href="/ingenieria" class="card-link"
-      >
-    <div class="card-glow glow-orange"></div>
-    <div class="card-icon">🎭</div>
-    <h3>Ing. Social</h3>
-    <p>
-      Entiende cómo los atacantes manipulan psicológicamente a las personas.
-    </p>
-    <button class="btn-orange">Ver módulo →</button></a
-    >
+  <!-- Ingeniería Social -->
+  <div class="module-card module-social" data-module="social">
+    <div class="module-glow"></div>
+    <div class="module-header">
+      <span class="module-icon">🎭</span>
+      <span class="module-badge badge-warning">Intermedio</span>
+    </div>
+    <h3>Ingeniería Social</h3>
+    <p>Entiende cómo los atacantes manipulan psicológicamente a sus víctimas.</p>
+    <div class="module-progress">
+      <div class="module-progress-bar" style="width: 40%"></div>
+    </div>
+    <div class="module-footer">
+      <span class="module-stats">5 lecciones • 40% completado</span>
+      <a href="/ingenieria" class="module-link">
+        Explorar <i class="ti ti-arrow-right"></i>
+      </a>
+    </div>
   </div>
 
-  <div class="card card-networks">
-    <a href="/redes" class="card-link">
-    <div class="card-glow glow-blue"></div>
-    <div class="card-icon">🌐</div>
-    <h3>Redes</h3>
-    <p>Protege tu infraestructura de red contra amenazas y vulnerabilidades.</p>
-    <button class="btn-blue">Ver módulo →</button></a>
+  <!-- Redes -->
+  <div class="module-card module-networks" data-module="networks">
+    <div class="module-glow"></div>
+    <div class="module-header">
+      <span class="module-icon">🌐</span>
+      <span class="module-badge badge-info">Técnico</span>
+    </div>
+    <h3>Seguridad en Redes</h3>
+    <p>Protege tu infraestructura de red contra amenazas externas e internas.</p>
+    <div class="module-progress">
+      <div class="module-progress-bar" style="width: 25%"></div>
+    </div>
+    <div class="module-footer">
+      <span class="module-stats">6 lecciones • 25% completado</span>
+      <a href="/redes" class="module-link">
+        Explorar <i class="ti ti-arrow-right"></i>
+      </a>
+    </div>
   </div>
 </div>
 
-<!-- Acciones rápidas -->
-<div class="section-label" style="margin-top: 2.5rem">
-  <span class="sl-line"></span>
-  <span class="sl-text">Practica Ahora</span>
-  <span class="sl-line"></span>
+<!-- Sección de acciones rápidas -->
+<div class="section-header-modern">
+  <div class="section-title-group">
+    <div class="section-icon">⚡</div>
+    <div>
+      <h2>Acciones rápidas</h2>
+      <p>Practica tus habilidades ahora mismo</p>
+    </div>
+  </div>
+  <div class="section-line"></div>
 </div>
 
-<div class="actions-grid">
-  <a href="/simulation" class="action-card action-sim">
-    <div class="ac-icon">⚡</div>
-    <div class="ac-body">
-      <div class="ac-title">Simulación de Ataques</div>
-      <div class="ac-desc">
-        Enfrenta escenarios reales de phishing y toma decisiones
+<div class="actions-modern stagger-children">
+  <a href="/simulation" class="action-modern action-sim">
+    <div class="action-icon-wrapper">
+      <i class="ti ti-device-gamepad"></i>
+    </div>
+    <div class="action-content">
+      <h3>Simulación de Ataques</h3>
+      <p>Enfrenta escenarios reales de phishing y toma decisiones críticas</p>
+      <div class="action-meta">
+        <span><i class="ti ti-chart-bar"></i> 3 escenarios</span>
+        <span><i class="ti ti-clock"></i> ~10 min</span>
       </div>
     </div>
-    <div class="ac-arrow">→</div>
+    <i class="ti ti-arrow-right action-arrow"></i>
   </a>
 
-  <a href="/quiz" class="action-card action-quiz">
-    <div class="ac-icon">📊</div>
-    <div class="ac-body">
-      <div class="ac-title">Quiz de Conocimiento</div>
-      <div class="ac-desc">
-        10 preguntas generadas por IA para medir tu nivel
+  <a href="/quiz" class="action-modern action-quiz">
+    <div class="action-icon-wrapper">
+      <i class="ti ti-checklist"></i>
+    </div>
+    <div class="action-content">
+      <h3>Quiz de Conocimiento</h3>
+      <p>10 preguntas generadas por IA para medir tu nivel</p>
+      <div class="action-meta">
+        <span><i class="ti ti-chart-bar"></i> 10 preguntas</span>
+        <span><i class="ti ti-clock"></i> ~5 min</span>
       </div>
     </div>
-    <div class="ac-arrow">→</div>
+    <i class="ti ti-arrow-right action-arrow"></i>
   </a>
 
-  <a href="/chat" class="action-card action-chat">
-    <div class="ac-icon">🤖</div>
-    <div class="ac-body">
-      <div class="ac-title">Chat con CyberTutor IA</div>
-      <div class="ac-desc">Pregunta lo que quieras sobre ciberseguridad</div>
+  <a href="/chat" class="action-modern action-chat">
+    <div class="action-icon-wrapper">
+      <i class="ti ti-message-circle"></i>
     </div>
-    <div class="ac-arrow">→</div>
+    <div class="action-content">
+      <h3>Chat con CyberTutor IA</h3>
+      <p>Consulta cualquier duda sobre ciberseguridad con nuestro asistente</p>
+      <div class="action-meta">
+        <span><i class="ti ti-cpu"></i> IA en tiempo real</span>
+        <span><i class="ti ti-clock"></i> 24/7</span>
+      </div>
+    </div>
+    <i class="ti ti-arrow-right action-arrow"></i>
   </a>
 </div>
 
 <style>
-  /* ── Welcome hero mejorado ── */
-  .welcome {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 2rem;
-    align-items: center;
-  }
+/* Estilos específicos del dashboard modernizado */
+.welcome-modern {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 2rem;
+  padding: 2rem;
+  background: var(--gradient-card);
+  border-radius: 24px;
+  border: 1px solid var(--border-light);
+  margin-bottom: 2rem;
+  position: relative;
+  overflow: hidden;
+}
 
-  @media (max-width: 700px) {
-    .welcome {
-      grid-template-columns: 1fr;
-    }
-  }
+.welcome-modern::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -20%;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, var(--accent-blue-glow) 0%, transparent 70%);
+  pointer-events: none;
+}
 
-  .welcome-text {
-    position: relative;
-    z-index: 1;
-  }
+.welcome-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  background: var(--bg-tertiary);
+  border-radius: 100px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--accent-blue);
+  margin-bottom: 1rem;
+}
 
-  .welcome h1 {
-    font-size: clamp(1.5rem, 3vw, 2.2rem);
-    font-weight: 900;
-  }
+.welcome-content h1 {
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  line-height: 1.2;
+}
 
-  .progress-label {
-    display: flex;
-    justify-content: space-between;
-    font-size: 12px;
-    color: var(--muted);
-    margin-bottom: 8px;
-    margin-top: 1rem;
-    font-family: var(--mono);
-  }
+.gradient-text {
+  background: var(--gradient-accent);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
 
-  .prog-pct {
-    color: var(--green);
-    font-weight: 700;
-  }
+.progress-modern {
+  margin-top: 1.5rem;
+  max-width: 400px;
+}
 
-  .welcome-stats {
-    display: flex;
-    gap: 1.5rem;
-    position: relative;
-    z-index: 1;
-  }
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
 
-  .wstat {
-    text-align: center;
-  }
-  .wstat-num {
-    font-family: var(--mono);
-    font-size: 2rem;
-    font-weight: 700;
-    line-height: 1;
-  }
-  .wstat-label {
-    font-size: 11px;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-top: 4px;
-  }
+.progress-track {
+  height: 6px;
+  background: var(--bg-tertiary);
+  border-radius: 100px;
+  overflow: hidden;
+}
 
-  /* ── Section label ── */
-  .section-label {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    margin: 2rem 0 1.25rem;
-  }
+.progress-fill {
+  height: 100%;
+  background: var(--gradient-accent);
+  border-radius: 100px;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
 
-  .sl-line {
-    flex: 1;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--border), transparent);
-  }
-  .sl-text {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    white-space: nowrap;
-  }
+.progress-tip {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 8px;
+}
 
-  /* ── Cards mejoradas ── */
-  .card {
-    position: relative;
-    overflow: hidden;
-    text-align: left;
-  }
+.stats-modern {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
 
-  .card-glow {
-    position: absolute;
-    top: -50px;
-    right: -50px;
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    opacity: 0;
-    transition: opacity 0.4s;
-    pointer-events: none;
-  }
+.stat-card {
+  background: var(--bg-tertiary);
+  border-radius: 16px;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: all var(--transition-fast);
+}
 
-  .card-link {
-    text-decoration: none; /* quita el subrayado */
-    color: inherit; /* mantiene los colores originales */
-    display: inline-block; /* permite que el enlace envuelva el div */
-  }
+.stat-card:hover {
+  transform: translateY(-2px);
+  background: var(--bg-elevated);
+}
 
-  .glow-blue {
-    background: radial-gradient(
-      circle,
-      rgba(14, 165, 233, 0.25) 0%,
-      transparent 70%
-    );
-  }
-  .glow-green {
-    background: radial-gradient(
-      circle,
-      rgba(34, 197, 94, 0.25) 0%,
-      transparent 70%
-    );
-  }
-  .glow-orange {
-    background: radial-gradient(
-      circle,
-      rgba(249, 115, 22, 0.25) 0%,
-      transparent 70%
-    );
-  }
+.stat-icon {
+  font-size: 24px;
+}
 
-  .card:hover .card-glow {
-    opacity: 1;
-  }
+.stat-info {
+  display: flex;
+  flex-direction: column;
+}
 
-  .card-icon {
-    font-size: 2rem;
-    margin-bottom: 0.75rem;
-    display: block;
-    filter: drop-shadow(0 0 8px currentColor);
-  }
+.stat-value {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
 
-  .card h3 {
-    font-size: 1.1rem;
-    font-weight: 800;
-    text-align: left;
-  }
-  .card p {
-    text-align: left;
-  }
+.stat-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
 
-  /* Botones de color en cards */
-  .btn-blue,
-  .btn-green,
-  .btn-orange {
-    padding: 9px 18px;
-    border-radius: var(--r-sm);
-    border: none;
-    font-size: 13px;
-    font-weight: 700;
-    cursor: pointer;
-    font-family: var(--sans);
-    transition:
-      transform 0.2s,
-      box-shadow 0.2s;
-    letter-spacing: 0.3px;
-  }
+/* Section Header */
+.section-header-modern {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 2rem 0 1.5rem;
+}
 
-  .btn-blue {
-    background: linear-gradient(135deg, var(--blue), var(--blue-d));
-    color: #fff;
-  }
-  .btn-green {
-    background: linear-gradient(135deg, var(--green), var(--green-d));
-    color: #fff;
-  }
-  .btn-orange {
-    background: linear-gradient(135deg, var(--orange), var(--orange-d));
-    color: #fff;
-  }
+.section-title-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
 
-  .btn-blue:hover {
-    box-shadow: 0 4px 16px var(--blue-glow);
-    transform: scale(1.05);
-  }
-  .btn-green:hover {
-    box-shadow: 0 4px 16px var(--green-glow);
-    transform: scale(1.05);
-  }
-  .btn-orange:hover {
-    box-shadow: 0 4px 16px var(--orange-glow);
-    transform: scale(1.05);
-  }
+.section-icon {
+  width: 44px;
+  height: 44px;
+  background: var(--bg-tertiary);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+}
 
-  /* ── Actions grid ── */
-  .actions-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 14px;
-    margin-bottom: 2rem;
-  }
+.section-title-group h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
 
-  @media (max-width: 700px) {
-    .actions-grid {
-      grid-template-columns: 1fr;
-    }
-  }
+.section-title-group p {
+  font-size: 13px;
+  color: var(--text-muted);
+}
 
-  .action-card {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 1.25rem 1.5rem;
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: var(--r-lg);
-    text-decoration: none;
-    transition:
-      transform 0.25s,
-      border-color 0.25s,
-      box-shadow 0.25s;
-    position: relative;
-    overflow: hidden;
-    animation: fadeInUp 0.5s ease both;
-  }
+.section-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--border-light), transparent);
+}
 
-  .action-card:nth-child(1) {
-    animation-delay: 0.1s;
-  }
-  .action-card:nth-child(2) {
-    animation-delay: 0.2s;
-  }
-  .action-card:nth-child(3) {
-    animation-delay: 0.3s;
-  }
+/* Modules Grid */
+.modules-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  margin-bottom: 2rem;
+}
 
-  .action-sim:hover {
-    border-color: var(--orange);
-    box-shadow: 0 6px 24px var(--orange-glow);
-    transform: translateY(-4px);
-  }
-  .action-quiz:hover {
-    border-color: var(--blue);
-    box-shadow: 0 6px 24px var(--blue-glow);
-    transform: translateY(-4px);
-  }
-  .action-chat:hover {
-    border-color: var(--green);
-    box-shadow: 0 6px 24px var(--green-glow);
-    transform: translateY(-4px);
-  }
+.module-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: 20px;
+  padding: 1.5rem;
+  position: relative;
+  overflow: hidden;
+  transition: all var(--transition-base);
+}
 
-  .ac-icon {
-    font-size: 2rem;
-    flex-shrink: 0;
-    filter: drop-shadow(0 0 6px currentColor);
-  }
+.module-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--border-medium);
+  box-shadow: var(--shadow-lg);
+}
 
-  .ac-body {
-    flex: 1;
-  }
-  .ac-title {
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--black);
-    margin-bottom: 3px;
-  }
-  .ac-desc {
-    font-size: 12px;
-    color: var(--muted);
-    line-height: 1.4;
-  }
-  .ac-arrow {
-    font-size: 1.2rem;
-    color: var(--muted);
-    transition:
-      transform 0.2s,
-      color 0.2s;
-  }
+.module-glow {
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, var(--accent-blue-glow) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity var(--transition-base);
+  pointer-events: none;
+}
 
-  .action-sim:hover .ac-arrow {
-    transform: translateX(4px);
-    color: var(--orange);
+.module-card:hover .module-glow {
+  opacity: 0.5;
+}
+
+.module-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.module-icon {
+  font-size: 2rem;
+}
+
+.module-badge {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 100px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.badge-danger {
+  background: var(--accent-red);
+  color: white;
+}
+
+.badge-success {
+  background: var(--accent-green);
+  color: white;
+}
+
+.badge-warning {
+  background: var(--accent-orange);
+  color: white;
+}
+
+.badge-info {
+  background: var(--accent-blue);
+  color: white;
+}
+
+.module-card h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.module-card p {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: 1rem;
+}
+
+.module-progress {
+  height: 4px;
+  background: var(--bg-tertiary);
+  border-radius: 100px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.module-progress-bar {
+  height: 100%;
+  background: var(--gradient-accent);
+  border-radius: 100px;
+  transition: width 0.4s ease;
+}
+
+.module-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+}
+
+.module-stats {
+  color: var(--text-muted);
+}
+
+.module-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--accent-blue);
+  text-decoration: none;
+  font-weight: 600;
+  transition: gap var(--transition-fast);
+}
+
+.module-link:hover {
+  gap: 8px;
+}
+
+/* Actions Modern */
+.actions-modern {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 16px;
+  margin-bottom: 2rem;
+}
+
+.action-modern {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: 16px;
+  text-decoration: none;
+  transition: all var(--transition-base);
+  position: relative;
+  overflow: hidden;
+}
+
+.action-modern:hover {
+  transform: translateY(-2px);
+  border-color: var(--border-medium);
+  box-shadow: var(--shadow-md);
+}
+
+.action-icon-wrapper {
+  width: 52px;
+  height: 52px;
+  background: var(--bg-tertiary);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  transition: all var(--transition-fast);
+}
+
+.action-modern:hover .action-icon-wrapper {
+  transform: scale(1.05);
+}
+
+.action-sim:hover .action-icon-wrapper {
+  background: var(--accent-orange);
+  color: white;
+}
+
+.action-quiz:hover .action-icon-wrapper {
+  background: var(--accent-blue);
+  color: white;
+}
+
+.action-chat:hover .action-icon-wrapper {
+  background: var(--accent-green);
+  color: white;
+}
+
+.action-content {
+  flex: 1;
+}
+
+.action-content h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.action-content p {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+
+.action-meta {
+  display: flex;
+  gap: 12px;
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+.action-meta i {
+  font-size: 10px;
+  margin-right: 2px;
+}
+
+.action-arrow {
+  color: var(--text-muted);
+  transition: all var(--transition-fast);
+}
+
+.action-modern:hover .action-arrow {
+  transform: translateX(4px);
+  color: var(--accent-blue);
+}
+
+@media (max-width: 768px) {
+  .welcome-modern {
+    grid-template-columns: 1fr;
   }
-  .action-quiz:hover .ac-arrow {
-    transform: translateX(4px);
-    color: var(--blue);
+  
+  .stats-modern {
+    grid-template-columns: repeat(2, 1fr);
   }
-  .action-chat:hover .ac-arrow {
-    transform: translateX(4px);
-    color: var(--green);
+  
+  .modules-grid {
+    grid-template-columns: 1fr;
   }
+  
+  .actions-modern {
+    grid-template-columns: 1fr;
+  }
+}
 </style>
 
 <script>
-  /* Efecto typing en el título */
-  (function () {
-    const el = document.getElementById("typingTitle");
-    const text = "CyberTutor IA";
-    let i = 0;
-    function type() {
-      if (i <= text.length) {
-        el.textContent = text.slice(0, i) + (i < text.length ? "|" : "");
-        i++;
-        setTimeout(type, 80);
-      }
+// Contadores animados
+function animateCounter(element, target, duration = 800) {
+  let start = 0;
+  const step = target / (duration / 16);
+  const update = () => {
+    start += step;
+    if (start < target) {
+      element.textContent = Math.floor(start);
+      requestAnimationFrame(update);
+    } else {
+      element.textContent = target;
     }
-    setTimeout(type, 400);
-  })();
+  };
+  requestAnimationFrame(update);
+}
 
-  /* Contadores animados */
-  function animateCounter(el, target, duration) {
-    let start = 0;
-    const step = target / (duration / 16);
-    function update() {
-      start += step;
-      if (start < target) {
-        el.textContent = Math.floor(start);
-        requestAnimationFrame(update);
-      } else {
-        el.textContent = target;
-      }
-    }
-    requestAnimationFrame(update);
-  }
+// Progress bar animada
+setTimeout(() => {
+  const bar = document.getElementById('progressBar');
+  const pct = document.getElementById('progPct');
+  const target = 60;
+  let current = 0;
+  const interval = setInterval(() => {
+    current++;
+    bar.style.width = current + '%';
+    pct.textContent = current + '%';
+    if (current >= target) clearInterval(interval);
+  }, 16);
+}, 500);
 
-  setTimeout(() => {
-    animateCounter(document.getElementById("counter1"), 4, 800);
-    animateCounter(document.getElementById("counter2"), 10, 1000);
-    animateCounter(document.getElementById("counter3"), 3, 700);
-  }, 300);
-
-  /* Progress bar animada */
-  setTimeout(() => {
-    const bar = document.getElementById("progressBar");
-    const pct = document.getElementById("progPct");
-    const target = 60;
-    let current = 0;
-    const interval = setInterval(() => {
-      current++;
-      bar.style.width = current + "%";
-      pct.textContent = current + "%";
-      if (current >= target) clearInterval(interval);
-    }, 16);
-  }, 500);
+// Iniciar contadores
+setTimeout(() => {
+  animateCounter(document.getElementById('counter1'), 4);
+  animateCounter(document.getElementById('counter2'), 10);
+  animateCounter(document.getElementById('counter3'), 3);
+}, 300);
 </script>
 
 {% endblock %}

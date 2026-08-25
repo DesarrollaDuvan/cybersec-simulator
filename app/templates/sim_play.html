@@ -1,0 +1,1218 @@
+{% extends "base.html" %}
+{% block title %}{{ scenario.title }} — Simulación{% endblock %}
+
+{% block content %}
+<script>
+const SCENARIO = {{ scenario | tojson }};
+let currentStageIndex = 0;
+let totalPoints = 0;
+let awaitingNext = false;
+</script>
+
+<div style="max-width:720px;margin:0 auto;padding:1.5rem 0 4rem;" id="simContainer">
+
+  <!-- Header fijo del escenario -->
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;">
+    <div>
+      <a href="{{ url_for('sim_immersive.home') }}" class="back-link">
+        ← Simulaciones
+      </a>
+      <h1 id="scenarioTitle" style="font-size:1.4rem;font-weight:900;margin:0;"></h1>
+      <div class="scenario-location" id="scenarioLocation"></div>
+    </div>
+    <div style="text-align:right;">
+      <div class="points-label">PUNTOS</div>
+      <div class="points-value" id="pointsDisplay">0</div>
+    </div>
+  </div>
+
+  <!-- Barra de progreso -->
+  <div class="progress-stages" id="stageProgress"></div>
+
+  <!-- Área de escena -->
+  <div id="sceneArea"></div>
+
+  <!-- Panel de resultado -->
+  <div id="resultPanel" style="display:none;margin-top:1.5rem;"></div>
+
+  <!-- Botón siguiente -->
+  <div id="nextBtn" style="display:none;margin-top:1.5rem;">
+    <button class="next-stage-btn" onclick="advanceStage()">Continuar →</button>
+  </div>
+
+</div>
+
+<style>
+/* Variables específicas para simulación */
+.sim-play-container {
+  --sim-text-primary: var(--text-primary);
+  --sim-text-secondary: var(--text-secondary);
+  --sim-bg-card: var(--bg-card);
+  --sim-border: var(--border-light);
+}
+
+[data-theme="light"] .sim-play-container {
+  --sim-text-primary: #0f172a;
+  --sim-text-secondary: #334155;
+  --sim-bg-card: #ffffff;
+  --sim-border: #e2e8f0;
+}
+
+/* Estilos base */
+.back-link {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.back-link:hover {
+  color: var(--accent-blue);
+}
+
+.scenario-location {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.points-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.points-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--accent-green);
+  font-family: var(--mono);
+}
+
+.progress-stages {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 2rem;
+}
+
+.progress-stage {
+  flex: 1;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--border-light);
+  transition: background 0.4s;
+}
+
+.progress-stage.completed {
+  background: var(--accent-green);
+}
+
+.progress-stage.active {
+  background: var(--accent-blue);
+}
+
+/* Tarjeta de llamada telefónica */
+.phone-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+
+.phone-header {
+  background: linear-gradient(135deg, rgba(14,165,233,0.15), rgba(14,165,233,0.05));
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.phone-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: rgba(14,165,233,0.15);
+  border: 2px solid rgba(14,165,233,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  animation: pulse-ring 2s ease-in-out infinite;
+}
+
+.phone-info {
+  flex: 1;
+}
+
+.phone-caller {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.phone-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--accent-green);
+  margin-top: 3px;
+}
+
+.phone-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent-green);
+  animation: blink 1s ease-in-out infinite;
+}
+
+.phone-timer {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.phone-transcript {
+  padding: 1.5rem;
+}
+
+/* Tarjeta de correo */
+.email-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+
+.email-toolbar {
+  background: var(--bg-tertiary);
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.email-dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+}
+
+.email-dot-red { background: #ff5f57; }
+.email-dot-yellow { background: #febc2e; }
+.email-dot-green { background: #28c840; }
+
+.email-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-left: 8px;
+}
+
+.email-body {
+  padding: 1.5rem;
+}
+
+.email-field {
+  font-size: 13px;
+  margin-bottom: 6px;
+}
+
+.email-field-key {
+  color: var(--text-muted);
+  font-family: var(--mono);
+  font-size: 11px;
+  display: inline-block;
+  width: 60px;
+}
+
+.email-field-value {
+  color: var(--text-primary);
+}
+
+.email-sender-suspicious {
+  color: var(--accent-red) !important;
+  font-weight: 600;
+}
+
+.email-suspicious-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  background: rgba(239,68,68,0.1);
+  color: var(--accent-red);
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-left: 6px;
+}
+
+.email-subject {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.email-content {
+  color: var(--text-secondary);
+  line-height: 1.75;
+  font-size: 14px;
+  margin-bottom: 1.25rem;
+}
+
+.email-link-box {
+  margin-top: 1rem;
+  padding: 10px 16px;
+  background: rgba(239,68,68,0.08);
+  border: 1px solid rgba(239,68,68,0.2);
+  border-radius: 8px;
+  font-family: var(--mono);
+  font-size: 12px;
+}
+
+.email-link-label {
+  color: var(--text-muted);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+
+.email-link-text {
+  color: var(--accent-blue);
+}
+
+.email-link-real {
+  color: var(--accent-red);
+  font-size: 10px;
+  margin-top: 4px;
+}
+
+/* Tarjeta de escena */
+.scene-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: 16px;
+  padding: 1.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.scene-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 1rem;
+}
+
+.scene-icon {
+  font-size: 18px;
+}
+
+.scene-speaker {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+
+.scene-text {
+  color: var(--text-primary);
+  font-size: 15px;
+  line-height: 1.75;
+  margin-bottom: 1.5rem;
+}
+
+/* Tarjeta WiFi */
+.wifi-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+
+.wifi-header {
+  background: var(--bg-tertiary);
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.wifi-header-icon {
+  font-size: 18px;
+}
+
+.wifi-header-title {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+
+.wifi-list {
+  padding: 1rem;
+}
+
+.wifi-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+
+.wifi-item-safe {
+  border: 1px solid rgba(34,197,94,0.2);
+  background: rgba(34,197,94,0.04);
+}
+
+.wifi-item-danger {
+  border: 1px solid rgba(239,68,68,0.2);
+  background: rgba(239,68,68,0.04);
+}
+
+.wifi-lock {
+  font-size: 18px;
+}
+
+.wifi-info {
+  flex: 1;
+}
+
+.wifi-ssid {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.wifi-note {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.wifi-signal {
+  font-family: var(--mono);
+  font-size: 14px;
+}
+
+/* Terminal card */
+.terminal-card {
+  background: #050810;
+  border: 1px solid rgba(34,197,94,0.3);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+
+.terminal-header {
+  background: #0a0f1a;
+  padding: 10px 16px;
+  border-bottom: 1px solid rgba(34,197,94,0.2);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.terminal-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.terminal-dot-red { background: #ff5f57; }
+.terminal-dot-yellow { background: #febc2e; }
+.terminal-dot-green { background: #28c840; }
+
+.terminal-title {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: rgba(34,197,94,0.6);
+  margin-left: 8px;
+}
+
+.terminal-body {
+  padding: 1.25rem;
+  font-family: var(--mono);
+}
+
+.terminal-line {
+  font-size: 12px;
+  padding: 2px 0;
+}
+
+.terminal-line-normal {
+  color: rgba(34,197,94,0.8);
+}
+
+.terminal-line-warning {
+  color: #f0883e;
+}
+
+.terminal-line-error {
+  color: #f87171;
+}
+
+.terminal-prompt {
+  color: rgba(34,197,94,0.5);
+  margin-bottom: 0.5rem;
+}
+
+/* Ataque visualización */
+.attack-card {
+  background: var(--bg-card);
+  border: 1px solid rgba(239,68,68,0.3);
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+
+.attack-header {
+  background: rgba(239,68,68,0.08);
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(239,68,68,0.2);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.attack-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent-red);
+  animation: blink 1s ease-in-out infinite;
+}
+
+.attack-title {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--accent-red);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+
+.attack-body {
+  padding: 1.5rem;
+}
+
+.attack-text {
+  color: var(--text-primary);
+  font-size: 14px;
+  line-height: 1.7;
+  margin-bottom: 1.25rem;
+}
+
+.attack-data-box {
+  background: #050810;
+  border: 1px solid rgba(239,68,68,0.2);
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.attack-data-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: rgba(239,68,68,0.6);
+  margin-bottom: 0.75rem;
+}
+
+.attack-data-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(239,68,68,0.1);
+}
+
+.attack-data-type {
+  font-family: var(--mono);
+  font-size: 10px;
+  background: rgba(239,68,68,0.15);
+  color: var(--accent-red);
+  padding: 2px 6px;
+  border-radius: 4px;
+  flex-shrink: 0;
+  text-transform: uppercase;
+}
+
+.attack-data-content {
+  flex: 1;
+}
+
+.attack-data-value {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--accent-red);
+}
+
+.attack-data-site {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* Pregunta y opciones */
+.question-box {
+  margin-bottom: 0.75rem;
+}
+
+.question-text {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+  text-align: center;
+  padding: 12px 16px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-light);
+  border-radius: 10px;
+  margin-bottom: 1rem;
+}
+
+.options-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.option-btn {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 14px 16px;
+  border-radius: 10px;
+  border: 1.5px solid var(--border-medium);
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s;
+  font-family: var(--sans);
+  width: 100%;
+}
+
+.option-btn:hover:not(:disabled) {
+  background: rgba(255,255,255,0.04);
+  transform: scale(0.99);
+}
+
+.option-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.option-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.option-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+
+/* Resultado panel */
+.result-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.result-header {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.result-header-correct {
+  background: rgba(34,197,94,0.06);
+  border-bottom-color: rgba(34,197,94,0.25);
+}
+
+.result-header-incorrect {
+  background: rgba(239,68,68,0.06);
+  border-bottom-color: rgba(239,68,68,0.25);
+}
+
+.result-verdict-icon {
+  font-size: 22px;
+}
+
+.result-verdict-text {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.result-verdict-correct {
+  color: var(--accent-green);
+}
+
+.result-verdict-incorrect {
+  color: var(--accent-red);
+}
+
+.result-points {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.result-body {
+  padding: 1.5rem;
+}
+
+.result-consequence {
+  color: var(--text-primary);
+  font-size: 14px;
+  line-height: 1.75;
+  margin-bottom: 1.25rem;
+}
+
+.result-analysis {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-light);
+  border-radius: 10px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.result-analysis-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--accent-blue);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 0.5rem;
+}
+
+.result-analysis-text {
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.65;
+  margin: 0;
+}
+
+.result-lesson {
+  padding: 10px 14px;
+  background: rgba(249,115,22,0.08);
+  border: 1px solid rgba(249,115,22,0.2);
+  border-radius: 8px;
+}
+
+.result-lesson-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--accent-orange);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.result-lesson-text {
+  font-size: 13px;
+  color: #fdba74;
+}
+
+/* Botón siguiente */
+.next-stage-btn {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, var(--accent-blue), var(--accent-blue-dark));
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: var(--sans);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.next-stage-btn:hover {
+  transform: scale(1.02);
+  box-shadow: var(--shadow-glow-blue);
+}
+
+/* Loader */
+.loader-container {
+  text-align: center;
+  padding: 2rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+}
+
+.loader-text {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.loader-dots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 0.75rem;
+}
+
+.loader-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent-blue);
+  animation: typing-bounce 1.2s ease-in-out infinite;
+}
+
+.loader-dot:nth-child(2) { animation-delay: 0.2s; }
+.loader-dot:nth-child(3) { animation-delay: 0.4s; }
+
+/* Animaciones */
+@keyframes pulse-ring {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(14,165,233,0.4); }
+  50% { box-shadow: 0 0 0 10px rgba(14,165,233,0); }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+@keyframes typing-bounce {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+  30% { transform: translateY(-6px); opacity: 1; }
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .options-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .phone-header {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .phone-timer {
+    margin-top: 8px;
+  }
+}
+</style>
+
+<script>
+let callInterval = null;
+let callSeconds = 0;
+
+function updateScenarioHeader() {
+  document.getElementById('scenarioTitle').textContent = SCENARIO.thumbnail + ' ' + SCENARIO.title;
+  document.getElementById('scenarioLocation').textContent = '📍 ' + SCENARIO.location;
+}
+
+function updateProgressStages(currentIdx) {
+  const container = document.getElementById('stageProgress');
+  container.innerHTML = '';
+  SCENARIO.stages.forEach((_, idx) => {
+    const div = document.createElement('div');
+    div.className = 'progress-stage';
+    if (idx < currentIdx) div.classList.add('completed');
+    if (idx === currentIdx) div.classList.add('active');
+    container.appendChild(div);
+  });
+}
+
+function showLoader(message = 'Analizando tu decisión...') {
+  const resultPanel = document.getElementById('resultPanel');
+  resultPanel.style.display = 'block';
+  resultPanel.innerHTML = `
+    <div class="loader-container">
+      <div class="loader-text">${message}</div>
+      <div class="loader-dots">
+        <div class="loader-dot"></div>
+        <div class="loader-dot"></div>
+        <div class="loader-dot"></div>
+      </div>
+    </div>`;
+  resultPanel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function renderStage(stage, idx) {
+  const area = document.getElementById('sceneArea');
+  area.innerHTML = '';
+  document.getElementById('resultPanel').style.display = 'none';
+  document.getElementById('nextBtn').style.display = 'none';
+  
+  updateProgressStages(idx);
+  
+  let html = '';
+  
+  // Phone call stage
+  if (stage.type === 'phone_call') {
+    html = `
+      <div class="phone-card">
+        <div class="phone-header">
+          <div class="phone-avatar">${stage.avatar || '📞'}</div>
+          <div class="phone-info">
+            <div class="phone-caller">${stage.caller}</div>
+            <div class="phone-status">
+              <span class="phone-status-dot"></span>
+              Llamada en curso...
+            </div>
+          </div>
+          <div class="phone-timer" id="callTimer">00:00</div>
+        </div>
+        <div class="phone-transcript" id="transcriptArea">
+          <div id="transcriptLines"></div>
+        </div>
+      </div>`;
+    area.innerHTML = html;
+    startCallTimer();
+    typeTranscript(stage.transcript, () => renderChoices(stage, idx));
+    return;
+  }
+  
+  // Email stage
+  if (stage.type === 'email') {
+    html = `
+      <div class="email-card">
+        <div class="email-toolbar">
+          <div class="email-dot email-dot-red"></div>
+          <div class="email-dot email-dot-yellow"></div>
+          <div class="email-dot email-dot-green"></div>
+          <span class="email-label">Bandeja de entrada</span>
+        </div>
+        <div class="email-body">
+          <div class="email-field">
+            <span class="email-field-key">De:</span>
+            <span class="email-field-value email-sender-suspicious">${stage.sender}</span>
+            <span class="email-suspicious-tag">⚠ Sospechoso</span>
+          </div>
+          <div class="email-field">
+            <span class="email-field-key">Asunto:</span>
+            <span class="email-field-value email-subject">${stage.subject}</span>
+          </div>
+          <hr style="border:none;border-top:1px solid var(--border-light);margin:1rem 0;">
+          <div class="email-content">${stage.body}</div>
+          ${stage.link_text ? `
+          <div class="email-link-box">
+            <div class="email-link-label">Enlace visible:</div>
+            <div class="email-link-text">${stage.link_text}</div>
+            <div class="email-link-label" style="margin-top:8px;">URL real:</div>
+            <div class="email-link-real">${stage.link_real}</div>
+          </div>` : ''}
+        </div>
+      </div>`;
+    area.innerHTML = html;
+    setTimeout(() => renderChoices(stage, idx), 300);
+    return;
+  }
+  
+  // Scene / conversation stage
+  if (stage.type === 'scene' || stage.type === 'conversation' || stage.type === 'chat_message') {
+    const icon = stage.type === 'chat_message' ? '💬' : stage.type === 'conversation' ? '🗣️' : '📍';
+    html = `
+      <div class="scene-card">
+        <div class="scene-header">
+          <span class="scene-icon">${icon}</span>
+          <span class="scene-speaker">${stage.speaker || stage.sender || 'Situación'}</span>
+        </div>
+        ${stage.scene_text ? `<div class="scene-text">${stage.scene_text}</div>` : ''}
+        <div id="transcriptLines"></div>
+      </div>`;
+    area.innerHTML = html;
+    if (stage.transcript && stage.transcript.length > 0) {
+      typeTranscript(stage.transcript, () => renderChoices(stage, idx));
+    } else {
+      renderChoices(stage, idx);
+    }
+    return;
+  }
+  
+  // WiFi scan stage
+  if (stage.type === 'wifi_scan') {
+    let networksHtml = '';
+    stage.available_networks.forEach(net => {
+      const bars = '▂▄▆█'.slice(0, net.signal);
+      const safeClass = net.safe ? 'wifi-item-safe' : 'wifi-item-danger';
+      const lockIcon = net.lock ? '🔒' : '🔓';
+      const signalColor = net.safe ? 'var(--accent-green)' : 'var(--accent-red)';
+      networksHtml += `
+        <div class="wifi-item ${safeClass}">
+          <span class="wifi-lock" style="color:${signalColor}">${lockIcon}</span>
+          <div class="wifi-info">
+            <div class="wifi-ssid">${net.ssid}</div>
+            <div class="wifi-note">${net.note}</div>
+          </div>
+          <div class="wifi-signal" style="color:${signalColor}">${bars}</div>
+        </div>`;
+    });
+    html = `
+      <div class="wifi-card">
+        <div class="wifi-header">
+          <span class="wifi-header-icon">📶</span>
+          <span class="wifi-header-title">Redes WiFi disponibles</span>
+        </div>
+        <div class="wifi-list">${networksHtml}</div>
+      </div>`;
+    area.innerHTML = html;
+    setTimeout(() => renderChoices(stage, idx), 400);
+    return;
+  }
+  
+  // Terminal stage
+  if (stage.type === 'terminal') {
+    html = `
+      <div class="terminal-card">
+        <div class="terminal-header">
+          <div class="terminal-dot terminal-dot-red"></div>
+          <div class="terminal-dot terminal-dot-yellow"></div>
+          <div class="terminal-dot terminal-dot-green"></div>
+          <span class="terminal-title">terminal — sistema de monitoreo</span>
+        </div>
+        <div class="terminal-body" id="terminalLines">
+          <div class="terminal-prompt">root@cybertutor:~$</div>
+        </div>
+      </div>
+      ${stage.scene_text ? `<div class="scene-text" style="margin-top:1rem;">${stage.scene_text}</div>` : ''}`;
+    area.innerHTML = html;
+    typeTerminal(stage.terminal_output, () => renderChoices(stage, idx));
+    return;
+  }
+  
+  // Attack visualization stage
+  if (stage.type === 'attack_visualization') {
+    let dataHtml = '';
+    stage.captured_data.forEach(d => {
+      dataHtml += `
+        <div class="attack-data-item">
+          <span class="attack-data-type">${d.type}</span>
+          <div class="attack-data-content">
+            <div class="attack-data-value">${d.data}</div>
+            <div class="attack-data-site">${d.site}</div>
+          </div>
+        </div>`;
+    });
+    html = `
+      <div class="attack-card">
+        <div class="attack-header">
+          <span class="attack-dot"></span>
+          <span class="attack-title">ATAQUE EN TIEMPO REAL</span>
+        </div>
+        <div class="attack-body">
+          <div class="attack-text">${stage.scene_text}</div>
+          <div class="attack-data-box">
+            <div class="attack-data-label">// DATOS INTERCEPTADOS POR EL ATACANTE:</div>
+            ${dataHtml}
+          </div>
+        </div>
+      </div>`;
+    area.innerHTML = html;
+    setTimeout(() => renderChoices(stage, idx), 600);
+    return;
+  }
+  
+  // Fallback
+  area.innerHTML = `<p style="color:var(--text-muted);">Escena no reconocida: ${stage.type}</p>`;
+  renderChoices(stage, idx);
+}
+
+function renderChoices(stage, stageIdx) {
+  const choices = stage.choices || [];
+  const question = stage.question || '¿Qué harías?';
+  
+  let optionsHtml = '';
+  choices.forEach(c => {
+    const riskColor = c.risk === 'bajo' ? 'var(--accent-green)' : c.risk === 'medio' ? 'var(--accent-orange)' : 'var(--accent-red)';
+    optionsHtml += `
+      <button class="option-btn" onclick="makeChoice('${stage.id}', '${c.id}', ${stageIdx})" id="choice-${c.id}">
+        <i class="ti ${c.icon}" style="font-size:18px;color:${riskColor};flex-shrink:0;margin-top:1px;"></i>
+        <span class="option-label">${c.label}</span>
+      </button>`;
+  });
+  
+  const html = `
+    <div class="question-box">
+      <div class="question-text">${question}</div>
+      <div class="options-grid" id="optionsGrid">
+        ${optionsHtml}
+      </div>
+    </div>`;
+  
+  const existing = document.getElementById('choicesArea');
+  if (existing) existing.remove();
+  const div = document.createElement('div');
+  div.id = 'choicesArea';
+  div.innerHTML = html;
+  document.getElementById('sceneArea').appendChild(div);
+}
+
+async function makeChoice(stageId, choiceId, stageIdx) {
+  if (awaitingNext) return;
+  awaitingNext = true;
+  
+  // Disable all choice buttons
+  document.querySelectorAll('.option-btn').forEach(btn => {
+    btn.disabled = true;
+    btn.style.opacity = '0.5';
+  });
+  
+  showLoader();
+  
+  try {
+    const res = await fetch('/sim/decision', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ scenario_id: SCENARIO.id, stage_id: stageId, choice_id: choiceId })
+    });
+    const data = await res.json();
+    
+    totalPoints = data.total_points;
+    document.getElementById('pointsDisplay').textContent = totalPoints;
+    
+    const isCorrect = data.is_correct;
+    const headerClass = isCorrect ? 'result-header-correct' : 'result-header-incorrect';
+    const verdictClass = isCorrect ? 'result-verdict-correct' : 'result-verdict-incorrect';
+    const icon = isCorrect ? '✓' : '✗';
+    const verdict = isCorrect ? 'Decisión correcta' : 'Decisión incorrecta';
+    
+    const resultPanel = document.getElementById('resultPanel');
+    resultPanel.style.display = 'block';
+    resultPanel.innerHTML = `
+      <div class="result-card">
+        <div class="result-header ${headerClass}">
+          <span class="result-verdict-icon">${icon}</span>
+          <div>
+            <div class="result-verdict-text ${verdictClass}">${verdict}</div>
+            <div class="result-points">${data.points} puntos</div>
+          </div>
+        </div>
+        <div class="result-body">
+          <div class="result-consequence">${data.consequence}</div>
+          <div class="result-analysis">
+            <div class="result-analysis-label">ANÁLISIS DE LA IA</div>
+            <p class="result-analysis-text">${data.explanation}</p>
+          </div>
+          <div class="result-lesson">
+            <span class="result-lesson-label">Lección clave: </span>
+            <span class="result-lesson-text">${data.lesson}</span>
+          </div>
+        </div>
+      </div>`;
+    
+    const nextBtn = document.getElementById('nextBtn');
+    nextBtn.style.display = 'block';
+    if (data.has_next) {
+      nextBtn.querySelector('button').textContent = 'Continuar →';
+      nextBtn.querySelector('button').onclick = () => {
+        currentStageIndex = data.next_index;
+        awaitingNext = false;
+        renderStage(SCENARIO.stages[currentStageIndex], currentStageIndex);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      };
+    } else {
+      nextBtn.querySelector('button').textContent = 'Ver resultados finales →';
+      nextBtn.querySelector('button').style.background = 'linear-gradient(135deg, var(--accent-green), var(--accent-green-dark))';
+      nextBtn.querySelector('button').onclick = () => {
+        window.location.href = `/sim/${SCENARIO.id}/results`;
+      };
+    }
+    
+    resultPanel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    
+  } catch(e) {
+    const resultPanel = document.getElementById('resultPanel');
+    resultPanel.innerHTML = `<div style="padding:1rem;color:var(--accent-red);">Error: ${e.message}</div>`;
+    awaitingNext = false;
+  }
+}
+
+// Transcript typing animation
+function typeTranscript(lines, callback) {
+  const container = document.getElementById('transcriptLines');
+  if (!container || !lines || lines.length === 0) {
+    if (callback) callback();
+    return;
+  }
+  let i = 0;
+  function addLine() {
+    if (i >= lines.length) {
+      if (callback) callback();
+      return;
+    }
+    const line = lines[i];
+    const isUser = line.role === 'user';
+    const div = document.createElement('div');
+    div.style.cssText = `display:flex;gap:10px;margin-bottom:10px;${isUser ? 'justify-content:flex-end;' : ''}`;
+    div.innerHTML = `<div style="max-width:85%;padding:10px 14px;border-radius:12px;${isUser ? 'background:rgba(14,165,233,0.15);border:1px solid rgba(14,165,233,0.2);border-bottom-right-radius:4px;' : 'background:var(--bg-tertiary);border:1px solid var(--border-light);border-bottom-left-radius:4px;'};font-size:13px;color:var(--text-primary);line-height:1.6;">${line.text}</div>`;
+    container.appendChild(div);
+    container.scrollTop = container.scrollHeight;
+    i++;
+    setTimeout(addLine, 800 + Math.random() * 400);
+  }
+  setTimeout(addLine, 300);
+}
+
+// Terminal typing animation
+function typeTerminal(lines, callback) {
+  const container = document.getElementById('terminalLines');
+  if (!container) {
+    if (callback) callback();
+    return;
+  }
+  let i = 0;
+  function addLine() {
+    if (i >= lines.length) {
+      setTimeout(() => { if (callback) callback(); }, 500);
+      return;
+    }
+    const line = lines[i];
+    const isAlert = line.includes('ALERTA') || line.includes('ABIERTO');
+    const div = document.createElement('div');
+    div.className = `terminal-line ${isAlert ? 'terminal-line-error' : 'terminal-line-normal'}`;
+    div.textContent = (i === 0 ? '' : '> ') + line;
+    container.appendChild(div);
+    container.scrollTop = container.scrollHeight;
+    i++;
+    setTimeout(addLine, 300 + Math.random() * 200);
+  }
+  setTimeout(addLine, 200);
+}
+
+// Call timer
+function startCallTimer() {
+  if (callInterval) clearInterval(callInterval);
+  callSeconds = 0;
+  callInterval = setInterval(() => {
+    callSeconds++;
+    const m = String(Math.floor(callSeconds / 60)).padStart(2, '0');
+    const s = String(callSeconds % 60).padStart(2, '0');
+    const el = document.getElementById('callTimer');
+    if (el) el.textContent = `${m}:${s}`;
+  }, 1000);
+}
+
+// Initialize
+window.addEventListener('DOMContentLoaded', () => {
+  updateScenarioHeader();
+  renderStage(SCENARIO.stages[0], 0);
+});
+</script>
+{% endblock %}
