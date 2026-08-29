@@ -2,7 +2,8 @@
 
 from werkzeug.security import generate_password_hash
 from datetime import datetime
-from app import create_app, db
+from app import create_app
+from app.extensions import db
 from app.models.user import User
 
 app = create_app()
@@ -32,6 +33,6 @@ with app.app_context():
     db.session.add_all([admin, cliente])
     db.session.commit()
 
-    print("✅ Usuarios creados:")
-    print(f"   Admin:   admin@cybertutor.com   / Admin123!")
-    print(f"   Cliente: cliente@cybertutor.com / Cliente123!")
+    print("OK Usuarios creados:")
+    print("   Admin:   admin@cybertutor.com   / Admin123!")
+    print("   Cliente: cliente@cybertutor.com / Cliente123!")

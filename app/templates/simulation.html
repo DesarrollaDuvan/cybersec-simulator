@@ -53,6 +53,7 @@
   <div class="decision-panel">
     <p class="decision-label">¿Qué harías con este correo?</p>
     <form method="POST" action="/simulation/decision">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
       <input type="hidden" name="scenario_id" value="{{ scenario.id }}">
       <div class="decision-buttons">
 

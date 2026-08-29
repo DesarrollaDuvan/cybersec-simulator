@@ -1,37 +1,50 @@
+# Byte-compiled / optimized / DLL files
 __pycache__/
-*.pyc
-*.pyo
+*.py[cod]
+*$py.class
 
-# Entorno virtual
+# Virtual environments
 venv/
-.venv/
 env/
+ENV/
 
-# Variables de entorno (API keys, secrets)
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Environment variables
 .env
 .env.local
-.env.production
 
-# Base de datos
-*.db
-database.db
-
-# IDEs
-.idea/
+# IDE
 .vscode/
+.idea/
 *.swp
 *.swo
 
-# Archivos del sistema
-Thumbs.db
-Desktop.ini
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Node (opencode)
+node_modules/
+package-lock.json
+
+# Docker
+Dockerfile
+docker-compose.yml
+
+# Pre-commit
+.pre-commit-config.yaml
+
+# Python packaging
+pyproject.toml
+*.egg-info/
+dist/
+build/
+
+# OS
 .DS_Store
-
-# Archivos de semilla (credenciales)
-seed.py
-
-# Migraciones generadas localmente
-migrations/versions/
-
-# Logs
-*.log
+Thumbs.db

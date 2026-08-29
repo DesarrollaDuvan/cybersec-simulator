@@ -1,0 +1,56 @@
+# app/data/scenarios/phishing.yaml
+# 3 escenarios de phishing para simulación clásica
+
+- id: "sc_001"
+  module: "phishing"
+  sender: "soporte@banco-seguro-col.net"
+  subject: "⚠ Urgente: Su cuenta ha sido bloqueada"
+  body: |
+    Estimado cliente, hemos detectado actividad sospechosa en su cuenta. 
+    Para evitar el bloqueo permanente, debe verificar su identidad en las 
+    próximas 24 horas. Haga clic en el enlace para actualizar sus datos.
+  link: "/simulation/trap/banco"
+  link_display: "http://banco-seguro-col.net/verificar?token=abc123"
+  correct_action: "report"
+  risk: "alto"
+  clues:
+    - "El dominio no coincide con el banco real (.net en lugar de .com.co)"
+    - "Lenguaje de urgencia: '24 horas', 'bloqueo permanente'"
+    - "Enlace con parámetros sospechosos en la URL"
+    - "Solicita información personal por correo"
+
+- id: "sc_002"
+  module: "phishing"
+  sender: "rrhh@miempresa.com"
+  subject: "Actualización de datos para nómina — Plazo: viernes"
+  body: |
+    Hola equipo, como parte de la actualización del sistema de nómina, 
+    necesitamos que confirmes tu número de cuenta bancaria y cédula en el 
+    formulario adjunto. Por favor hazlo antes del viernes.
+  link: null
+  link_display: null
+  correct_action: "ignore"
+  risk: "medio"
+  clues:
+    - "Solicita datos bancarios por correo, algo que RRHH nunca haría"
+    - "Sin firma ni datos de contacto del remitente"
+    - "Presión de tiempo ('antes del viernes')"
+    - "Dominio parece correcto, pero el contenido es sospechoso"
+
+- id: "sc_003"
+  module: "phishing"
+  sender: "no-reply@netflix.com"
+  subject: "Tu suscripción expira hoy — Actualiza tu método de pago"
+  body: |
+    Tu suscripción a Netflix está a punto de expirar. Para seguir disfrutando 
+    de tu contenido favorito sin interrupciones, actualiza tu método de pago 
+    ahora. Si no lo haces, tu cuenta será cancelada esta noche.
+  link: "/simulation/trap/netflix"
+  link_display: "http://netflix-pagos.com/update"
+  correct_action: "report"
+  risk: "alto"
+  clues:
+    - "El enlace lleva a un dominio falso: 'netflix-pagos.com' no es de Netflix"
+    - "Netflix nunca envía correos con amenazas de cancelación inmediata"
+    - "Urgencia artificial: 'esta noche'"
+    - "El remitente parece legítimo pero la URL revela el fraude"

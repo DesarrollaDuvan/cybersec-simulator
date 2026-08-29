@@ -11,6 +11,7 @@
 
   <div class="adm-card">
     <form method="POST" class="adm-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
       <div class="form-group">
         <label class="form-label">Correo electrónico *</label>

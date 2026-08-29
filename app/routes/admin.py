@@ -5,7 +5,7 @@ from flask_login import login_required, current_user
 from werkzeug.security import generate_password_hash
 from sqlalchemy import func
 
-from app import db
+from app.extensions import db, cache
 from app.models.user import User
 from app.models.progress import QuizResult, SimulationResult, CourseVisit
 
@@ -26,6 +26,7 @@ def admin_required(f):
 
 # ── Helpers ────────────────────────────────────────────────────────────────
 
+@cache.cached(timeout=60, key_prefix='global_stats')
 def get_global_stats():
     """Calcula métricas globales para el dashboard."""
     total_users        = User.query.filter_by(is_admin=False).count()

@@ -1,7 +1,6 @@
-from app import db
+from app.extensions import db
 from flask_login import UserMixin
 from datetime import datetime
-from app import db
 from flask_login import UserMixin
 
  
@@ -16,6 +15,12 @@ class User(db.Model, UserMixin):
     is_active    = db.Column(db.Boolean, default=True)
     created_at   = db.Column(db.DateTime, default=datetime.utcnow)
     last_login   = db.Column(db.DateTime, nullable=True)
+
+    __table_args__ = (
+        db.Index('ix_user_admin_active', 'is_admin', 'is_active'),
+        db.Index('ix_user_created_at', 'created_at'),
+        db.Index('ix_user_last_login', 'last_login'),
+    )
 
     # Relaciones
     quiz_results       = db.relationship('QuizResult',       backref='user', lazy=True, cascade='all, delete-orphan')

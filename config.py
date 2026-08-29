@@ -4,6 +4,7 @@ Colócalo en la raíz del proyecto: cybersec-simulator/config.py
 """
 
 import os
+from datetime import timedelta
 
 
 class Config:
@@ -17,3 +18,9 @@ class Config:
 
     # API Key de Anthropic (se carga desde .env)
     ANTHROPIC_API_KEY = os.environ.get('ANTHROPIC_API_KEY')
+
+    # Seguridad de sesiones
+    SESSION_COOKIE_SECURE = os.environ.get('FLASK_ENV') == 'production'
+    SESSION_COOKIE_HTTPONLY = True
+    SESSION_COOKIE_SAMESITE = 'Lax'
+    PERMANENT_SESSION_LIFETIME = timedelta(hours=24)

@@ -1,15 +1,9 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager
-from flask_migrate import Migrate
 from dotenv import load_dotenv
 
-load_dotenv()
+from app.extensions import db, login_manager, migrate, csrf, cache
 
-db = SQLAlchemy()
-login_manager = LoginManager()
-login_manager.login_view = 'auth.login'
-migrate = Migrate()   # 👈 inicializas sin pasar app todavía
+load_dotenv()
 
 def create_app():
     app = Flask(__name__)
@@ -18,12 +12,15 @@ def create_app():
     # Inicializar extensiones
     db.init_app(app)
     login_manager.init_app(app)
-    migrate.init_app(app, db)   # 👈 aquí sí pasas app y db
+    migrate.init_app(app, db)
+    csrf.init_app(app)
+    cache.init_app(app, config={'CACHE_TYPE': 'SimpleCache'})
     
     
 
     with app.app_context():
         from app.models.user import User
+        from app.models.progress import SimulationProgress  # noqa: F401
 
         @login_manager.user_loader
         def load_user(user_id):
