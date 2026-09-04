@@ -132,7 +132,13 @@
 
   .sim-subtitle { color: var(--text-secondary); font-size: 14px; margin: 0; line-height: 1.6; }
 
-  /* Badges — fix: badge-warning no existía y quedaba sin fondo */
+  /* Badges */
+  .badge-blue {
+    background: var(--accent-blue-bg);
+    color: var(--accent-blue);
+    border: 1px solid var(--accent-blue);
+  }
+
   .badge-warning {
     background: var(--accent-orange-bg);
     color: var(--accent-orange);
@@ -201,7 +207,7 @@
 
   .subject-text { font-weight: 700; color: var(--text-primary); }
 
-  .email-body { padding: 1.5rem; }
+  .email-body { padding: 1.5rem; background: var(--bg-card); }
 
   .email-content {
     color: var(--text-secondary);
@@ -216,7 +222,7 @@
     align-items: center;
     gap: 12px;
     flex-wrap: wrap;
-    background: transparent;
+    background: var(--bg-tertiary);
     padding: 12px;
     border: 1px dashed var(--border-medium);
     border-radius: var(--radius-lg);
@@ -347,7 +353,7 @@
     gap: 8px;
     padding: 12px 16px;
     border-bottom: 1px solid var(--border-light);
-    background: transparent;
+    background: var(--bg-tertiary);
   }
 
   .clues-title {
@@ -392,90 +398,6 @@
     background: var(--accent-orange);
     flex-shrink: 0;
     margin-top: 6px;
-  }
-
-  /* ==========================================
-     MODO CLARO — colores sólidos de alto contraste.
-     Antes varios textos heredaban blanco y no se veían.
-     ========================================== */
-  [data-theme="light"] .sim-container { color: #0f172a; }
-  [data-theme="light"] .sim-header h2 { color: #0f172a; }
-  [data-theme="light"] .sim-subtitle { color: #475569; }
-
-  [data-theme="light"] .email-panel,
-  [data-theme="light"] .decision-panel,
-  [data-theme="light"] .clues-panel {
-    background: #ffffff;
-    border-color: #e2e8f0;
-    box-shadow: 0 1px 3px rgba(15,23,42,.06);
-  }
-
-  [data-theme="light"] .email-toolbar {
-    background: #f8fafc;
-    border-bottom-color: #e2e8f0;
-  }
-  [data-theme="light"] .email-label,
-  [data-theme="light"] .email-label-right { color: #64748b; }
-  [data-theme="light"] .email-meta { background: #fff; border-bottom-color: #e2e8f0; }
-  [data-theme="light"] .email-field { color: #0f172a; }
-  [data-theme="light"] .field-key { color: #64748b; }
-  [data-theme="light"] .field-val { color: #334155; }
-  [data-theme="light"] .sender-suspicious { color: #dc2626 !important; }
-  [data-theme="light"] .subject-text { color: #0f172a; }
-  [data-theme="light"] .email-body { background: #fff; }
-  [data-theme="light"] .email-content { color: #334155; }
-
-  [data-theme="light"] .email-link-wrap {
-    background: #f8fafc;
-    border-color: #cbd5e1;
-  }
-  [data-theme="light"] .email-link {
-    background: #eff6ff;
-    border-color: #93c5fd;
-    color: #1d4ed8;
-  }
-  [data-theme="light"] .email-link:hover {
-    background: #2563eb;
-    border-color: #2563eb;
-    color: #ffffff;
-  }
-  [data-theme="light"] .link-hint { color: #64748b; }
-
-  [data-theme="light"] .badge-blue {
-    background: #eff6ff; color: #1d4ed8; border-color: #bfdbfe;
-  }
-  [data-theme="light"] .badge-warning {
-    background: #fffbeb; color: #92400e; border-color: #fcd34d;
-  }
-
-  [data-theme="light"] .decision-label { color: #64748b; }
-  [data-theme="light"] .btn-decision { background: #ffffff; color: #0f172a; }
-  [data-theme="light"] .bd-title { color: #0f172a !important; }
-  [data-theme="light"] .bd-sub { color: #64748b !important; }
-  [data-theme="light"] .bd-icon { color: inherit; }
-
-  [data-theme="light"] .btn-d-danger { border-color: #fca5a5; }
-  [data-theme="light"] .btn-d-danger .bd-icon { background: #fee2e2; color: #b91c1c; }
-  [data-theme="light"] .btn-d-danger:hover { background: #fef2f2; }
-
-  [data-theme="light"] .btn-d-warning { border-color: #fdba74; }
-  [data-theme="light"] .btn-d-warning .bd-icon { background: #ffedd5; color: #9a3412; }
-  [data-theme="light"] .btn-d-warning:hover { background: #fff7ed; }
-
-  [data-theme="light"] .btn-d-safe { border-color: #6ee7b7; }
-  [data-theme="light"] .btn-d-safe .bd-icon { background: #d1fae5; color: #065f46; }
-  [data-theme="light"] .btn-d-safe:hover { background: #ecfdf5; }
-
-  [data-theme="light"] .btn-d-report { border-color: #93c5fd; }
-  [data-theme="light"] .btn-d-report .bd-icon { background: #dbeafe; color: #1e40af; }
-  [data-theme="light"] .btn-d-report:hover { background: #eff6ff; }
-
-  [data-theme="light"] .clues-header { background: #f8fafc; border-bottom-color: #e2e8f0; }
-  [data-theme="light"] .clues-title { color: #475569; }
-  [data-theme="light"] .clue-item {
-    background: #f8fafc;
-    border-color: #e2e8f0;
-    color: #334155;
   }
 </style>
 
