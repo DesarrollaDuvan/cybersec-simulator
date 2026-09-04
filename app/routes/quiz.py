@@ -5,6 +5,7 @@ app/routes/quiz.py — Quiz de ciberseguridad usando QuizService.
 from flask import Blueprint, render_template, request, jsonify, session, redirect, url_for
 from flask_login import login_required
 from app.services import QuizService
+from app.extensions import csrf
 
 quiz = Blueprint('quiz', __name__)
 
@@ -17,6 +18,7 @@ def start():
 
 @quiz.route('/load', methods=['POST'])
 @login_required
+@csrf.exempt
 def load_quiz():
     QuizService.load_quiz()
     questions = session.get('quiz_questions', [])
@@ -63,6 +65,7 @@ def get_question_json(index):
 
 @quiz.route('/answer', methods=['POST'])
 @login_required
+@csrf.exempt
 def submit_answer():
     data = request.get_json()
     q_id = data.get('question_id')

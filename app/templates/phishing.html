@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% block title %}Phishing - CyberTutor IA{% endblock %}
 {% block content %}
 
 <div class="curso-page">
@@ -30,7 +31,7 @@
   </nav>
 
   <!-- SECCIÓN 1 -->
-  <div class="curso-section" id="ph-1">
+  <article class="curso-section" id="ph-1">
     <div class="sec-num">01</div>
     <div class="section-body">
       <span class="tag tag-danger">Riesgo Crítico</span>
@@ -60,10 +61,10 @@
         <div><strong>Dato importante:</strong> El 36% de todas las filtraciones de datos en 2023 comenzaron con un ataque de phishing exitoso. Un solo clic puede comprometer a toda una empresa.</div>
       </div>
     </div>
-  </div>
+  </article>
 
   <!-- SECCIÓN 2 -->
-  <div class="curso-section alt" id="ph-2">
+  <article class="curso-section alt" id="ph-2">
     <div class="sec-num">02</div>
     <div class="section-body">
       <span class="tag tag-warning">Variantes</span>
@@ -97,10 +98,10 @@
         </div>
       </div>
     </div>
-  </div>
+  </article>
 
   <!-- SECCIÓN 3 -->
-  <div class="curso-section" id="ph-3">
+  <article class="curso-section" id="ph-3">
     <div class="sec-num">03</div>
     <div class="section-body">
       <span class="tag tag-warning">Identificación</span>
@@ -138,10 +139,10 @@
         <div><strong>Regla de oro:</strong> Si un correo o mensaje te pide hacer algo urgente con tus datos o dinero, detente. Verifica directamente en la app oficial o llama al número que aparece en el sitio web oficial — nunca en el mensaje.</div>
       </div>
     </div>
-  </div>
+  </article>
 
   <!-- SECCIÓN 4 -->
-  <div class="curso-section alt" id="ph-4">
+  <article class="curso-section alt" id="ph-4">
     <div class="sec-num">04</div>
     <div class="section-body">
       <span class="tag tag-danger">Ejemplos</span>
@@ -149,20 +150,30 @@
       <p class="section-intro">Así lucen los ataques más comunes. Analiza cada elemento con cuidado.</p>
 
       <!-- Email mockup -->
-      <div style="background:var(--bg); border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; margin-bottom:1.5rem;">
-        <div style="background:var(--bg3); padding:10px 16px; display:flex; align-items:center; gap:8px; border-bottom:1px solid var(--border);">
-          <span style="width:11px;height:11px;border-radius:50%;background:#ff5f57;display:inline-block;"></span>
-          <span style="width:11px;height:11px;border-radius:50%;background:#febc2e;display:inline-block;"></span>
-          <span style="width:11px;height:11px;border-radius:50%;background:#28c840;display:inline-block;"></span>
-          <span style="font-family:var(--mono);font-size:11px;color:var(--muted);margin-left:8px;">Bandeja de entrada</span>
+      <div class="email-mockup">
+        <div class="email-header">
+          <span class="window-dot"></span>
+          <span class="window-dot"></span>
+          <span class="window-dot"></span>
+          <span class="email-title">Bandeja de entrada</span>
         </div>
-        <div style="padding:1.5rem 2rem;">
-          <div style="font-size:13px;margin-bottom:6px;"><span style="color:var(--muted);display:inline-block;width:60px;font-family:var(--mono);font-size:11px;">De:</span> <span style="color:#ff8899;">soporte@banco-seguro-colombia.net</span> <span style="font-family:var(--mono);font-size:10px;background:rgba(255,69,96,0.1);color:var(--danger);padding:2px 8px;border-radius:4px;margin-left:6px;">⚠ DOMINIO SOSPECHOSO</span></div>
-          <div style="font-size:13px;margin-bottom:1rem;"><span style="color:var(--muted);display:inline-block;width:60px;font-family:var(--mono);font-size:11px;">Asunto:</span> <span style="color:var(--text);">⚠ URGENTE: Su cuenta ha sido bloqueada — Verifique en 24h</span></div>
-          <hr style="border:none;border-top:1px solid var(--border);margin-bottom:1rem;">
-          <p style="color:var(--text);font-size:14px;line-height:1.75;margin-bottom:1rem;">Estimado <strong>cliente</strong>, <span style="background:rgba(255,204,68,0.1);color:var(--yellow);font-size:11px;padding:2px 6px;border-radius:4px;">← Sin tu nombre</span><br>Hemos detectado <strong>actividad inusual</strong> en su cuenta. Para evitar el <strong>bloqueo permanente</strong> <span style="background:rgba(255,69,96,0.1);color:var(--danger);font-size:11px;padding:2px 6px;border-radius:4px;">← Urgencia artificial</span> debe verificar su identidad en las próximas <strong>24 horas</strong>.</p>
-          <a href="#" onclick="return false;" style="display:inline-block;padding:10px 20px;background:rgba(255,69,96,0.15);color:var(--danger);border:1px solid rgba(255,69,96,0.3);border-radius:8px;font-size:13px;text-decoration:none;">Verificar mi cuenta ahora →</a>
-          <span style="font-family:var(--mono);font-size:10px;color:var(--muted);display:block;margin-top:8px;">URL real: http://verificar-banco.ru/phish <span style="color:var(--danger);">← DOMINIO FALSO</span></span>
+        <div class="email-body">
+          <div class="email-field">
+            <span class="field-label-mono">De:</span>
+            <span class="field-value">soporte@banco-seguro-colombia.net</span>
+            <span class="suspicious-badge danger">⚠ DOMINIO SOSPECHOSO</span>
+          </div>
+          <div class="email-field">
+            <span class="field-label-mono">Asunto:</span>
+            <span class="field-value">⚠ URGENTE: Su cuenta ha sido bloqueada — Verifique en 24h</span>
+          </div>
+          <div class="email-divider"></div>
+          <div class="email-content">
+            Estimado <strong>cliente</strong>, <span class="highlight-phishing">← Sin tu nombre</span><br>
+            Hemos detectado <strong>actividad inusual</strong> en su cuenta. Para evitar el <strong>bloqueo permanente</strong> <span class="highlight-warning">← Urgencia artificial</span> debe verificar su identidad en las próximas <strong>24 horas</strong>.
+          </div>
+          <a href="#" class="fake-link" onclick="return false;">Verificar mi cuenta ahora →</a>
+          <span class="real-url">URL real: http://verificar-banco.ru/phish <span class="fake-domain">← DOMINIO FALSO</span></span>
         </div>
       </div>
 
@@ -171,10 +182,10 @@
         <div><strong>Este correo es un phishing.</strong> El dominio del remitente termina en .net (los bancos colombianos usan .com.co), no usa tu nombre real, crea urgencia artificial y el enlace lleva a un dominio .ru completamente ajeno al banco.</div>
       </div>
     </div>
-  </div>
+  </article>
 
   <!-- SECCIÓN 5 -->
-  <div class="curso-section" id="ph-5">
+  <article class="curso-section" id="ph-5">
     <div class="sec-num">05</div>
     <div class="section-body">
       <span class="tag tag-safe">Protección</span>
@@ -204,15 +215,15 @@
         <div><strong>Si ya caíste en el ataque:</strong> Cambia la contraseña afectada de inmediato desde un dispositivo seguro, activa el 2FA, notifica a tu banco si compartiste datos financieros, y escanea tu dispositivo con un antivirus actualizado.</div>
       </div>
     </div>
-  </div>
+  </article>
 
   <!-- CTA -->
   <div class="curso-cta">
     <h2>Pon a prueba lo que aprendiste</h2>
     <p>Vive una simulación de phishing real y entrena tu instinto de detección.</p>
     <div class="cta-row">
-      <a href="/simulation" class="btn-primary">Ir a la Simulación →</a>
-      <a href="/quiz" class="btn-secondary">Tomar el Quiz</a>
+      <a href="/simulation" class="btn btn-primary">Ir a la Simulación →</a>
+      <a href="/quiz" class="btn btn-secondary">Tomar el Quiz</a>
     </div>
   </div>
 

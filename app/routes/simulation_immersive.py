@@ -11,6 +11,7 @@ from flask import Blueprint, render_template, request, jsonify, redirect, url_fo
 from flask_login import login_required, current_user
 from app.data import get_social_scenarios, get_network_scenarios
 from app.services.immersive_service import ImmersiveService
+from app.extensions import csrf
 
 
 sim_immersive = Blueprint("sim_immersive", __name__)
@@ -46,6 +47,7 @@ def play(scenario_id):
 
 @sim_immersive.route("/decision", methods=["POST"])
 @login_required
+@csrf.exempt
 def decision():
     data = request.get_json()
     scenario_id = data.get("scenario_id")

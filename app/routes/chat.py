@@ -13,8 +13,10 @@ from flask import Blueprint, render_template, request, jsonify, session
 from flask_login import login_required
 
 from app.ai import chat_openrouter
+from app.extensions import csrf
 
 chat = Blueprint('chat', __name__)
+csrf.exempt(chat)
 
 logger = logging.getLogger(__name__)
 
@@ -44,6 +46,7 @@ def chat_view():
 
 @chat.route('/message', methods=['POST'])
 @login_required
+@csrf.exempt
 def send_message():
     data = request.get_json()
     user_message = data.get('message', '').strip()
@@ -72,6 +75,7 @@ def send_message():
 
 @chat.route('/clear', methods=['POST'])
 @login_required
+@csrf.exempt
 def clear_chat():
     session['chat_history'] = []
     return jsonify({'status': 'ok'})

@@ -42,10 +42,19 @@ async function startQuiz() {
   document.getElementById('startLoader').style.display = 'inline';
   btn.disabled = true;
 
-  const res = await fetch('/quiz/load', { method: 'POST' });
-  const data = await res.json();
-  if (data.status === 'ok') {
-    window.location.href = '/quiz/question/0';
+  try {
+    const res = await fetch('/quiz/load', { method: 'POST', headers: { 'Content-Type': 'application/json' } });
+    const data = await res.json();
+    if (data.status === 'ok') {
+      window.location.href = '/quiz/question/0';
+    } else {
+      throw new Error(data.error || 'Error al cargar el quiz');
+    }
+  } catch (err) {
+    document.getElementById('startText').style.display = 'inline';
+    document.getElementById('startLoader').style.display = 'none';
+    document.getElementById('startText').textContent = 'Error: ' + err.message;
+    btn.disabled = false;
   }
 }
 </script>
