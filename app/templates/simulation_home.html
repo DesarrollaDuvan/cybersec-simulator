@@ -126,11 +126,11 @@
   gap: 8px;
   font-family: var(--mono);
   font-size: 11px;
-  color: var(--blue);
+  color: var(--accent-blue);
   text-transform: uppercase;
   letter-spacing: 2px;
-  background: var(--blue-glow);
-  border: 1px solid rgba(14,165,233,0.25);
+  background: var(--accent-blue-bg);
+  border: 1px solid rgba(59,130,246,0.25);
   padding: 5px 14px;
   border-radius: 20px;
   margin-bottom: 1.25rem;
@@ -139,27 +139,27 @@
 .sh-dot {
   width: 7px; height: 7px;
   border-radius: 50%;
-  background: var(--blue);
-  box-shadow: 0 0 8px var(--blue);
+  background: var(--accent-blue);
+  box-shadow: 0 0 8px var(--accent-blue);
   animation: blink 2s ease-in-out infinite;
 }
 
 .sh-header h1 {
   font-size: clamp(2rem, 4vw, 3rem);
   font-weight: 900;
-  color: #fff;
+  color: var(--text-primary);
   margin-bottom: 0.75rem;
 }
 
 .sh-accent {
-  background: linear-gradient(90deg, var(--blue), var(--green));
+  background: linear-gradient(90deg, var(--accent-blue), var(--accent-green));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .sh-header p {
-  color: var(--muted);
+  color: var(--text-secondary);
   font-size: 1rem;
   max-width: 540px;
   margin: 0 auto;
@@ -177,8 +177,8 @@
 @media (max-width: 700px) { .sh-modules { grid-template-columns: 1fr; } }
 
 .sh-card {
-  background: var(--bg2);
-  border: 1px solid var(--border);
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
   border-radius: 20px;
   overflow: hidden;
   position: relative;
@@ -187,8 +187,8 @@
 
 .sh-card:hover { transform: translateY(-6px); }
 
-.sh-phishing:hover  { border-color: var(--orange); box-shadow: 0 12px 40px var(--orange-glow); }
-.sh-passwords:hover { border-color: var(--green);  box-shadow: 0 12px 40px var(--green-glow); }
+.sh-phishing:hover  { border-color: var(--accent-orange); box-shadow: 0 12px 40px var(--accent-orange-glow); }
+.sh-passwords:hover { border-color: var(--accent-green);  box-shadow: 0 12px 40px var(--accent-green-glow); }
 
 /* Fondo degradado por card */
 .sh-card-bg {
@@ -218,28 +218,28 @@
   text-transform: uppercase;
   padding: 3px 10px;
   border-radius: 4px;
-  background: rgba(249,115,22,0.1);
-  color: var(--orange);
-  border: 1px solid rgba(249,115,22,0.25);
+  background: var(--accent-orange-bg);
+  color: var(--accent-orange);
+  border: 1px solid rgba(245,158,11,0.25);
   margin-bottom: 0.75rem;
 }
 
 .sh-badge-green {
-  background: rgba(34,197,94,0.1);
-  color: var(--green);
-  border-color: rgba(34,197,94,0.25);
+  background: var(--accent-green-bg);
+  color: var(--accent-green);
+  border-color: rgba(16,185,129,0.25);
 }
 
 .sh-card-content h2 {
   font-size: 1.3rem;
   font-weight: 800;
-  color: #fff;
+  color: var(--text-primary);
   margin-bottom: 0.6rem;
 }
 
 .sh-card-content p {
   font-size: 13px;
-  color: var(--muted);
+  color: var(--text-secondary);
   line-height: 1.65;
   margin-bottom: 1.25rem;
 }
@@ -250,12 +250,12 @@
   gap: 1.25rem;
   margin-bottom: 1.25rem;
   padding-bottom: 1.25rem;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--border-light);
 }
 
 .sh-stat { display: flex; flex-direction: column; gap: 2px; }
-.sh-stat-num   { font-family: var(--mono); font-size: 1.2rem; font-weight: 700; color: #fff; }
-.sh-stat-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+.sh-stat-num   { font-family: var(--mono); font-size: 1.2rem; font-weight: 700; color: var(--text-primary); }
+.sh-stat-label { font-size: 10px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; }
 
 /* Tags */
 .sh-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 1.5rem; }
@@ -270,10 +270,10 @@
   letter-spacing: 0.5px;
 }
 
-.sh-tag-red    { background: rgba(239,68,68,0.1); color: #f87171; border: 1px solid rgba(239,68,68,0.2); }
-.sh-tag-blue   { background: rgba(14,165,233,0.1); color: var(--blue); border: 1px solid rgba(14,165,233,0.2); }
-.sh-tag-orange { background: rgba(249,115,22,0.1); color: var(--orange); border: 1px solid rgba(249,115,22,0.2); }
-.sh-tag-green  { background: rgba(34,197,94,0.1); color: var(--green); border: 1px solid rgba(34,197,94,0.2); }
+.sh-tag-red    { background: var(--accent-red-bg); color: var(--accent-red-light, #f87171); border: 1px solid rgba(239,68,68,0.2); }
+.sh-tag-blue   { background: var(--accent-blue-bg); color: var(--accent-blue); border: 1px solid rgba(59,130,246,0.2); }
+.sh-tag-orange { background: var(--accent-orange-bg); color: var(--accent-orange); border: 1px solid rgba(245,158,11,0.2); }
+.sh-tag-green  { background: var(--accent-green-bg); color: var(--accent-green); border: 1px solid rgba(16,185,129,0.2); }
 
 /* Botones */
 .sh-btn {
@@ -293,23 +293,23 @@
 }
 
 .sh-btn-phishing {
-  background: linear-gradient(135deg, var(--orange), var(--orange-d));
+  background: linear-gradient(135deg, var(--accent-orange), var(--accent-orange-dark));
   color: #fff;
 }
 
 .sh-btn-phishing:hover {
   transform: scale(1.02);
-  box-shadow: 0 4px 20px var(--orange-glow);
+  box-shadow: 0 4px 20px var(--accent-orange-glow);
 }
 
 .sh-btn-passwords {
-  background: linear-gradient(135deg, var(--green), var(--green-d));
+  background: linear-gradient(135deg, var(--accent-green), var(--accent-green-dark));
   color: #fff;
 }
 
 .sh-btn-passwords:hover {
   transform: scale(1.02);
-  box-shadow: 0 4px 20px var(--green-glow);
+  box-shadow: 0 4px 20px var(--accent-green-glow);
 }
 
 /* Info strip */
@@ -319,8 +319,8 @@
   justify-content: center;
   gap: 1.5rem;
   padding: 1.25rem 2rem;
-  background: var(--bg2);
-  border: 1px solid var(--border);
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
   border-radius: 12px;
   flex-wrap: wrap;
 }
@@ -330,11 +330,11 @@
   align-items: center;
   gap: 8px;
   font-size: 13px;
-  color: var(--muted);
+  color: var(--text-secondary);
 }
 
 .sh-info-icon { font-size: 18px; }
-.sh-info-sep  { width: 1px; height: 24px; background: var(--border); }
+.sh-info-sep  { width: 1px; height: 24px; background: var(--border-light); }
 </style>
 
 {% endblock %}

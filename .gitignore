@@ -1,50 +1,50 @@
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
-*$py.class
+```
+# Dependencies
+node_modules/
 
-# Virtual environments
+# Environment
+.env
+.env.local
+.env.*
+
+# Logs and temp files
+*.log
+*.tmp
+
+# Editors
+.vscode/
+.idea/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
 venv/
+.venv/
 env/
 ENV/
 
-# Database
-*.db
-*.sqlite
-*.sqlite3
-
-# Environment variables
-.env
-.env.local
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# Testing
-.pytest_cache/
-.coverage
-htmlcov/
-
-# Node (opencode)
-node_modules/
-package-lock.json
-
-# Docker
-Dockerfile
-docker-compose.yml
-
-# Pre-commit
-.pre-commit-config.yaml
-
-# Python packaging
-pyproject.toml
-*.egg-info/
+# Build artifacts
 dist/
 build/
+*.egg-info/
+
+# Coverage
+.coverage
+htmlcov/
+coverage/
+
+# IDE
+*.swp
+*.swo
 
 # OS
 .DS_Store
 Thumbs.db
+
+# Testing
+.pytest_cache/
+.mypy_cache/
+```
