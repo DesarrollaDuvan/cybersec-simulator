@@ -62,7 +62,13 @@
   </div>
 
   <div class="result-actions">
+    {% if module == 'phishing' %}
+    <a href="/simulation/phishing"><button class="btn-next">Siguiente escenario →</button></a>
+    {% elif module == 'passwords' %}
+    <a href="/simulation/passwords"><button class="btn-next">Siguiente escenario →</button></a>
+    {% else %}
     <a href="/simulation"><button class="btn-next">Siguiente escenario →</button></a>
+    {% endif %}
     <a href="/"><button class="btn-home">Volver al inicio</button></a>
   </div>
 
