@@ -143,7 +143,11 @@ class QuizService:
         topics = [q["question"][:40] for q in fixed]
 
         # Generar preguntas con IA
-        ai_questions = generate_quiz_questions(topics)
+        try:
+            ai_questions = generate_quiz_questions(topics)
+        except Exception as e:
+            logger.warning("IA quiz generation failed, using fallback: %s", e)
+            ai_questions = []
 
         # Fallback si IA falla
         if len(ai_questions) < QuizService.AI_QUESTIONS_COUNT:

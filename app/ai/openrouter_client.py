@@ -27,12 +27,11 @@ from app.constants import (
 
 logger = logging.getLogger(__name__)
 
-# Configuración de modelos (orden de prioridad)
-PRIMARY_MODEL = "deepseek/deepseek-r1"
-FALLBACK_MODEL = "meta-llama/llama-3.3-70b-instruct:free"
-ROUTER_MODEL = "openrouter/free"
+# Configuración de modelos - Usar router automático que selecciona modelo disponible
+PRIMARY_MODEL = "openrouter/auto"
+FALLBACK_MODEL = "meta-llama/llama-3.1-8b-instruct:free"
 
-MODELS = [PRIMARY_MODEL, FALLBACK_MODEL, ROUTER_MODEL]
+MODELS = [PRIMARY_MODEL, FALLBACK_MODEL]
 
 
 class OpenRouterClient(AIClient):
@@ -97,7 +96,22 @@ class OpenRouterClient(AIClient):
             if raw.startswith("json"):
                 raw = raw[4:]
         
-        return json.loads(raw.strip())
+        # Try to extract valid JSON from the response
+        raw = raw.strip()
+        try:
+            return json.loads(raw)
+        except json.JSONDecodeError:
+            # Try to find JSON object in the response
+            import re
+            # Look for {...} or [...]
+            json_match = re.search(r'(\{.*\}|\[.*\])', raw, re.DOTALL)
+            if json_match:
+                try:
+                    return json.loads(json_match.group(1))
+                except json.JSONDecodeError:
+                    pass
+            # If all fails, return a fallback
+            raise ValueError(f"Could not parse JSON from response: {raw[:200]}")
 
     def analyze_phishing(self, scenario: dict, user_action: str) -> dict:
         """Analiza una decisión del usuario en escenario de phishing."""
@@ -143,6 +157,94 @@ class OpenRouterClient(AIClient):
                 "points": points,
             }
 
+    def _call_stream(self, messages: list, model: str):
+        """Stream desde un modelo específico."""
+        response = self._client.chat.completions.create(
+            model=model,
+            messages=messages,
+            max_tokens=800,
+            temperature=0.7,
+            stream=True
+        )
+        for chunk in response:
+            if chunk.choices[0].delta.content:
+                yield chunk.choices[0].delta.content
+
+    def _call_stream_with_fallback(self, messages: list):
+        """Stream probando modelos en orden hasta que uno funcione."""
+        for model in MODELS:
+            try:
+                for chunk in self._call_stream(messages, model):
+                    yield chunk
+                return
+            except Exception as e:
+                err = str(e)
+                logger.warning(f"OpenRouter {model} falló en stream: {err[:100]}")
+                if "401" in err or "authentication" in err.lower():
+                    raise ValueError("API Key de OpenRouter inválida")
+                continue
+        raise RuntimeError("Ningún modelo disponible")
+
+    def _stream_json_result(self, prompt: str):
+        """Genera JSON completo y lo stream campo por campo."""
+        messages = [{"role": "user", "content": prompt}]
+        try:
+            # Get full response first, then stream it
+            response_text, _ = self._call_with_fallback(messages)
+            raw = response_text.strip()
+            if raw.startswith("```"):
+                raw = raw.split("```")[1]
+                if raw.startswith("json"):
+                    raw = raw[4:]
+            
+            # Use robust JSON parsing
+            try:
+                result = json.loads(raw.strip())
+            except json.JSONDecodeError:
+                import re
+                json_match = re.search(r'(\{.*\}|\[.*\])', raw, re.DOTALL)
+                if json_match:
+                    result = json.loads(json_match.group(1))
+                else:
+                    raise ValueError(f"Could not parse JSON from response: {raw[:200]}")
+            
+            # Stream analysis field
+            yield f"data: {json.dumps({'type': 'field', 'field': 'analysis'})}\n\n"
+            for char in result.get('analysis', ''):
+                yield f"data: {json.dumps({'type': 'chunk', 'content': char})}\n\n"
+            
+            # Stream tip field
+            yield f"data: {json.dumps({'type': 'field', 'field': 'tip'})}\n\n"
+            for char in result.get('tip', ''):
+                yield f"data: {json.dumps({'type': 'chunk', 'content': char})}\n\n"
+            
+            # Send points as metadata
+            yield f"data: {json.dumps({'type': 'points', 'content': result.get('points', 0)})}\n\n"
+            yield f"data: {json.dumps({'type': 'done'})}\n\n"
+        except Exception as e:
+            logger.exception("Error en _stream_json_result: %s", e)
+            yield f"data: {json.dumps({'type': 'error', 'content': f'Error: {str(e)}'})}\n\n"
+
+    def analyze_phishing_stream(self, scenario: dict, user_action: str):
+        """Analiza phishing con streaming (generador de chunks SSE)."""
+        if not self.is_available():
+            yield f"data: {json.dumps({'type': 'error', 'content': 'No se pudo conectar con la IA. Verifica tu OPENROUTER_API_KEY.'})}\n\n"
+            return
+
+        prompt = format_phishing_prompt(scenario, user_action, PHISHING_ACTION_LABELS)
+        yield from self._stream_json_result(prompt)
+
+    def analyze_password_stream(self, scenario: dict, user_action: str):
+        """Analiza contraseñas con streaming (generador de chunks SSE)."""
+        if not self.is_available():
+            is_correct = user_action == scenario.get("correct_action")
+            points = 100 if is_correct else 10
+            yield f"data: {json.dumps({'type': 'error', 'content': 'No se pudo conectar con la IA en este momento.'})}\n\n"
+            return
+
+        prompt = format_password_prompt(scenario, user_action, PASSWORD_ACTION_LABELS)
+        yield from self._stream_json_result(prompt)
+
     def analyze_immersive(self, scenario: dict, stage: dict, choice: dict, is_correct: bool) -> dict:
         """Analiza una decisión en simulación inmersiva."""
         if not self.is_available():
@@ -177,7 +279,7 @@ class OpenRouterClient(AIClient):
                 q["id"] = f"ai_{i+1:03d}"
             return questions
         except Exception as e:
-            logger.exception("Error en generate_quiz_questions: %s", e)
+            logger.warning("Error en generate_quiz_questions: %s", e)
             return []
 
     def chat(self, messages: list, system: str = None) -> str:

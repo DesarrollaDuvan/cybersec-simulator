@@ -1,15 +1,15 @@
 # app/ai/__init__.py
-# Cliente IA centralizado - usa GeminiClient por defecto, OpenRouterClient como alternativa
+# Cliente IA centralizado - usa OpenRouterClient por defecto, GeminiClient como alternativa
 
 from app.ai.client import AIClient, AIClientFactory
 from app.ai.gemini_client import GeminiClient
 from app.ai.openrouter_client import OpenRouterClient
 
-# Registrar Gemini como cliente por defecto
-AIClientFactory.register(GeminiClient)
+# Registrar OpenRouter como cliente por defecto (usa OPENROUTER_API_KEY del .env)
+AIClientFactory.register(OpenRouterClient)
 
-# También registrar OpenRouter como alternativa (se puede cambiar en runtime)
-# AIClientFactory.register(OpenRouterClient)
+# También registrar Gemini como alternativa (se puede cambiar en runtime)
+# AIClientFactory.register(GeminiClient)
 
 
 def get_ai_client() -> AIClient:
@@ -44,7 +44,7 @@ def generate_quiz_questions(topics_covered: list) -> list:
 
 
 def chat(messages: list, system: str = None) -> str:
-    """Chat conversacional usando el cliente IA activo (Gemini por defecto)."""
+    """Chat conversacional usando el cliente IA activo (OpenRouter por defecto)."""
     return get_ai_client().chat(messages, system)
 
 

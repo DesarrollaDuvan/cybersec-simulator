@@ -5,9 +5,15 @@ Simulador de ciberseguridad con dos módulos:
   - Contraseñas (escenarios pw_001, pw_002, pw_003)
 """
 
-from flask import Blueprint, render_template, request, session, redirect, url_for
-from flask_login import login_required
+from flask import Blueprint, render_template, request, session, redirect, url_for, Response
+from flask_login import login_required, current_user
 from app.services import SimulationService
+from app.ai import get_ai_client
+from app.data import get_scenario_by_id
+from app.constants import RISK_MAP
+from app.extensions import csrf
+import json
+import logging
 
 simulation = Blueprint("simulation", __name__)
 
@@ -49,21 +55,128 @@ def decision():
     if not scenario_id:
         return "Escenario no encontrado", 404
 
-    result = SimulationService.process_decision(scenario_id, user_action)
+    scenario = get_scenario_by_id(scenario_id)
+    if not scenario:
+        return "Escenario no encontrado", 404
 
-    if "error" in result:
-        return result["error"], 404
+    module = scenario.get("module", "phishing")
 
+    # Basic validation only (no AI call) - AI will be streamed via SSE
+    is_correct = (
+        user_action == scenario["correct_action"] or
+        (module == "phishing" and user_action == "report" and scenario["correct_action"] == "ignore")
+    )
+
+    # Quick local scoring (fallback if AI fails)
+    if module == "passwords":
+        points = 100 if is_correct else 10
+    else:
+        points = 100 if is_correct else 0
+
+    # Determine display labels
+    if module == "passwords":
+        from app.constants import PASSWORD_ACTION_LABELS
+        action_display = PASSWORD_ACTION_LABELS.get(user_action, user_action)
+        correct_display = PASSWORD_ACTION_LABELS.get(
+            scenario["correct_action"], scenario["correct_action"]
+        )
+    else:
+        from app.constants import PHISHING_ACTION_DISPLAY
+        action_display = PHISHING_ACTION_DISPLAY.get(user_action, user_action)
+        correct_display = PHISHING_ACTION_DISPLAY.get(
+            scenario["correct_action"], scenario["correct_action"]
+        )
+
+    # Save to DB immediately
+    from flask_login import current_user
+    from app.extensions import db
+    from app.models.progress import SimulationResult
+    import logging
+    logger = logging.getLogger(__name__)
+
+    try:
+        record = SimulationResult(
+            user_id=current_user.id,
+            scenario_id=scenario["id"],
+            action_taken=user_action,
+            is_correct=is_correct,
+            points=points,
+            risk_level=RISK_MAP.get(user_action, "medio"),
+        )
+        db.session.add(record)
+        db.session.commit()
+    except Exception as e:
+        logger.exception("Error guardando SimulationResult: %s", e)
+        db.session.rollback()
+
+    # Return template with empty AI fields - frontend will stream via SSE
     return render_template(
         "result.html",
-        ai_analysis=result["ai_analysis"],
-        ai_tip=result["ai_tip"],
-        points=result["points"],
-        user_action=result["user_action"],
-        correct_action=result["correct_action"],
-        risk_level=result["risk_level"],
-        red_flags=result["red_flags"],
-        module=result["module"],
+        ai_analysis="",      # Empty - will be filled via SSE
+        ai_tip="",           # Empty - will be filled via SSE
+        points=points,
+        user_action=action_display,
+        correct_action=correct_display,
+        risk_level=RISK_MAP.get(user_action, "medio"),
+        red_flags=scenario["clues"],
+        module=module,
+        scenario_id=scenario_id,
+        user_action_raw=user_action,
+    )
+
+
+@simulation.route("/decision/stream", methods=["GET", "POST"])
+@login_required
+@csrf.exempt
+def decision_stream():
+    """SSE endpoint for streaming AI analysis."""
+    import logging
+    logger = logging.getLogger(__name__)
+    logger.info(f"SSE request: method={request.method}, args={dict(request.args)}, session_user={getattr(current_user, 'id', None)}")
+    
+    # Support both GET (EventSource) and POST (direct call)
+    if request.method == "GET":
+        user_action = request.args.get("action", "")
+        scenario_id = request.args.get("scenario_id") or session.get("current_scenario")
+    else:
+        user_action = request.form.get("action", "")
+        scenario_id = request.form.get("scenario_id") or session.get("current_scenario")
+
+    if not scenario_id:
+        logger.warning("SSE: No scenario_id")
+        return "Escenario no encontrado", 404
+
+    scenario = get_scenario_by_id(scenario_id)
+    if not scenario:
+        logger.warning(f"SSE: Scenario not found: {scenario_id}")
+        return "Escenario no encontrado", 404
+
+    module = scenario.get("module", "phishing")
+
+    def generate():
+        import logging
+        logger = logging.getLogger(__name__)
+        client = get_ai_client()
+        if module == "passwords":
+            stream = client.analyze_password_stream(scenario, user_action)
+        else:
+            stream = client.analyze_phishing_stream(scenario, user_action)
+
+        try:
+            for chunk in stream:
+                yield chunk
+        except Exception as e:
+            logger.exception("Error in SSE stream generator: %s", e)
+            yield f"data: {json.dumps({'type': 'error', 'content': f'Error: {str(e)}'})}\n\n"
+
+    return Response(
+        generate(),
+        mimetype="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "X-Accel-Buffering": "no"  # Disable nginx buffering
+        }
     )
 
 

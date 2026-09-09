@@ -14,12 +14,14 @@
     <h2>Análisis de tu decisión</h2>
   </div>
 
-  <!-- Análisis generado por Claude -->
+  <!-- Análisis generado por IA (streaming) -->
   <div class="analysis-card">
     <div class="analysis-label">
-      <span class="ai-dot"></span> Análisis de CyberTutor IA
+      <span class="ai-dot" id="aiDot"></span> Análisis de CyberTutor IA
     </div>
-    <p class="analysis-text">{{ ai_analysis }}</p>
+    <p class="analysis-text" id="aiAnalysis">
+      <span class="typing-cursor"></span>
+    </p>
   </div>
 
   <!-- Desglose de la decisión -->
@@ -55,10 +57,10 @@
     </ul>
   </div>
 
-  <!-- Consejo final de la IA -->
-  <div class="tip-card">
+  <!-- Consejo final de la IA (streaming) -->
+  <div class="tip-card" id="tipCard" style="display:none;">
     <p class="tip-label">Consejo para el futuro</p>
-    <p class="tip-text">{{ ai_tip }}</p>
+    <p class="tip-text" id="aiTip"><span class="typing-cursor"></span></p>
   </div>
 
   <div class="result-actions">
@@ -78,40 +80,238 @@
   .result-container { max-width: 720px; margin: 2rem auto; padding: 0 1rem; }
   .result-header { margin-bottom: 2rem; }
   .risk-badge { display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 5px 14px; border-radius: 20px; margin-bottom: 0.75rem; }
-  .risk-alto { background: #2a0a0a; color: #ff6666; border: 1px solid #ff444455; }
-  .risk-medio { background: #2a1a00; color: #ffcc44; border: 1px solid #ffaa0055; }
-  .risk-bajo { background: #002a1a; color: #00ffaa; border: 1px solid #00cc8855; }
-  .result-header h2 { font-size: 1.8rem; color: #fff; margin: 0; }
+  .risk-alto { background: var(--accent-red-bg); color: var(--accent-red); border: 1px solid var(--accent-red); }
+  .risk-medio { background: var(--accent-orange-bg); color: var(--accent-orange); border: 1px solid var(--accent-orange); }
+  .risk-bajo { background: var(--accent-green-bg); color: var(--accent-green); border: 1px solid var(--accent-green); }
+  .result-header h2 { font-size: 1.8rem; color: var(--text-primary); margin: 0; }
 
-  .analysis-card { background: #0f0f1a; border: 1px solid #2a2a4a; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; }
-  .analysis-label { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #555; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1rem; }
-  .ai-dot { width: 8px; height: 8px; border-radius: 50%; background: #00d4ff; box-shadow: 0 0 6px #00d4ff88; }
-  .analysis-text { color: #ccc; line-height: 1.75; font-size: 0.95rem; margin: 0; }
+  .analysis-card { background: var(--bg-card); border: 1px solid var(--border-medium); border-radius: var(--radius-lg); padding: 1.5rem; margin-bottom: 1.5rem; }
+  .analysis-label { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1rem; }
+  .ai-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent-blue); box-shadow: 0 0 6px var(--accent-blue-glow); transition: background 0.3s, box-shadow 0.3s; }
+  .ai-dot.tip-mode { background: var(--accent-green); box-shadow: 0 0 6px var(--accent-green-glow); }
+  .analysis-text { color: var(--text-secondary); line-height: 1.75; font-size: 0.95rem; margin: 0; white-space: pre-wrap; word-wrap: break-word; }
 
   .breakdown-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1.5rem; }
-  .breakdown-item { background: #0f0f1a; border: 1px solid #2a2a4a; border-radius: 10px; padding: 1rem; }
-  .breakdown-key { display: block; font-size: 11px; color: #555; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
-  .breakdown-val { font-size: 1rem; color: #ddd; font-weight: 600; }
-  .breakdown-val.correct { color: #00ffaa; }
-  .risk-text-alto { color: #ff6666; }
-  .risk-text-medio { color: #ffcc44; }
-  .risk-text-bajo { color: #00ffaa; }
+  .breakdown-item { background: var(--bg-card); border: 1px solid var(--border-medium); border-radius: var(--radius-md); padding: 1rem; }
+  .breakdown-key { display: block; font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; font-family: var(--font-mono); }
+  .breakdown-val { font-size: 1rem; color: var(--text-primary); font-weight: 600; }
+  .breakdown-val.correct { color: var(--accent-green); }
+  .risk-text-alto { color: var(--accent-red); }
+  .risk-text-medio { color: var(--accent-orange); }
+  .risk-text-bajo { color: var(--accent-green); }
 
   .signals-section { margin-bottom: 1.5rem; }
-  .signals-title { color: #666; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.75rem; }
+  .signals-title { color: var(--text-muted); font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.75rem; font-family: var(--font-mono); }
   .signals-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
-  .signal-item { display: flex; align-items: flex-start; gap: 10px; font-size: 0.9rem; color: #aaa; }
-  .signal-icon { color: #ff6666; font-size: 14px; flex-shrink: 0; }
+  .signal-item { display: flex; align-items: flex-start; gap: 10px; font-size: 0.9rem; color: var(--text-secondary); }
+  .signal-icon { color: var(--accent-red); font-size: 14px; flex-shrink: 0; }
 
-  .tip-card { background: #0a1a0f; border: 1px solid #00cc8833; border-radius: 10px; padding: 1.25rem; margin-bottom: 2rem; }
-  .tip-label { font-size: 11px; color: #00cc88; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
-  .tip-text { color: #aaa; font-size: 0.9rem; line-height: 1.7; margin: 0; }
+  .tip-card { background: var(--accent-green-bg); border: 1px solid var(--accent-green); border-radius: var(--radius-md); padding: 1.25rem; margin-bottom: 2rem; }
+  .tip-label { font-size: 11px; color: var(--accent-green); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; font-family: var(--font-mono); }
+  .tip-text { color: var(--text-secondary); font-size: 0.9rem; line-height: 1.7; margin: 0; white-space: pre-wrap; word-wrap: break-word; }
 
-  .result-actions { display: flex; gap: 12px; }
-  .btn-next, .btn-home { padding: 12px 24px; border-radius: 8px; border: 1.5px solid; cursor: pointer; font-size: 0.9rem; font-weight: 600; transition: opacity 0.2s; }
-  .btn-next { border-color: #00d4ff; color: #00d4ff; background: transparent; }
-  .btn-home { border-color: #333; color: #888; background: transparent; }
-  .btn-next:hover, .btn-home:hover { opacity: 0.75; }
+  .result-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn-next, .btn-home { padding: 12px 24px; border-radius: var(--radius-md); border: 1.5px solid; cursor: pointer; font-size: 0.9rem; font-weight: 600; transition: all var(--transition-fast); }
+  .btn-next { border-color: var(--accent-blue); color: var(--accent-blue); background: var(--accent-blue-bg); }
+  .btn-home { border-color: var(--border-medium); color: var(--text-muted); background: var(--bg-card); }
+  .btn-next:hover { background: var(--accent-blue); color: #fff; }
+  .btn-home:hover { background: var(--bg-tertiary); color: var(--text-primary); border-color: var(--border-heavy); }
+
+  /* Typewriter effect */
+  .typing-cursor {
+    display: inline-block;
+    width: 2px;
+    height: 1em;
+    background: var(--accent-blue);
+    margin-left: 2px;
+    animation: blink 1s infinite;
+    vertical-align: text-bottom;
+  }
+
+  @keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+  }
+
+  /* Streaming status indicator */
+  .streaming-status {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  
+  .streaming-status .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent-blue);
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+  
+  @keyframes pulse {
+    0%, 100% { opacity: 0.4; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.2); }
+  }
 </style>
+
+<script>
+// SSE Streaming Client for AI Analysis
+(function() {
+  const scenarioId = "{{ scenario_id }}";
+  const userAction = "{{ user_action_raw }}";
+  console.log('SSE params:', { scenarioId, userAction });
+  
+  const analysisEl = document.getElementById('aiAnalysis');
+  const tipEl = document.getElementById('aiTip');
+  const tipCard = document.getElementById('tipCard');
+  const aiDot = document.getElementById('aiDot');
+  
+  let currentField = 'analysis'; // 'analysis' or 'tip'
+  let isTyping = false;
+  let typeQueue = [];
+  let eventSource = null;
+  let streamingComplete = false;
+
+  // Typewriter effect function
+  function typewriterAppend(element, text, speed = 15) {
+    return new Promise((resolve) => {
+      if (!text) { resolve(); return; }
+      
+      let i = 0;
+      const cursor = element.querySelector('.typing-cursor');
+      
+      function typeChar() {
+        if (i < text.length) {
+          // Insert character before cursor
+          if (cursor) {
+            cursor.parentNode.insertBefore(document.createTextNode(text[i]), cursor);
+          } else {
+            element.textContent += text[i];
+          }
+          i++;
+          // Scroll to keep cursor visible
+          element.scrollTop = element.scrollHeight;
+          setTimeout(typeChar, speed);
+        } else {
+          resolve();
+        }
+      }
+      typeChar();
+    });
+  }
+
+  // Remove typing cursors
+  function removeCursors() {
+    document.querySelectorAll('.typing-cursor').forEach(c => c.remove());
+  }
+
+  // Show tip card with animation
+  function showTipCard() {
+    tipCard.style.display = 'block';
+    tipCard.style.animation = 'fadeIn 0.3s ease-out';
+    aiDot.classList.add('tip-mode');
+  }
+
+  // Add fadeIn animation
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  `;
+  document.head.appendChild(style);
+
+  // Connect to SSE endpoint
+  function connectSSE() {
+    const url = `/simulation/decision/stream?scenario_id=${encodeURIComponent(scenarioId)}&action=${encodeURIComponent(userAction)}`;
+    console.log('SSE connecting to:', url);
+    eventSource = new EventSource(url);
+
+    eventSource.onmessage = async function(event) {
+      try {
+        const data = JSON.parse(event.data);
+        
+        switch(data.type) {
+          case 'field':
+            // Switch to new field
+            if (data.field === 'tip') {
+              currentField = 'tip';
+              showTipCard();
+              // Remove cursor from analysis, add to tip
+              const analysisCursor = analysisEl.querySelector('.typing-cursor');
+              if (analysisCursor) analysisCursor.remove();
+              if (!tipEl.querySelector('.typing-cursor')) {
+                tipEl.appendChild(document.createTextNode(''));
+                const cursor = document.createElement('span');
+                cursor.className = 'typing-cursor';
+                tipEl.appendChild(cursor);
+              }
+            }
+            break;
+            
+          case 'chunk':
+            // Type character by character
+            const targetEl = currentField === 'analysis' ? analysisEl : tipEl;
+            await typewriterAppend(targetEl, data.content);
+            break;
+            
+          case 'points':
+            // Points received - could update UI if needed
+            console.log('AI Points:', data.content);
+            break;
+            
+          case 'done':
+            streamingComplete = true;
+            removeCursors();
+            eventSource.close();
+            // Add a small completion indicator
+            console.log('Streaming complete');
+            break;
+            
+          case 'error':
+            // Show error in analysis field
+            removeCursors();
+            analysisEl.textContent = "Error: " + data.content;
+            analysisEl.style.color = "var(--accent-red)";
+            eventSource.close();
+            break;
+        }
+      } catch (e) {
+        console.error('SSE parse error:', e);
+      }
+    };
+
+    eventSource.onerror = function(err) {
+      console.error('SSE connection error:', err);
+      console.error('SSE readyState:', eventSource.readyState); // 0=connecting, 1=open, 2=closed
+      if (!streamingComplete) {
+        removeCursors();
+        analysisEl.textContent = "No se pudo conectar con la IA. Verifica tu conexión.";
+        analysisEl.style.color = "var(--accent-red)";
+      }
+      eventSource.close();
+    };
+  }
+
+  // Clean up on page unload
+  window.addEventListener('beforeunload', () => {
+    if (eventSource) {
+      eventSource.close();
+    }
+  });
+
+  // Start streaming when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', connectSSE);
+  } else {
+    connectSSE();
+  }
+})();
+</script>
 
 {% endblock %}
