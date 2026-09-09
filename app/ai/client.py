@@ -19,6 +19,14 @@ class AIClient(Protocol):
         """Analiza una decisión del usuario en escenario de contraseñas."""
         ...
 
+    def analyze_phishing_stream(self, scenario: dict, user_action: str):
+        """Analiza phishing con streaming (generador de chunks SSE)."""
+        ...
+
+    def analyze_password_stream(self, scenario: dict, user_action: str):
+        """Analiza contraseñas con streaming (generador de chunks SSE)."""
+        ...
+
     def analyze_immersive(self, scenario: dict, stage: dict, choice: dict, is_correct: bool) -> dict:
         """Analiza una decisión en simulación inmersiva."""
         ...

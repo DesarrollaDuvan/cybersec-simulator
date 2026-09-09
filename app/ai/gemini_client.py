@@ -111,6 +111,62 @@ class GeminiClient(AIClient):
                 "points": points,
             }
 
+    def analyze_phishing_stream(self, scenario: dict, user_action: str):
+        """Analiza phishing con streaming (generador de chunks SSE)."""
+        if not self.is_available():
+            yield f"data: {json.dumps({'type': 'error', 'content': 'No se pudo conectar con la IA. Verifica tu GEMINI_API_KEY.'})}\n\n"
+            return
+
+        prompt = format_phishing_prompt(scenario, user_action, PHISHING_ACTION_LABELS)
+        try:
+            # First get the full response, then stream it character by character
+            # (Gemini doesn't support streaming JSON mode easily, so we simulate streaming)
+            result = self._generate_json(prompt)
+            
+            # Stream analysis field
+            yield f"data: {json.dumps({'type': 'field', 'field': 'analysis'})}\n\n"
+            for char in result.get('analysis', ''):
+                yield f"data: {json.dumps({'type': 'chunk', 'content': char})}\n\n"
+            
+            # Stream tip field
+            yield f"data: {json.dumps({'type': 'field', 'field': 'tip'})}\n\n"
+            for char in result.get('tip', ''):
+                yield f"data: {json.dumps({'type': 'chunk', 'content': char})}\n\n"
+            
+            # Send points as metadata
+            yield f"data: {json.dumps({'type': 'points', 'content': result.get('points', 0)})}\n\n"
+            yield f"data: {json.dumps({'type': 'done'})}\n\n"
+        except Exception as e:
+            yield f"data: {json.dumps({'type': 'error', 'content': f'Error: {str(e)}'})}\n\n"
+
+    def analyze_password_stream(self, scenario: dict, user_action: str):
+        """Analiza contraseñas con streaming (generador de chunks SSE)."""
+        if not self.is_available():
+            is_correct = user_action == scenario.get("correct_action")
+            points = 100 if is_correct else 10
+            yield f"data: {json.dumps({'type': 'error', 'content': 'No se pudo conectar con la IA en este momento.'})}\n\n"
+            return
+
+        prompt = format_password_prompt(scenario, user_action, PASSWORD_ACTION_LABELS)
+        try:
+            result = self._generate_json(prompt)
+            
+            # Stream analysis field
+            yield f"data: {json.dumps({'type': 'field', 'field': 'analysis'})}\n\n"
+            for char in result.get('analysis', ''):
+                yield f"data: {json.dumps({'type': 'chunk', 'content': char})}\n\n"
+            
+            # Stream tip field
+            yield f"data: {json.dumps({'type': 'field', 'field': 'tip'})}\n\n"
+            for char in result.get('tip', ''):
+                yield f"data: {json.dumps({'type': 'chunk', 'content': char})}\n\n"
+            
+            # Send points as metadata
+            yield f"data: {json.dumps({'type': 'points', 'content': result.get('points', 0)})}\n\n"
+            yield f"data: {json.dumps({'type': 'done'})}\n\n"
+        except Exception as e:
+            yield f"data: {json.dumps({'type': 'error', 'content': f'Error: {str(e)}'})}\n\n"
+
     def analyze_immersive(self, scenario: dict, stage: dict, choice: dict, is_correct: bool) -> dict:
         """Analiza una decisión en simulación inmersiva."""
         if not self.is_available():
