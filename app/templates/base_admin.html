@@ -6,6 +6,16 @@
   <title>{% block title %}Admin{% endblock %} — CyberTutor Admin</title>
   <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='images/favicon.svg') }}">
 
+  <!-- Aplica el tema guardado antes de pintar, para evitar parpadeo -->
+  <script>
+    (function() {
+      var saved = localStorage.getItem('cybertutor-theme');
+      if (saved) {
+        document.documentElement.setAttribute('data-theme', saved);
+      }
+    })();
+  </script>
+
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 
@@ -108,6 +118,10 @@
       <span class="current">{% block breadcrumb %}Dashboard{% endblock %}</span>
     </div>
     <div class="topnav-right">
+      <button class="theme-toggle" id="themeToggle" aria-label="Cambiar tema">
+        <i class="ti ti-sun sun-icon"></i>
+        <i class="ti ti-moon moon-icon"></i>
+      </button>
       <a href="{{ url_for('main.home') }}" target="_blank"><i class="ti ti-external-link"></i> Ir a la plataforma</a>
     </div>
   </div>
@@ -140,6 +154,25 @@ document.querySelectorAll('.nav-link').forEach(link => {
     if (window.innerWidth <= 900) toggleSidebar();
   });
 });
+
+// Sistema de temas (mismo mecanismo que la plataforma de cliente)
+(function() {
+  const themeToggle = document.getElementById('themeToggle');
+  const savedTheme = localStorage.getItem('cybertutor-theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+  const currentTheme = savedTheme || (prefersDark ? 'dark' : 'light');
+  document.documentElement.setAttribute('data-theme', currentTheme);
+
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      const newTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', newTheme);
+      localStorage.setItem('cybertutor-theme', newTheme);
+      window.dispatchEvent(new CustomEvent('themeChange', { detail: { theme: newTheme } }));
+    });
+  }
+})();
 </script>
 
 {% block extra_scripts %}{% endblock %}
