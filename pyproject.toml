@@ -128,3 +128,6 @@ exclude_lines = [
 
 [tool.pre-commit-hooks]
 # Configurado en .pre-commit-config.yaml
+
+[tool.vercel]
+entrypoint = "run:app"
