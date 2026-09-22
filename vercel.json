@@ -1,18 +1,18 @@
 {
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist",
-  "installCommand": "npm install",
-  "framework": "vite",
-  "cleanUrls": true,
-  "headers": [
+  "version": 2,
+  "builds": [
     {
-      "source": "/assets/(.*)",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
-        }
-      ]
+      "src": "run.py",
+      "use": "@vercel/python"
     }
-  ]
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "run.py"
+    }
+  ],
+  "env": {
+    "FLASK_ENV": "production"
+  }
 }

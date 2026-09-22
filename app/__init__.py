@@ -1,6 +1,6 @@
 import os
 
-from flask import Config, Flask
+from flask import Config, Flask, send_from_directory
 from dotenv import load_dotenv
 
 from app.extensions import db, login_manager, migrate, csrf, cache
@@ -30,7 +30,6 @@ def create_app():
     csrf.init_app(app)
     cache.init_app(app, config={'CACHE_TYPE': 'SimpleCache'})
     
-    
 
     with app.app_context():
         from app.models.user import User
@@ -58,5 +57,10 @@ def create_app():
     app.register_blueprint(simulation, url_prefix='/simulation')
     app.register_blueprint(sim_immersive, url_prefix='/sim')
     app.register_blueprint(quiz, url_prefix='/quiz')
+
+    # Servir archivos estáticos en producción (Vercel)
+    @app.route('/static/<path:filename>')
+    def serve_static(filename):
+        return send_from_directory(app.static_folder, filename)
 
     return app

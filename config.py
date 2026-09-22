@@ -17,7 +17,14 @@ class Config:
 
     # Base de datos SQLite local
     BASEDIR = os.path.abspath(os.path.dirname(__file__))
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(BASEDIR, 'database.db')
+    
+    # Configuración para Vercel y otros entornos
+    if os.environ.get('VERCEL'):
+        # En Vercel, usar un archivo temporal para la base de datos
+        SQLALCHEMY_DATABASE_URI = 'sqlite:///vercel_database.db'
+    else:
+        SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(BASEDIR, 'database.db')
+    
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     # API Key de Anthropic (se carga desde .env)
