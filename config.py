@@ -6,8 +6,12 @@ Colócalo en la raíz del proyecto: cybersec-simulator/config.py
 import os
 from datetime import timedelta
 
-
+    
 class Config:
+    # Usa /tmp para bases de datos locales en Vercel
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:////tmp/vercel_database.db'
+    # Opcional: Define INSTANCE_PATH si es necesario
+    INSTANCE_PATH = '/tmp/instance'
     # Clave secreta para sesiones (cámbiala en producción)
     SECRET_KEY = os.environ.get('SECRET_KEY', 'dev-secret-key-cambiar-en-produccion')
 

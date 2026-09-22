@@ -1,0 +1,15 @@
+# Archivos Python que confunden a Vercel
+run.py
+seed.py
+tests/
+*.py
+__pycache__/
+*.pyc
+venv/
+.env
+
+# Otros archivos innecesarios
+node_modules/
+.git/
+.gitignore
+README.md

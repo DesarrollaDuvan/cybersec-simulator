@@ -1,4 +1,6 @@
-from flask import Flask
+import os
+
+from flask import Config, Flask
 from dotenv import load_dotenv
 
 from app.extensions import db, login_manager, migrate, csrf, cache
@@ -6,8 +8,20 @@ from app.extensions import db, login_manager, migrate, csrf, cache
 load_dotenv()
 
 def create_app():
-    app = Flask(__name__)
-    app.config.from_object('config.Config')
+    app = Flask(__name__, instance_relative_config=True)
+
+    # Establece la ruta de instancia escribible en Vercel
+    if os.getenv("VERCEL") == "1":  # Detecta ambiente Vercel si es necesario
+        app.instance_path = '/tmp/instance'
+
+    try:
+        os.makedirs(app.instance_path, exist_ok=True)
+    except OSError:
+        # Maneja posibles errores de permisos si /tmp no existe o no es escribible
+        pass
+
+    app.config.from_object(Config)
+
 
     # Inicializar extensiones
     db.init_app(app)
